@@ -1,9 +1,8 @@
-
 <!DOCTYPE html>
 <html lang="fr">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Falwlaw Baby Wishlist</title>
   <style>
     body {
@@ -69,10 +68,6 @@
       font-size: 15px;
     }
 
-    button:hover {
-      background: #6a916a;
-    }
-
     .done {
       background: #d4edda;
       padding: 10px;
@@ -83,159 +78,99 @@
       color: #2f6b2f;
     }
 
-    .message {
-      margin: 20px auto;
-      max-width: 600px;
-      padding: 12px;
-      border-radius: 8px;
-      display: none;
-    }
-
-    .success {
-      background: #e8f7e8;
-      color: #2f6b2f;
-      display: block;
-    }
-
     .error {
-      background: #fdeaea;
       color: #b00020;
-      display: block;
-    }
-
-    .loading {
-      padding: 20px;
       font-weight: bold;
+      padding: 20px;
     }
   </style>
 </head>
 <body>
 
-<h1>Falwlaw Baby Wishlist</h1>
-<p class="subtitle">
-  Bienvenue sur notre liste de naissance ❤️
-  Vous pouvez participer librement au cadeau de votre choix.
-</p>
+  <h1>Falwlaw Baby Wishlist</h1>
+  <p class="subtitle">
+    Bienvenue sur notre liste de naissance ❤️ Vous pouvez participer librement au cadeau de votre choix.
+  </p>
 
-<div id="message" class="message"></div>
-<div id="gifts" class="grid">
-  <div class="loading">Chargement...</div>
-</div>
+  <div id="gifts" class="grid">Chargement...</div>
 
-<script src="https://unpkg.com/@supabase/supabase-js@2"></script>
-<script>
-  const SUPABASE_URL = "https://rcihspcsadskezucjpdp.supabase.co";
-  const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InJjaWhzcGNzYWRza2V6dWNqcGRwIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzY2MDUxMzUsImV4cCI6MjA5MjE4MTEzNX0.hVp-qvJWEpNwgwcHv5-jBeS52WC2tocJGavIxkLAY3A";
+  <script>
+    var SUPABASE_URL = "https://rcihspcsadskezucjpdp.supabase.co";
+    var SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InJjaWhzcGNzYWRza2V6dWNqcGRwIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzY2MDUxMzUsImV4cCI6MjA5MjE4MTEzNX0.hVp-qvJWEpNwgwcHv5-jBeS52WC2tocJGavIxkLAY3A";
 
-  const { createClient } = supabase;
-  const client = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+    function loadGifts() {
+      var container = document.getElementById("gifts");
 
-  function showMessage(text, type) {
-    const box = document.getElementById("message");
-    box.className = "message " + type;
-    box.textContent = text;
-  }
-
-  async function loadGifts() {
-    const container = document.getElementById("gifts");
-
-    const { data, error } = await client
-      .from("gifts")
-      .select("*")
-      .order("id", { ascending: true });
-
-    if (error) {
-      container.innerHTML = '<div class="error">Erreur: ' + error.message + '</div>';
-      return;
-    }
-
-    if (!data || data.length === 0) {
-      container.innerHTML = '<div class="error">Aucun article trouvé</div>';
-      return;
-    }
-
-    container.innerHTML = "";
-
-    data.forEach(gift => {
-      const funded = Number(gift.funded_amount);
-      const target = Number(gift.target_amount);
-      const remaining = Math.max(target - funded, 0);
-      const percent = Math.min((funded / target) * 100, 100);
-
-      const card = document.createElement("div");
-      card.className = "card";
-      card.innerHTML = `
-        <h3>${gift.name}</h3>
-        <p>Prix : ${target} €</p>
-        <p>Collecté : ${funded} €</p>
-        <p>Reste : ${remaining} €</p>
-        <div class="progress">
-          <div class="fill" style="width:${percent}%"></div>
-        </div>
-        ${
-          funded >= target
-            ? '<div class="done">✅ Financé</div>'
-            : <button onclick="contribute(${gift.id}, '${gift.name.replace(/'/g, "\\'")}', ${target}, ${funded})">Participer</button>
+      fetch(SUPABASE_URL + "/rest/v1/gifts?select=*&order=id.asc", {
+        method: "GET",
+        headers: {
+          "apikey": SUPABASE_ANON_KEY,
+          "Authorization": "Bearer " + SUPABASE_ANON_KEY
         }
-      `;
-      container.appendChild(card);
-    });
-  }
-
-  async function contribute(id, name, target, funded) {
-    const user = prompt("Votre prénom :");
-    if (!user || !user.trim()) return;
-
-    const amountText = prompt("Montant (€) :");
-    const amount = Number(amountText);
-
-    if (!amountText || isNaN(amount) || amount <= 0) {
-      showMessage("Montant invalide", "error");
-      return;
-    }
-
-    const remaining = target - funded;
-    if (amount > remaining) {
-      showMessage("Le montant dépasse le reste à financer", "error");
-      return;
-    }
-
-    const { error: insertError } = await client
-      .from("contributions")
-      .insert([
-        {
-          gift_id: id,
-          contributor_name: user.trim(),
-          amount: amount
-        }
-      ]);
-
-    if (insertError) {
-      showMessage("Erreur contribution: " + insertError.message, "error");
-      return;
-    }
-
-    const newAmount = funded + amount;
-
-    const { error: updateError } = await client
-      .from("gifts")
-      .update({
-        funded_amount: newAmount,
-        is_funded: newAmount >= target
       })
-      .eq("id", id);
+      .then(function(response) {
+        return response.json().then(function(data) {
+          return {
+            ok: response.ok,
+            status: response.status,
+            data: data
+          };
+        });
+      })
+      .then(function(result) {
+        if (!result.ok) {
+          container.innerHTML = '<div class="error">Erreur: ' + JSON.stringify(result.data) + '</div>';
+          return;
+        }
 
-    if (updateError) {
-      showMessage("Erreur update: " + updateError.message, "error");
-      return;
+        if (!result.data || result.data.length === 0) {
+          container.innerHTML = '<div class="error">Aucun article trouvé</div>';
+          return;
+        }
+
+        container.innerHTML = "";
+
+        for (var i = 0; i < result.data.length; i++) {
+          var gift = result.data[i];
+          var funded = Number(gift.funded_amount);
+          var target = Number(gift.target_amount);
+          var remaining = target - funded;
+          if (remaining < 0) remaining = 0;
+
+          var percent = 0;
+          if (target > 0) {
+            percent = (funded / target) * 100;
+            if (percent > 100) percent = 100;
+          }
+
+          var card = document.createElement("div");
+          card.className = "card";
+
+          var buttonHtml = "";
+          if (funded >= target || gift.is_funded === true) {
+            buttonHtml = '<div class="done">✅ Financé</div>';
+          } else {
+            buttonHtml = '<button>Participer</button>';
+          }
+
+          card.innerHTML =
+            "<h3>" + gift.name + "</h3>" +
+            "<p>Prix : " + target + " €</p>" +
+            "<p>Collecté : " + funded + " €</p>" +
+            "<p>Reste : " + remaining + " €</p>" +
+            '<div class="progress"><div class="fill" style="width:' + percent + '%"></div></div>' +
+            buttonHtml;
+
+          container.appendChild(card);
+        }
+      })
+      .catch(function(error) {
+        container.innerHTML = '<div class="error">Erreur réseau: ' + error + '</div>';
+      });
     }
 
-    showMessage("Merci " + user + " ❤️", "success");
     loadGifts();
-  }
-
-  loadGifts();
-</script>
+  </script>
 
 </body>
 </html>
