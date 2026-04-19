@@ -11,11 +11,19 @@
       font-family: Arial;
       background: #f8f5f0;
       text-align: center;
+      color: #333;
     }
 
     h1 {
       margin-top: 40px;
       color: #6b7d6b;
+    }
+
+    p.subtitle {
+      max-width: 700px;
+      margin: 10px auto 30px;
+      line-height: 1.6;
+      padding: 0 20px;
     }
 
     .grid {
@@ -30,8 +38,9 @@
       background: white;
       padding: 20px;
       border-radius: 12px;
-      width: 260px;
+      width: 280px;
       box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+      text-align: left;
     }
 
     .progress {
@@ -39,6 +48,7 @@
       background: #eee;
       border-radius: 10px;
       margin: 10px 0;
+      overflow: hidden;
     }
 
     .fill {
@@ -49,12 +59,18 @@
 
     button {
       margin-top: 10px;
-      padding: 10px;
+      padding: 10px 12px;
       border: none;
       background: #7ea37e;
       color: white;
       border-radius: 6px;
       cursor: pointer;
+      width: 100%;
+      font-size: 15px;
+    }
+
+    button:hover {
+      background: #6a916a;
     }
 
     .done {
@@ -62,6 +78,34 @@
       padding: 10px;
       border-radius: 6px;
       margin-top: 10px;
+      text-align: center;
+      font-weight: bold;
+      color: #2f6b2f;
+    }
+
+    .message {
+      margin: 20px auto;
+      max-width: 600px;
+      padding: 12px 16px;
+      border-radius: 8px;
+      display: none;
+    }
+
+    .message.success {
+      display: block;
+      background: #e8f7e8;
+      color: #2f6b2f;
+    }
+
+    .message.error {
+      display: block;
+      background: #fdeaea;
+      color: #b00020;
+    }
+
+    .loading {
+      padding: 30px;
+      font-size: 18px;
     }
   </style>
 </head>
@@ -69,18 +113,41 @@
 <body>
 
 <h1>Falwlaw Baby Wishlist</h1>
+<p class="subtitle">
+  Bienvenue sur notre liste de naissance. Merci de faire partie de cette belle aventure avec nous.
+  Vous pouvez participer librement au cadeau de votre choix avec le montant que vous souhaitez.
+</p>
 
-<div id="gifts" class="grid"></div>
+<div id="message" class="message"></div>
+<div id="gifts" class="grid">
+  <div class="loading">Chargement des cadeaux...</div>
+</div>
 
-<!-- Supabase -->
 <script src="https://unpkg.com/@supabase/supabase-js@2"></script>
 
 <script>
 const SUPABASE_URL = "https://rcihspcsadskezucjpdp.supabase.co";
-const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InJjaWhzcGNzYWRza2V6dWNqcGRwIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzY2MDUxMzUsImV4cCI6MjA5MjE4MTEzNX0.hVp-qvJWEpNwgwcHv5-jBeS52WC2tocJGavIxkLAY3A";
+const SUPABASE_ANON_KEY = "TA_CLE_ANON_ICI"; 
+// Remplace cette ligne par ta vraie clé complète
 
 const { createClient } = supabase;
 const supabaseClient = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+function showMessage(text, type = "success") {
+  const box = document.getElementById("message");
+  box.className = "message " + type;
+  box.textContent = text;
+}
+
+function clearMessage() {
+  const box = document.getElementById("message");
+  box.className = "message";
+  box.textContent = "";
+}
+
+function formatAmount(value) {
+  return Number(value).toFixed(2).replace(".00", "") + " €";
+}
 
 async function loadGifts() {
   const container = document.getElementById("gifts");
@@ -91,37 +158,99 @@ async function loadGifts() {
     .order("id");
 
   if (error) {
-    container.innerHTML = "Erreur : " + error.message;
+    container.innerHTML = <div class="loading">Erreur : ${error.message}</div>;
     return;
   }
 
   container.innerHTML = "";
 
   data.forEach(gift => {
-    const percent = Math.min((gift.funded_amount / gift.target_amount) * 100, 100);
+    const funded = Number(gift.funded_amount);
+    const target = Number(gift.target_amount);
+    const remaining = Math.max(target - funded, 0);
+    const percent = Math.min((funded / target) * 100, 100);
+    const isFunded = gift.is_funded || funded >= target;
 
     const card = document.createElement("div");
     card.className = "card";
 
     card.innerHTML = `
       <h3>${gift.name}</h3>
-      <p>Prix : ${gift.target_amount} €</p>
-      <p>Collecté : ${gift.funded_amount} €</p>
-      <p>Reste : ${gift.target_amount - gift.funded_amount} €</p>
+      <p>Prix : ${formatAmount(target)}</p>
+      <p>Collecté : ${formatAmount(funded)}</p>
+      <p>Reste : ${formatAmount(remaining)}</p>
 
       <div class="progress">
         <div class="fill" style="width:${percent}%"></div>
       </div>
 
       ${
-        gift.funded_amount >= gift.target_amount
-        ? '<div class="done">✅ Financé</div>'
-        : '<button>Participer</button>'
+        isFunded
+          ? '<div class="done">✅ Financé</div>'
+          : <button onclick="contributeToGift(${gift.id}, '${gift.name.replace(/'/g, "\\'")}', ${target}, ${funded})">Participer</button>
       }
     `;
 
     container.appendChild(card);
   });
+}
+
+async function contributeToGift(giftId, giftName, targetAmount, fundedAmount) {
+  clearMessage();
+
+  const contributorName = prompt(Votre prénom pour "${giftName}" :);
+  if (!contributorName || !contributorName.trim()) {
+    showMessage("Contribution annulée : prénom manquant.", "error");
+    return;
+  }
+
+  const remaining = Number(targetAmount) - Number(fundedAmount);
+  const amountText = prompt(Combien souhaitez-vous offrir pour "${giftName}" ?\nMontant restant : ${remaining} €);
+  const amount = Number(amountText);
+
+  if (!amountText || isNaN(amount) || amount <= 0) {
+    showMessage("Veuillez entrer un montant valide.", "error");
+    return;
+  }
+
+  if (amount > remaining) {
+    showMessage(Le montant dépasse le reste à financer (${remaining} €)., "error");
+    return;
+  }
+
+  const { error: insertError } = await supabaseClient
+    .from("contributions")
+    .insert([
+      {
+        gift_id: giftId,
+        contributor_name: contributorName.trim(),
+        amount: amount
+      }
+    ]);
+
+  if (insertError) {
+    showMessage("Erreur lors de l’enregistrement de la contribution : " + insertError.message, "error");
+    return;
+  }
+
+  const newFundedAmount = Number(fundedAmount) + amount;
+  const isNowFunded = newFundedAmount >= Number(targetAmount);
+
+  const { error: updateError } = await supabaseClient
+    .from("gifts")
+    .update({
+      funded_amount: newFundedAmount,
+      is_funded: isNowFunded
+    })
+    .eq("id", giftId);
+
+  if (updateError) {
+    showMessage("La contribution a été enregistrée, mais le cadeau n’a pas été mis à jour : " + updateError.message, "error");
+    return;
+  }
+
+  showMessage(Merci ${contributorName} ! Votre contribution de ${amount} € a bien été enregistrée., "success");
+  await loadGifts();
 }
 
 loadGifts();
