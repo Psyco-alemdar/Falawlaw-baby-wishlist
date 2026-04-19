@@ -1,27 +1,174 @@
 <!DOCTYPE html>
-<html>
+<html lang="fr">
 <head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Falwlaw Baby Wishlist</title>
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background: #f8f5f0;
+      color: #333;
+    }
+
+    header {
+      text-align: center;
+      padding: 50px 20px 30px;
+      background: #ffffff;
+      border-bottom: 1px solid #e8e1d8;
+    }
+
+    header h1 {
+      margin: 0;
+      font-size: 38px;
+      color: #6b7d6b;
+    }
+
+    header p {
+      max-width: 700px;
+      margin: 15px auto 0;
+      font-size: 18px;
+      line-height: 1.6;
+    }
+
+    .container {
+      max-width: 1100px;
+      margin: 40px auto;
+      padding: 0 20px;
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 24px;
+    }
+
+    .card {
+      background: white;
+      border-radius: 18px;
+      padding: 24px;
+      box-shadow: 0 6px 20px rgba(0, 0, 0, 0.08);
+    }
+
+    .card h2 {
+      margin-top: 0;
+      margin-bottom: 12px;
+      font-size: 24px;
+      color: #4f614f;
+    }
+
+    .price,
+    .funded,
+    .remaining,
+    .status {
+      margin: 8px 0;
+      font-size: 16px;
+    }
+
+    .progress-bar {
+      width: 100%;
+      height: 14px;
+      background: #eee6dc;
+      border-radius: 999px;
+      overflow: hidden;
+      margin: 16px 0 10px;
+    }
+
+    .progress-fill {
+      height: 100%;
+      background: #9abb9a;
+      border-radius: 999px;
+    }
+
+    .button {
+      display: inline-block;
+      margin-top: 12px;
+      padding: 12px 20px;
+      background: #7ea37e;
+      color: white;
+      text-decoration: none;
+      border-radius: 10px;
+      font-weight: bold;
+    }
+
+    .button:hover {
+      background: #6d926d;
+    }
+
+    .funded-badge {
+      display: inline-block;
+      margin-top: 12px;
+      padding: 10px 16px;
+      background: #e7f5e7;
+      color: #2f6b2f;
+      border-radius: 10px;
+      font-weight: bold;
+    }
+
+    footer {
+      text-align: center;
+      padding: 30px 20px 50px;
+      color: #777;
+      font-size: 14px;
+    }
+  </style>
 </head>
+<body>
+  <header>
+    <h1>Falwlaw Baby Wishlist</h1>
+    <p>
+      Bienvenue sur notre liste de naissance. Merci de faire partie de cette belle aventure avec nous.
+      Vous pouvez participer librement au cadeau de votre choix avec le montant que vous souhaitez.
+    </p>
+  </header>
 
-<body style="font-family: Arial; text-align: center; background:#f9f7f3">
+  <div class="container">
+    <div class="grid">
+      <div class="card">
+        <h2>Poussette</h2>
+        <p class="price">Prix total : <strong>800 €</strong></p>
+        <p class="funded">Collecté : <strong>200 €</strong></p>
+        <p class="remaining">Reste : <strong>600 €</strong></p>
+        <div class="progress-bar">
+          <div class="progress-fill" style="width: 25%;"></div>
+        </div>
+        <p class="status">Progression : <strong>25%</strong></p>
+        <a href="#" class="button">Participer</a>
+      </div>
 
-<h1>Falwlaw Baby Wishlist</h1>
-<p>Merci de participer ❤️</p>
+      <div class="card">
+        <h2>Lit bébé</h2>
+        <p class="price">Prix total : <strong>250 €</strong></p>
+        <p class="funded">Collecté : <strong>250 €</strong></p>
+        <p class="remaining">Reste : <strong>0 €</strong></p>
+        <div class="progress-bar">
+          <div class="progress-fill" style="width: 100%;"></div>
+        </div>
+        <p class="status">Progression : <strong>100%</strong></p>
+        <div class="funded-badge">✅ Financé</div>
+      </div>
 
-<div style="background:white; padding:20px; margin:20px; border-radius:10px">
-  <h2>Poussette</h2>
-  <p>Prix : 800€</p>
-  <p>Collecté : 200€</p>
-  <p>Reste : 600€</p>
-  <button>Participer</button>
-</div>
+      <div class="card">
+        <h2>Siège auto</h2>
+        <p class="price">Prix total : <strong>300 €</strong></p>
+        <p class="funded">Collecté : <strong>120 €</strong></p>
+        <p class="remaining">Reste : <strong>180 €</strong></p>
+        <div class="progress-bar">
+          <div class="progress-fill" style="width: 40%;"></div>
+        </div>
+        <p class="status">Progression : <strong>40%</strong></p>
+        <a href="#" class="button">Participer</a>
+      </div>
+    </div>
+  </div>
 
-<div style="background:white; padding:20px; margin:20px; border-radius:10px">
-  <h2>Lit bébé</h2>
-  <p>Prix : 250€</p>
-  <p>✅ Financé</p>
-</div>
-
+  <footer>
+    Falwlaw Baby Wishlist © 2026
+  </footer>
 </body>
 </html>
