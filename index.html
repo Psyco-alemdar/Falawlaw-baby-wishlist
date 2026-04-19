@@ -83,6 +83,26 @@
       font-weight: bold;
       padding: 20px;
     }
+
+    .message {
+      max-width: 700px;
+      margin: 20px auto;
+      padding: 12px;
+      border-radius: 8px;
+      display: none;
+    }
+
+    .message.success {
+      display: block;
+      background: #e8f7e8;
+      color: #2f6b2f;
+    }
+
+    .message.error {
+      display: block;
+      background: #fdeaea;
+      color: #b00020;
+    }
   </style>
 </head>
 <body>
@@ -92,11 +112,42 @@
     Bienvenue sur notre liste de naissance ❤️ Vous pouvez participer librement au cadeau de votre choix.
   </p>
 
+  <div id="message" class="message"></div>
   <div id="gifts" class="grid">Chargement...</div>
 
   <script>
     var SUPABASE_URL = "https://rcihspcsadskezucjpdp.supabase.co";
     var SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InJjaWhzcGNzYWRza2V6dWNqcGRwIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzY2MDUxMzUsImV4cCI6MjA5MjE4MTEzNX0.hVp-qvJWEpNwgwcHv5-jBeS52WC2tocJGavIxkLAY3A";
+
+    function showMessage(text, type) {
+      var box = document.getElementById("message");
+      box.className = "message " + type;
+      box.innerHTML = text;
+    }
+
+    function clearMessage() {
+      var box = document.getElementById("message");
+      box.className = "message";
+      box.innerHTML = "";
+    }
+
+    function supabaseHeaders() {
+      return {
+        "apikey": SUPABASE_ANON_KEY,
+        "Authorization": "Bearer " + SUPABASE_ANON_KEY,
+        "Content-Type": "application/json",
+        "Prefer": "return=representation"
+      };
+    }
+
+    function escapeHtml(text) {
+      return String(text)
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;")
+        .replace(/'/g, "&#039;");
+    }
 
     function loadGifts() {
       var container = document.getElementById("gifts");
@@ -150,11 +201,17 @@
           if (funded >= target || gift.is_funded === true) {
             buttonHtml = '<div class="done">✅ Financé</div>';
           } else {
-            buttonHtml = '<button>Participer</button>';
+            buttonHtml =
+              '<button onclick="participer(' +
+              gift.id + ',' +
+              '\'' + String(gift.name).replace(/'/g, "\\'") + '\',' +
+              target + ',' +
+              funded +
+              ')">Participer</button>';
           }
 
           card.innerHTML =
-            "<h3>" + gift.name + "</h3>" +
+            "<h3>" + escapeHtml(gift.name) + "</h3>" +
             "<p>Prix : " + target + " €</p>" +
             "<p>Collecté : " + funded + " €</p>" +
             "<p>Reste : " + remaining + " €</p>" +
@@ -166,6 +223,97 @@
       })
       .catch(function(error) {
         container.innerHTML = '<div class="error">Erreur réseau: ' + error + '</div>';
+      });
+    }
+
+    function participer(giftId, giftName, targetAmount, fundedAmount) {
+      clearMessage();
+
+      var prenom = prompt("Votre prénom pour " + giftName + " :");
+      if (!prenom || !prenom.trim()) {
+        showMessage("Contribution annulée : prénom manquant.", "error");
+        return;
+      }
+
+      var remaining = targetAmount - fundedAmount;
+      var montantTexte = prompt("Montant à offrir pour " + giftName + " (reste : " + remaining + " €) :");
+      if (montantTexte === null) {
+        return;
+      }
+
+      var montant = Number(montantTexte);
+
+      if (isNaN(montant) || montant <= 0) {
+        showMessage("Veuillez entrer un montant valide.", "error");
+        return;
+      }
+
+      if (montant > remaining) {
+        showMessage("Le montant dépasse le reste à financer.", "error");
+        return;
+      }
+
+      fetch(SUPABASE_URL + "/rest/v1/contributions", {
+        method: "POST",
+        headers: supabaseHeaders(),
+        body: JSON.stringify([
+          {
+            gift_id: giftId,
+            contributor_name: prenom.trim(),
+            amount: montant
+          }
+        ])
+      })
+      .then(function(response) {
+        return response.json().then(function(data) {
+          return {
+            ok: response.ok,
+            status: response.status,
+            data: data
+          };
+        });
+      })
+      .then(function(insertResult) {
+        if (!insertResult.ok) {
+          showMessage("Erreur contribution : " + JSON.stringify(insertResult.data), "error");
+          return;
+        }
+
+        var nouveauMontant = fundedAmount + montant;
+        var estFinance = nouveauMontant >= targetAmount;
+
+        fetch(SUPABASE_URL + "/rest/v1/gifts?id=eq." + giftId, {
+          method: "PATCH",
+          headers: supabaseHeaders(),
+          body: JSON.stringify({
+            funded_amount: nouveauMontant,
+            is_funded: estFinance
+          })
+        })
+        .then(function(response) {
+          return response.json().then(function(data) {
+            return {
+              ok: response.ok,
+              status: response.status,
+              data: data
+            };
+          });
+        })
+        .then(function(updateResult) {
+          if (!updateResult.ok) {
+            showMessage("Contribution enregistrée, mais mise à jour du cadeau impossible : " + JSON.stringify(updateResult.data), "error");
+            return;
+          }
+
+          showMessage("Merci " + escapeHtml(prenom) + " ❤️ Votre contribution de " + montant + " € a été enregistrée.", "success");
+          loadGifts();
+        })
+        .catch(function(error) {
+          showMessage("Erreur mise à jour cadeau : " + error, "error");
+        });
+      })
+      .catch(function(error) {
+        showMessage("Erreur réseau contribution : " + error, "error");
       });
     }
 
