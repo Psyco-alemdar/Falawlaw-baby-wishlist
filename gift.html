@@ -1,0 +1,333 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Détail du cadeau</title>
+  <style>
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background: #f8efe8;
+      color: #5c4b4b;
+    }
+
+    .container {
+      max-width: 850px;
+      margin: 40px auto;
+      background: #fffaf7;
+      border-radius: 24px;
+      box-shadow: 0 8px 24px rgba(0,0,0,0.08);
+      overflow: hidden;
+    }
+
+    .image {
+      width: 100%;
+      height: 320px;
+      object-fit: cover;
+      background: #f3ddd0;
+    }
+
+    .content {
+      padding: 30px;
+    }
+
+    h1 {
+      margin-top: 0;
+      color: #c27d9a;
+      font-size: 40px;
+    }
+
+    p {
+      font-size: 19px;
+      line-height: 1.6;
+      margin: 10px 0;
+    }
+
+    .progress {
+      height: 14px;
+      background: #ead8cf;
+      border-radius: 999px;
+      overflow: hidden;
+      margin: 20px 0;
+    }
+
+    .fill {
+      height: 14px;
+      background: #e8a9c0;
+      border-radius: 999px;
+    }
+
+    label {
+      display: block;
+      margin-top: 20px;
+      margin-bottom: 8px;
+      font-weight: bold;
+      font-size: 17px;
+    }
+
+    input {
+      width: 100%;
+      padding: 14px;
+      font-size: 16px;
+      border: 1px solid #e3cfc5;
+      border-radius: 12px;
+      box-sizing: border-box;
+      background: white;
+    }
+
+    button {
+      margin-top: 24px;
+      width: 100%;
+      padding: 15px;
+      font-size: 18px;
+      border: none;
+      border-radius: 14px;
+      background: #d98cab;
+      color: white;
+      font-weight: bold;
+      cursor: pointer;
+    }
+
+    button:hover {
+      background: #c97c9b;
+    }
+
+    .back {
+      display: inline-block;
+      margin-top: 22px;
+      text-decoration: none;
+      color: #b66f8f;
+      font-weight: bold;
+    }
+
+    .message {
+      margin-top: 20px;
+      padding: 14px;
+      border-radius: 12px;
+      display: none;
+    }
+
+    .message.success {
+      display: block;
+      background: #e8f6e8;
+      color: #2f6b2f;
+    }
+
+    .message.error {
+      display: block;
+      background: #fdeaea;
+      color: #b00020;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="container">
+    <img id="gift-image" class="image" src="" alt="cadeau">
+    <div class="content">
+      <h1 id="gift-name">Chargement...</h1>
+      <p>Prix total : <strong id="gift-target">-</strong></p>
+      <p>Collecté : <strong id="gift-funded">-</strong></p>
+      <p>Reste : <strong id="gift-remaining">-</strong></p>
+
+      <div class="progress">
+        <div id="gift-fill" class="fill" style="width:0%"></div>
+      </div>
+
+      <div id="form-area">
+        <label for="prenom">Votre prénom</label>
+        <input type="text" id="prenom" placeholder="Entrez votre prénom">
+
+        <label for="montant">Montant à offrir (€)</label>
+        <input type="number" id="montant" placeholder="Exemple : 50">
+
+        <button onclick="participer()">Participer à ce cadeau</button>
+      </div>
+
+      <div id="message" class="message"></div>
+
+      <a class="back" href="index.html">← Retour à la wishlist</a>
+    </div>
+  </div>
+
+  <script>
+    var SUPABASE_URL = "https://rcihspcsadskezucjpdp.supabase.co";
+    var SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InJjaWhzcGNzYWRza2V6dWNqcGRwIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzY2MDUxMzUsImV4cCI6MjA5MjE4MTEzNX0.hVp-qvJWEpNwgwcHv5-jBeS52WC2tocJGavIxkLAY3A";
+
+    var currentGift = null;
+
+    function showMessage(text, type) {
+      var box = document.getElementById("message");
+      box.className = "message " + type;
+      box.innerHTML = text;
+    }
+
+    function getGiftImage(name) {
+      var lower = name.toLowerCase();
+
+      if (lower.indexOf("poussette") !== -1) {
+        return "https://images.unsplash.com/photo-1515488042361-ee00e0ddd4e4?auto=format&fit=crop&w=1200&q=80";
+      }
+
+      if (lower.indexOf("siège") !== -1 || lower.indexOf("siege") !== -1) {
+        return "https://images.unsplash.com/photo-1517841905240-472988babdf9?auto=format&fit=crop&w=1200&q=80";
+      }
+
+      if (lower.indexOf("lit") !== -1) {
+        return "https://images.unsplash.com/photo-1519689680058-324335c77eba?auto=format&fit=crop&w=1200&q=80";
+      }
+
+      return "https://images.unsplash.com/photo-1518837695005-2083093ee35b?auto=format&fit=crop&w=1200&q=80";
+    }
+
+    function getIdFromUrl() {
+      var params = new URLSearchParams(window.location.search);
+      return params.get("id");
+    }
+
+    function loadGift() {
+      var id = getIdFromUrl();
+
+      if (!id) {
+        document.getElementById("gift-name").innerHTML = "Cadeau introuvable";
+        return;
+      }
+
+      fetch(SUPABASE_URL + "/rest/v1/gifts?id=eq." + id + "&select=*", {
+        method: "GET",
+        headers: {
+          "apikey": SUPABASE_ANON_KEY,
+          "Authorization": "Bearer " + SUPABASE_ANON_KEY
+        }
+      })
+      .then(function(response) {
+        return response.json();
+      })
+      .then(function(data) {
+        if (!data || data.length === 0) {
+          document.getElementById("gift-name").innerHTML = "Cadeau introuvable";
+          return;
+        }
+
+        currentGift = data[0];
+
+        var funded = Number(currentGift.funded_amount);
+        var target = Number(currentGift.target_amount);
+        var remaining = target - funded;
+        if (remaining < 0) remaining = 0;
+
+        var percent = 0;
+        if (target > 0) {
+          percent = (funded / target) * 100;
+          if (percent > 100) percent = 100;
+        }
+
+        document.getElementById("gift-name").innerHTML = currentGift.name;
+        document.getElementById("gift-target").innerHTML = target + " €";
+        document.getElementById("gift-funded").innerHTML = funded + " €";
+        document.getElementById("gift-remaining").innerHTML = remaining + " €";
+        document.getElementById("gift-fill").style.width = percent + "%";
+        document.getElementById("gift-image").src = getGiftImage(currentGift.name);
+
+        if (funded >= target || currentGift.is_funded === true) {
+          document.getElementById("form-area").innerHTML = '<div class="message success" style="display:block;">✅ Ce cadeau est déjà financé.</div>';
+        }
+      });
+    }
+
+    function participer() {
+      if (!currentGift) return;
+
+      var prenom = document.getElementById("prenom").value;
+      var montant = Number(document.getElementById("montant").value);
+
+      if (!prenom || !prenom.trim()) {
+        showMessage("Veuillez entrer votre prénom.", "error");
+        return;
+      }
+
+      if (!montant || montant <= 0) {
+        showMessage("Veuillez entrer un montant valide.", "error");
+        return;
+      }
+
+      var funded = Number(currentGift.funded_amount);
+      var target = Number(currentGift.target_amount);
+      var remaining = target - funded;
+
+      if (montant > remaining) {
+        showMessage("Le montant dépasse le reste à financer.", "error");
+        return;
+      }
+
+      fetch(SUPABASE_URL + "/rest/v1/contributions", {
+        method: "POST",
+        headers: {
+          "apikey": SUPABASE_ANON_KEY,
+          "Authorization": "Bearer " + SUPABASE_ANON_KEY,
+          "Content-Type": "application/json",
+          "Prefer": "return=representation"
+        },
+        body: JSON.stringify([
+          {
+            gift_id: currentGift.id,
+            contributor_name: prenom.trim(),
+            amount: montant
+          }
+        ])
+      })
+      .then(function(response) {
+        return response.json().then(function(data) {
+          return { ok: response.ok, data: data };
+        });
+      })
+      .then(function(result) {
+        if (!result.ok) {
+          showMessage("Erreur contribution : " + JSON.stringify(result.data), "error");
+          return;
+        }
+
+        var newFunded = funded + montant;
+        var isFunded = newFunded >= target;
+
+        fetch(SUPABASE_URL + "/rest/v1/gifts?id=eq." + currentGift.id, {
+          method: "PATCH",
+          headers: {
+            "apikey": SUPABASE_ANON_KEY,
+            "Authorization": "Bearer " + SUPABASE_ANON_KEY,
+            "Content-Type": "application/json",
+            "Prefer": "return=representation"
+          },
+          body: JSON.stringify({
+            funded_amount: newFunded,
+            is_funded: isFunded
+          })
+        })
+        .then(function(response) {
+          return response.json().then(function(data) {
+            return { ok: response.ok, data: data };
+          });
+        })
+        .then(function(updateResult) {
+          if (!updateResult.ok) {
+            showMessage("Contribution enregistrée, mais cadeau non mis à jour.", "error");
+            return;
+          }
+
+          showMessage("Merci " + prenom + " 🤍 Votre participation a été enregistrée.", "success");
+          document.getElementById("prenom").value = "";
+          document.getElementById("montant").value = "";
+          loadGift();
+        });
+      })
+      .catch(function(error) {
+        showMessage("Erreur réseau : " + error, "error");
+      });
+    }
+
+    loadGift();
+  </script>
+
+</body>
+</html>
