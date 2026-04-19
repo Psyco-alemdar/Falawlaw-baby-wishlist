@@ -8,20 +8,27 @@
     body {
       margin: 0;
       font-family: Arial, sans-serif;
-      background: #f8f5f0;
+      background: #f8efe8;
+      color: #5c4b4b;
       text-align: center;
-      color: #333;
+    }
+
+    header {
+      padding: 40px 20px 20px;
     }
 
     h1 {
-      margin-top: 40px;
-      color: #6b7d6b;
+      margin: 0;
+      font-size: 52px;
+      color: #c88ea7;
     }
 
-    p.subtitle {
-      max-width: 700px;
-      margin: 10px auto 30px;
+    .subtitle {
+      max-width: 800px;
+      margin: 20px auto 0;
+      font-size: 22px;
       line-height: 1.6;
+      color: #7a6363;
       padding: 0 20px;
     }
 
@@ -29,53 +36,80 @@
       display: flex;
       flex-wrap: wrap;
       justify-content: center;
-      gap: 20px;
-      padding: 20px;
+      gap: 24px;
+      padding: 40px 20px 60px;
     }
 
     .card {
-      background: white;
-      padding: 20px;
-      border-radius: 12px;
-      width: 280px;
-      box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+      background: #fffaf7;
+      border-radius: 20px;
+      width: 300px;
+      box-shadow: 0 6px 18px rgba(0,0,0,0.08);
+      overflow: hidden;
       text-align: left;
     }
 
+    .card-image {
+      width: 100%;
+      height: 210px;
+      object-fit: cover;
+      background: #f3ddd0;
+    }
+
+    .card-content {
+      padding: 20px;
+    }
+
+    .card h3 {
+      margin-top: 0;
+      margin-bottom: 12px;
+      color: #b66f8f;
+      font-size: 24px;
+    }
+
+    .card p {
+      margin: 8px 0;
+      font-size: 17px;
+    }
+
     .progress {
-      height: 10px;
-      background: #eee;
-      border-radius: 10px;
-      margin: 10px 0;
+      height: 12px;
+      background: #ead8cf;
+      border-radius: 999px;
       overflow: hidden;
+      margin: 14px 0;
     }
 
     .fill {
-      height: 10px;
-      background: #8fbc8f;
-      border-radius: 10px;
+      height: 12px;
+      background: #e8a9c0;
+      border-radius: 999px;
     }
 
-    button {
+    .button {
+      display: inline-block;
       margin-top: 10px;
-      padding: 10px;
-      border: none;
-      background: #7ea37e;
+      padding: 12px 18px;
+      background: #d98cab;
       color: white;
-      border-radius: 6px;
-      cursor: pointer;
-      width: 100%;
-      font-size: 15px;
+      text-decoration: none;
+      border-radius: 12px;
+      font-weight: bold;
+      text-align: center;
+    }
+
+    .button:hover {
+      background: #c97c9b;
     }
 
     .done {
-      background: #d4edda;
-      padding: 10px;
-      border-radius: 6px;
-      margin-top: 10px;
-      text-align: center;
+      background: #e8f6e8;
+      color: #3b7a3b;
+      padding: 12px;
+      border-radius: 12px;
       font-weight: bold;
-      color: #2f6b2f;
+      text-align: center;
+      margin-top: 10px;
     }
 
     .error {
@@ -83,62 +117,23 @@
       font-weight: bold;
       padding: 20px;
     }
-
-    .message {
-      max-width: 700px;
-      margin: 20px auto;
-      padding: 12px;
-      border-radius: 8px;
-      display: none;
-    }
-
-    .message.success {
-      display: block;
-      background: #e8f7e8;
-      color: #2f6b2f;
-    }
-
-    .message.error {
-      display: block;
-      background: #fdeaea;
-      color: #b00020;
-    }
   </style>
 </head>
 <body>
 
-  <h1>Falwlaw Baby Wishlist</h1>
-  <p class="subtitle">
-    Bienvenue sur notre liste de naissance ❤️ Vous pouvez participer librement au cadeau de votre choix.
-  </p>
+  <header>
+    <h1>Falwlaw Baby Wishlist</h1>
+    <p class="subtitle">
+      Bienvenue sur notre liste de naissance 🤍<br>
+      Vous pouvez participer librement au cadeau de votre choix.
+    </p>
+  </header>
 
-  <div id="message" class="message"></div>
   <div id="gifts" class="grid">Chargement...</div>
 
   <script>
     var SUPABASE_URL = "https://rcihspcsadskezucjpdp.supabase.co";
     var SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InJjaWhzcGNzYWRza2V6dWNqcGRwIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzY2MDUxMzUsImV4cCI6MjA5MjE4MTEzNX0.hVp-qvJWEpNwgwcHv5-jBeS52WC2tocJGavIxkLAY3A";
-
-    function showMessage(text, type) {
-      var box = document.getElementById("message");
-      box.className = "message " + type;
-      box.innerHTML = text;
-    }
-
-    function clearMessage() {
-      var box = document.getElementById("message");
-      box.className = "message";
-      box.innerHTML = "";
-    }
-
-    function supabaseHeaders() {
-      return {
-        "apikey": SUPABASE_ANON_KEY,
-        "Authorization": "Bearer " + SUPABASE_ANON_KEY,
-        "Content-Type": "application/json",
-        "Prefer": "return=representation"
-      };
-    }
 
     function escapeHtml(text) {
       return String(text)
@@ -147,6 +142,24 @@
         .replace(/>/g, "&gt;")
         .replace(/"/g, "&quot;")
         .replace(/'/g, "&#039;");
+    }
+
+    function getGiftImage(name) {
+      var lower = name.toLowerCase();
+
+      if (lower.indexOf("poussette") !== -1) {
+        return "https://images.unsplash.com/photo-1515488042361-ee00e0ddd4e4?auto=format&fit=crop&w=900&q=80";
+      }
+
+      if (lower.indexOf("siège") !== -1 || lower.indexOf("siege") !== -1) {
+        return "https://images.unsplash.com/photo-1517841905240-472988babdf9?auto=format&fit=crop&w=900&q=80";
+      }
+
+      if (lower.indexOf("lit") !== -1) {
+        return "https://images.unsplash.com/photo-1519689680058-324335c77eba?auto=format&fit=crop&w=900&q=80";
+      }
+
+      return "https://images.unsplash.com/photo-1518837695005-2083093ee35b?auto=format&fit=crop&w=900&q=80";
     }
 
     function loadGifts() {
@@ -163,14 +176,13 @@
         return response.json().then(function(data) {
           return {
             ok: response.ok,
-            status: response.status,
             data: data
           };
         });
       })
       .then(function(result) {
         if (!result.ok) {
-          container.innerHTML = '<div class="error">Erreur: ' + JSON.stringify(result.data) + '</div>';
+          container.innerHTML = '<div class="error">Erreur : ' + JSON.stringify(result.data) + '</div>';
           return;
         }
 
@@ -194,6 +206,8 @@
             if (percent > 100) percent = 100;
           }
 
+          var image = getGiftImage(gift.name);
+
           var card = document.createElement("div");
           card.className = "card";
 
@@ -201,119 +215,25 @@
           if (funded >= target || gift.is_funded === true) {
             buttonHtml = '<div class="done">✅ Financé</div>';
           } else {
-            buttonHtml =
-              '<button onclick="participer(' +
-              gift.id + ',' +
-              '\'' + String(gift.name).replace(/'/g, "\\'") + '\',' +
-              target + ',' +
-              funded +
-              ')">Participer</button>';
+            buttonHtml = '<a class="button" href="gift.html?id=' + gift.id + '">Participer</a>';
           }
 
           card.innerHTML =
-            "<h3>" + escapeHtml(gift.name) + "</h3>" +
-            "<p>Prix : " + target + " €</p>" +
-            "<p>Collecté : " + funded + " €</p>" +
-            "<p>Reste : " + remaining + " €</p>" +
-            '<div class="progress"><div class="fill" style="width:' + percent + '%"></div></div>' +
-            buttonHtml;
+            '<img class="card-image" src="' + image + '" alt="' + escapeHtml(gift.name) + '">' +
+            '<div class="card-content">' +
+              '<h3>' + escapeHtml(gift.name) + '</h3>' +
+              '<p>Prix : <strong>' + target + ' €</strong></p>' +
+              '<p>Collecté : <strong>' + funded + ' €</strong></p>' +
+              '<p>Reste : <strong>' + remaining + ' €</strong></p>' +
+              '<div class="progress"><div class="fill" style="width:' + percent + '%"></div></div>' +
+              buttonHtml +
+            '</div>';
 
           container.appendChild(card);
         }
       })
       .catch(function(error) {
-        container.innerHTML = '<div class="error">Erreur réseau: ' + error + '</div>';
-      });
-    }
-
-    function participer(giftId, giftName, targetAmount, fundedAmount) {
-      clearMessage();
-
-      var prenom = prompt("Votre prénom pour " + giftName + " :");
-      if (!prenom || !prenom.trim()) {
-        showMessage("Contribution annulée : prénom manquant.", "error");
-        return;
-      }
-
-      var remaining = targetAmount - fundedAmount;
-      var montantTexte = prompt("Montant à offrir pour " + giftName + " (reste : " + remaining + " €) :");
-      if (montantTexte === null) {
-        return;
-      }
-
-      var montant = Number(montantTexte);
-
-      if (isNaN(montant) || montant <= 0) {
-        showMessage("Veuillez entrer un montant valide.", "error");
-        return;
-      }
-
-      if (montant > remaining) {
-        showMessage("Le montant dépasse le reste à financer.", "error");
-        return;
-      }
-
-      fetch(SUPABASE_URL + "/rest/v1/contributions", {
-        method: "POST",
-        headers: supabaseHeaders(),
-        body: JSON.stringify([
-          {
-            gift_id: giftId,
-            contributor_name: prenom.trim(),
-            amount: montant
-          }
-        ])
-      })
-      .then(function(response) {
-        return response.json().then(function(data) {
-          return {
-            ok: response.ok,
-            status: response.status,
-            data: data
-          };
-        });
-      })
-      .then(function(insertResult) {
-        if (!insertResult.ok) {
-          showMessage("Erreur contribution : " + JSON.stringify(insertResult.data), "error");
-          return;
-        }
-
-        var nouveauMontant = fundedAmount + montant;
-        var estFinance = nouveauMontant >= targetAmount;
-
-        fetch(SUPABASE_URL + "/rest/v1/gifts?id=eq." + giftId, {
-          method: "PATCH",
-          headers: supabaseHeaders(),
-          body: JSON.stringify({
-            funded_amount: nouveauMontant,
-            is_funded: estFinance
-          })
-        })
-        .then(function(response) {
-          return response.json().then(function(data) {
-            return {
-              ok: response.ok,
-              status: response.status,
-              data: data
-            };
-          });
-        })
-        .then(function(updateResult) {
-          if (!updateResult.ok) {
-            showMessage("Contribution enregistrée, mais mise à jour du cadeau impossible : " + JSON.stringify(updateResult.data), "error");
-            return;
-          }
-
-          showMessage("Merci " + escapeHtml(prenom) + " ❤️ Votre contribution de " + montant + " € a été enregistrée.", "success");
-          loadGifts();
-        })
-        .catch(function(error) {
-          showMessage("Erreur mise à jour cadeau : " + error, "error");
-        });
-      })
-      .catch(function(error) {
-        showMessage("Erreur réseau contribution : " + error, "error");
+        container.innerHTML = '<div class="error">Erreur réseau : ' + error + '</div>';
       });
     }
 
