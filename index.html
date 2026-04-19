@@ -110,6 +110,19 @@
       font-weight: bold;
     }
 
+    .loading {
+      text-align: center;
+      font-size: 18px;
+      padding: 30px;
+    }
+
+    .error {
+      text-align: center;
+      color: #b00020;
+      font-size: 18px;
+      padding: 30px;
+    }
+
     footer {
       text-align: center;
       padding: 30px 20px 50px;
@@ -128,47 +141,84 @@
   </header>
 
   <div class="container">
-    <div class="grid">
-      <div class="card">
-        <h2>Poussette</h2>
-        <p class="price">Prix total : <strong>800 €</strong></p>
-        <p class="funded">Collecté : <strong>200 €</strong></p>
-        <p class="remaining">Reste : <strong>600 €</strong></p>
-        <div class="progress-bar">
-          <div class="progress-fill" style="width: 25%;"></div>
-        </div>
-        <p class="status">Progression : <strong>25%</strong></p>
-        <a href="poussette.html" class="button">Participer</a>
-      </div>
-
-      <div class="card">
-        <h2>Lit bébé</h2>
-        <p class="price">Prix total : <strong>250 €</strong></p>
-        <p class="funded">Collecté : <strong>250 €</strong></p>
-        <p class="remaining">Reste : <strong>0 €</strong></p>
-        <div class="progress-bar">
-          <div class="progress-fill" style="width: 100%;"></div>
-        </div>
-        <p class="status">Progression : <strong>100%</strong></p>
-        <div class="funded-badge">✅ Financé</div>
-      </div>
-
-      <div class="card">
-        <h2>Siège auto</h2>
-        <p class="price">Prix total : <strong>300 €</strong></p>
-        <p class="funded">Collecté : <strong>120 €</strong></p>
-        <p class="remaining">Reste : <strong>180 €</strong></p>
-        <div class="progress-bar">
-          <div class="progress-fill" style="width: 40%;"></div>
-        </div>
-        <p class="status">Progression : <strong>40%</strong></p>
-        <a href="siege-auto.html" class="button">Participer</a>
-      </div>
+    <div id="gift-list" class="grid">
+      <div class="loading">Chargement des cadeaux...</div>
     </div>
   </div>
 
   <footer>
     Falwlaw Baby Wishlist © 2026
   </footer>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script>
+    const SUPABASE_URL = "COLLE_ICI_TON_PROJECT_URL";
+    const SUPABASE_ANON_KEY = "COLLE_ICI_TA_ANON_KEY";
+
+    const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+    function formatAmount(value) {
+      return Number(value).toFixed(2).replace(".00", "") + " €";
+    }
+
+    function getGiftLink(name, isFunded) {
+      if (isFunded) return "";
+
+      if (name.toLowerCase() === "poussette") return "poussette.html";
+      if (name.toLowerCase() === "siège auto" || name.toLowerCase() === "siege auto") return "siege-auto.html";
+
+      return "#";
+    }
+
+    function renderGiftCard(gift) {
+      const funded = Number(gift.funded_amount);
+      const target = Number(gift.target_amount);
+      const remaining = Math.max(target - funded, 0);
+      const percent = target > 0 ? Math.min((funded / target) * 100, 100) : 0;
+      const isFunded = gift.is_funded || funded >= target;
+      const link = getGiftLink(gift.name, isFunded);
+
+      return `
+        <div class="card">
+          <h2>${gift.name}</h2>
+          <p class="price">Prix total : <strong>${formatAmount(target)}</strong></p>
+          <p class="funded">Collecté : <strong>${formatAmount(funded)}</strong></p>
+          <p class="remaining">Reste : <strong>${formatAmount(remaining)}</strong></p>
+          <div class="progress-bar">
+            <div class="progress-fill" style="width: ${percent}%;"></div>
+          </div>
+          <p class="status">Progression : <strong>${percent.toFixed(0)}%</strong></p>
+          ${
+            isFunded
+              ? '<div class="funded-badge">✅ Financé</div>'
+              : <a href="${link}" class="button">Participer</a>
+          }
+        </div>
+      `;
+    }
+
+    async function loadGifts() {
+      const giftList = document.getElementById("gift-list");
+
+      const { data, error } = await supabaseClient
+        .from("gifts")
+        .select("*")
+        .order("id", { ascending: true });
+
+      if (error) {
+        giftList.innerHTML = <div class="error">Erreur de chargement : ${error.message}</div>;
+        return;
+      }
+
+      if (!data || data.length === 0) {
+        giftList.innerHTML = <div class="loading">Aucun cadeau trouvé.</div>;
+        return;
+      }
+
+      giftList.innerHTML = data.map(renderGiftCard).join("");
+    }
+
+    loadGifts();
+  </script>
 </body>
 </html>
