@@ -259,7 +259,19 @@
           var card = document.createElement("div");
           card.className = "card";
 
-          var buttonHtml = "";
+          var productButton = "";
+
+if (gift.product_url) {
+  productButton = <a class="button" href="${gift.product_url}" target="_blank" style="background:#e0b6c7;">Voir le produit</a>;
+}
+
+var button = "";
+
+if (funded >= target) {
+  button = '<div class="done">✅ Financé</div>';
+} else {
+  button = <a class="button" href="gift.html?id=${gift.id}">Participer</a>;
+}
           if (funded >= target || gift.is_funded === true) {
             buttonHtml = '<div class="done">✅ Financé</div>';
           } else {
