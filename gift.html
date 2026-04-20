@@ -228,7 +228,8 @@
         document.getElementById("gift-funded").innerHTML = funded + " €";
         document.getElementById("gift-remaining").innerHTML = remaining + " €";
         document.getElementById("gift-fill").style.width = percent + "%";
-        document.getElementById("gift-image").src = getGiftImage(currentGift.name);
+        document.getElementById("gift-image").src =
+  currentGift.image_url ? currentGift.image_url : getGiftImage(currentGift.name);
 
         if (funded >= target || currentGift.is_funded === true) {
           document.getElementById("form-area").innerHTML = '<div class="message success" style="display:block;">✅ Ce cadeau est déjà financé.</div>';
