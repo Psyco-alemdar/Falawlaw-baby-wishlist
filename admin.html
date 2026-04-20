@@ -13,7 +13,6 @@
       color: #5c4b4b;
     }
 
-    /* 🔐 LOGIN */
     .login-container {
       height: 100vh;
       display: flex;
@@ -27,7 +26,7 @@
       border-radius: 20px;
       box-shadow: 0 8px 24px rgba(0,0,0,0.08);
       text-align: center;
-      width: 300px;
+      width: 320px;
     }
 
     .login-box h2 {
@@ -41,6 +40,7 @@
       margin-top: 10px;
       border-radius: 10px;
       border: 1px solid #e3cfc5;
+      box-sizing: border-box;
     }
 
     .login-box button {
@@ -56,11 +56,11 @@
     }
 
     .error {
-      color: red;
+      color: #b00020;
       margin-top: 10px;
+      font-size: 14px;
     }
 
-    /* 📊 ADMIN */
     .container {
       max-width: 1100px;
       margin: 30px auto;
@@ -68,28 +68,63 @@
       border-radius: 24px;
       padding: 30px;
       display: none;
+      box-shadow: 0 8px 24px rgba(0,0,0,0.08);
+    }
+
+    h1 {
+      margin-top: 0;
+      color: #c27d9a;
+      font-size: 38px;
+    }
+
+    .info {
+      margin-bottom: 18px;
+      color: #7a6363;
+    }
+
+    .message {
+      margin: 15px 0 20px;
+      padding: 12px;
+      border-radius: 10px;
+      display: none;
+    }
+
+    .message.error {
+      display: block;
+      background: #fdeaea;
+      color: #b00020;
+    }
+
+    .message.info {
+      display: block;
+      background: #fdf2f6;
+      color: #7a4f63;
     }
 
     table {
       width: 100%;
       border-collapse: collapse;
       margin-top: 20px;
+      background: white;
+      border-radius: 16px;
+      overflow: hidden;
     }
 
     th, td {
       padding: 12px;
       border-bottom: 1px solid #eee;
+      text-align: left;
     }
 
     th {
       background: #f7d9e5;
+      color: #7a4f63;
     }
   </style>
 </head>
 
 <body>
 
-<!-- 🔐 LOGIN -->
 <div id="login" class="login-container">
   <div class="login-box">
     <h2>Accès Admin</h2>
@@ -99,9 +134,10 @@
   </div>
 </div>
 
-<!-- 📊 ADMIN -->
 <div id="admin" class="container">
   <h1>Falwlaw Admin</h1>
+  <div class="info">Suivi des participations enregistrées</div>
+  <div id="status" class="message"></div>
 
   <table>
     <thead>
@@ -112,15 +148,43 @@
         <th>Date</th>
       </tr>
     </thead>
-    <tbody id="data"></tbody>
+    <tbody id="data">
+      <tr><td colspan="4">Chargement...</td></tr>
+    </tbody>
   </table>
 </div>
 
 <script>
-var PASSWORD = "Sofie2026"; // 🔑 
+var PASSWORD = "Sofie2026";
 
 var SUPABASE_URL = "https://rcihspcsadskezucjpdp.supabase.co";
-var SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."; // garde ta clé complète
+var SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InJjaWhzcGNzYWRza2V6dWNqcGRwIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzY2MDUxMzUsImV4cCI6MjA5MjE4MTEzNX0.hVp-qvJWEpNwgwcHv5-jBeS52WC2tocJGavIxkLAY3A";
+
+function escapeHtml(text) {
+  return String(text)
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;")
+    .replace(/'/g, "&#039;");
+}
+
+function showStatus(text, type) {
+  var box = document.getElementById("status");
+  box.className = "message " + type;
+  box.innerHTML = text;
+}
+
+function formatDate(dateString) {
+  var d = new Date(dateString);
+  if (isNaN(d.getTime())) return dateString;
+  var day = String(d.getDate()).padStart(2, "0");
+  var month = String(d.getMonth() + 1).padStart(2, "0");
+  var year = d.getFullYear();
+  var hours = String(d.getHours()).padStart(2, "0");
+  var minutes = String(d.getMinutes()).padStart(2, "0");
+  return day + "/" + month + "/" + year + " " + hours + ":" + minutes;
+}
 
 function checkPassword() {
   var input = document.getElementById("password").value;
@@ -135,31 +199,91 @@ function checkPassword() {
 }
 
 function loadData() {
-  fetch(SUPABASE_URL + "/rest/v1/contributions?select=*,gifts(name)&order=created_at.desc", {
+  var table = document.getElementById("data");
+  table.innerHTML = '<tr><td colspan="4">Chargement...</td></tr>';
+
+  fetch(SUPABASE_URL + "/rest/v1/contributions?select=*&order=created_at.desc", {
+    method: "GET",
     headers: {
       "apikey": SUPABASE_ANON_KEY,
       "Authorization": "Bearer " + SUPABASE_ANON_KEY
     }
   })
-  .then(res => res.json())
-  .then(data => {
-    var table = document.getElementById("data");
-    table.innerHTML = "";
-
-    data.forEach(row => {
-      var tr = document.createElement("tr");
-
-      var date = new Date(row.created_at).toLocaleString();
-
-      tr.innerHTML = `
-        <td>${row.contributor_name}</td>
-        <td>${row.gifts ? row.gifts.name : ""}</td>
-        <td>${row.amount} €</td>
-        <td>${date}</td>
-      `;
-
-      table.appendChild(tr);
+  .then(function(response) {
+    return response.json().then(function(data) {
+      return {
+        ok: response.ok,
+        data: data
+      };
     });
+  })
+  .then(function(result) {
+    if (!result.ok) {
+      table.innerHTML = '<tr><td colspan="4">Erreur</td></tr>';
+      showStatus("Erreur chargement contributions : " + escapeHtml(JSON.stringify(result.data)), "error");
+      return;
+    }
+
+    var contributions = result.data || [];
+
+    if (contributions.length === 0) {
+      table.innerHTML = '<tr><td colspan="4">Aucune participation enregistrée</td></tr>';
+      showStatus("Il n’y a pas encore de participations dans la table contributions.", "info");
+      return;
+    }
+
+    fetch(SUPABASE_URL + "/rest/v1/gifts?select=id,name", {
+      method: "GET",
+      headers: {
+        "apikey": SUPABASE_ANON_KEY,
+        "Authorization": "Bearer " + SUPABASE_ANON_KEY
+      }
+    })
+    .then(function(response) {
+      return response.json().then(function(data) {
+        return {
+          ok: response.ok,
+          data: data
+        };
+      });
+    })
+    .then(function(giftsResult) {
+      if (!giftsResult.ok) {
+        table.innerHTML = '<tr><td colspan="4">Erreur</td></tr>';
+        showStatus("Erreur chargement cadeaux : " + escapeHtml(JSON.stringify(giftsResult.data)), "error");
+        return;
+      }
+
+      var gifts = giftsResult.data || [];
+      var giftsMap = {};
+
+      for (var i = 0; i < gifts.length; i++) {
+        giftsMap[gifts[i].id] = gifts[i].name;
+      }
+
+      table.innerHTML = "";
+
+      for (var j = 0; j < contributions.length; j++) {
+        var row = contributions[j];
+        var tr = document.createElement("tr");
+
+        var giftName = giftsMap[row.gift_id] || "Cadeau inconnu";
+
+        tr.innerHTML =
+          "<td>" + escapeHtml(row.contributor_name) + "</td>" +
+          "<td>" + escapeHtml(giftName) + "</td>" +
+          "<td>" + escapeHtml(String(row.amount)) + " €</td>" +
+          "<td>" + escapeHtml(formatDate(row.created_at)) + "</td>";
+
+        table.appendChild(tr);
+      }
+
+      showStatus("Liste chargée avec succès.", "info");
+    });
+  })
+  .catch(function(error) {
+    table.innerHTML = '<tr><td colspan="4">Erreur réseau</td></tr>';
+    showStatus("Erreur réseau : " + escapeHtml(String(error)), "error");
   });
 }
 </script>
