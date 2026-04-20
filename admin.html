@@ -1,297 +1,292 @@
 <!DOCTYPE html>
 <html lang="fr">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Falwlaw Baby Wishlist</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Falwlaw Admin</title>
+
   <style>
     body {
       margin: 0;
       font-family: Arial, sans-serif;
-      background: linear-gradient(to bottom, #fff7f8, #f7ede7);
-      color: #5f4b4b;
+      background: #f8efe8;
+      color: #5c4b4b;
     }
 
-    .hero {
-      text-align: center;
-      padding: 70px 20px 40px;
-    }
-
-    .hero h1 {
-      margin: 0;
-      font-size: 58px;
-      color: #cc87a4;
-      letter-spacing: 0.5px;
-    }
-
-    .hero p {
-      max-width: 800px;
-      margin: 20px auto 0;
-      font-size: 22px;
-      line-height: 1.7;
-      color: #7b6666;
-    }
-
-    .hero-heart {
-      font-size: 28px;
-      margin-top: 18px;
-      color: #d890ad;
-    }
-
-    .wishlist-section {
-      max-width: 1250px;
-      margin: 0 auto;
-      padding: 20px 20px 70px;
-    }
-
-    .section-title {
-      text-align: center;
-      font-size: 30px;
-      color: #b87090;
-      margin-bottom: 30px;
-    }
-
-    .grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(310px, 1fr));
-      gap: 28px;
-    }
-
-    .card {
-      background: rgba(255,255,255,0.9);
-      border-radius: 24px;
-      overflow: hidden;
-      box-shadow: 0 10px 30px rgba(187, 145, 145, 0.15);
-      transition: transform 0.2s ease, box-shadow 0.2s ease;
-      border: 1px solid rgba(230, 200, 200, 0.5);
-    }
-
-    .card:hover {
-      transform: translateY(-4px);
-      box-shadow: 0 14px 36px rgba(187, 145, 145, 0.2);
-    }
-
-    .card-image {
-      width: 100%;
-      height: 240px;
-      object-fit: cover;
-      display: block;
-      background: #f1ddd7;
-    }
-
-    .card-content {
-      padding: 24px;
-    }
-
-    .card h3 {
-      margin: 0 0 14px;
-      color: #b96f90;
-      font-size: 27px;
-    }
-
-    .meta {
-      margin: 9px 0;
-      font-size: 17px;
-      color: #655353;
-    }
-
-    .progress-wrap {
-      margin-top: 18px;
-      margin-bottom: 18px;
-    }
-
-    .progress-top {
+    .login-container {
+      height: 100vh;
       display: flex;
-      justify-content: space-between;
-      font-size: 14px;
-      color: #8b7272;
-      margin-bottom: 8px;
+      align-items: center;
+      justify-content: center;
     }
 
-    .progress {
-      height: 14px;
-      background: #ecd9d2;
-      border-radius: 999px;
-      overflow: hidden;
-    }
-
-    .fill {
-      height: 14px;
-      background: linear-gradient(to right, #efb3c7, #d98cab);
-      border-radius: 999px;
-    }
-
-    .button {
-      display: block;
+    .login-box {
+      background: #fffaf7;
+      padding: 30px;
+      border-radius: 20px;
+      box-shadow: 0 8px 24px rgba(0,0,0,0.08);
       text-align: center;
-      text-decoration: none;
-      padding: 14px 18px;
-      border-radius: 14px;
-      background: linear-gradient(to right, #df96b3, #cf81a1);
+      width: 320px;
+    }
+
+    .login-box h2 {
+      margin-top: 0;
+      color: #c27d9a;
+    }
+
+    .login-box input {
+      width: 100%;
+      padding: 12px;
+      margin-top: 10px;
+      border-radius: 10px;
+      border: 1px solid #e3cfc5;
+      box-sizing: border-box;
+    }
+
+    .login-box button {
+      margin-top: 15px;
+      width: 100%;
+      padding: 12px;
+      border: none;
+      border-radius: 10px;
+      background: #d98cab;
       color: white;
       font-weight: bold;
-      font-size: 16px;
-    }
-
-    .button:hover {
-      opacity: 0.95;
-    }
-
-    .done {
-      text-align: center;
-      padding: 14px 18px;
-      border-radius: 14px;
-      background: #e8f5e8;
-      color: #397339;
-      font-weight: bold;
-      font-size: 16px;
+      cursor: pointer;
     }
 
     .error {
-      text-align: center;
       color: #b00020;
-      font-weight: bold;
-      padding: 30px;
+      margin-top: 10px;
+      font-size: 14px;
     }
 
-    .footer {
-      text-align: center;
-      padding: 10px 20px 40px;
-      color: #9a8080;
-      font-size: 15px;
+    .container {
+      max-width: 1100px;
+      margin: 30px auto;
+      background: #fffaf7;
+      border-radius: 24px;
+      padding: 30px;
+      display: none;
+      box-shadow: 0 8px 24px rgba(0,0,0,0.08);
+    }
+
+    h1 {
+      margin-top: 0;
+      color: #c27d9a;
+      font-size: 38px;
+    }
+
+    .info {
+      margin-bottom: 18px;
+      color: #7a6363;
+    }
+
+    .message {
+      margin: 15px 0 20px;
+      padding: 12px;
+      border-radius: 10px;
+      display: none;
+    }
+
+    .message.error {
+      display: block;
+      background: #fdeaea;
+      color: #b00020;
+    }
+
+    .message.info {
+      display: block;
+      background: #fdf2f6;
+      color: #7a4f63;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 20px;
+      background: white;
+      border-radius: 16px;
+      overflow: hidden;
+    }
+
+    th, td {
+      padding: 12px;
+      border-bottom: 1px solid #eee;
+      text-align: left;
+    }
+
+    th {
+      background: #f7d9e5;
+      color: #7a4f63;
     }
   </style>
 </head>
+
 <body>
 
-  <section class="hero">
-    <h1>Falwlaw Baby Wishlist</h1>
-    <p>
-      Bienvenue sur notre liste de naissance. Merci de faire partie de ce moment si précieux.
-      Vous pouvez participer librement au cadeau de votre choix avec le montant que vous souhaitez.
-    </p>
-    <div class="hero-heart">🤍</div>
-  </section>
-
-  <section class="wishlist-section">
-    <div class="section-title">Notre Wishlist</div>
-    <div id="gifts" class="grid">Chargement...</div>
-  </section>
-
-  <div class="footer">
-    Merci pour votre amour, votre présence et votre générosité.
+<div id="login" class="login-container">
+  <div class="login-box">
+    <h2>Accès Admin</h2>
+    <input type="password" id="password" placeholder="Mot de passe">
+    <button onclick="checkPassword()">Entrer</button>
+    <div id="login-error" class="error"></div>
   </div>
+</div>
 
-  <script>
-    var SUPABASE_URL = "https://rcihspcsadskezucjpdp.supabase.co";
-    var SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InJjaWhzcGNzYWRza2V6dWNqcGRwIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzY2MDUxMzUsImV4cCI6MjA5MjE4MTEzNX0.hVp-qvJWEpNwgwcHv5-jBeS52WC2tocJGavIxkLAY3A";
+<div id="admin" class="container">
+  <h1>Falwlaw Admin</h1>
+  <div class="info">Suivi des participations enregistrées</div>
+  <div id="status" class="message"></div>
 
-    function escapeHtml(text) {
-      return String(text)
-        .replace(/&/g, "&amp;")
-        .replace(/</g, "&lt;")
-        .replace(/>/g, "&gt;")
-        .replace(/"/g, "&quot;")
-        .replace(/'/g, "&#039;");
+  <table>
+    <thead>
+      <tr>
+        <th>Nom</th>
+        <th>Cadeau</th>
+        <th>Montant</th>
+        <th>Date</th>
+      </tr>
+    </thead>
+    <tbody id="data">
+      <tr><td colspan="4">Chargement...</td></tr>
+    </tbody>
+  </table>
+</div>
+
+<script>
+var PASSWORD = "Sofie2026";
+
+var SUPABASE_URL = "https://rcihspcsadskezucjpdp.supabase.co";
+var SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InJjaWhzcGNzYWRza2V6dWNqcGRwIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzY2MDUxMzUsImV4cCI6MjA5MjE4MTEzNX0.hVp-qvJWEpNwgwcHv5-jBeS52WC2tocJGavIxkLAY3A";
+
+function escapeHtml(text) {
+  return String(text)
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;")
+    .replace(/'/g, "&#039;");
+}
+
+function showStatus(text, type) {
+  var box = document.getElementById("status");
+  box.className = "message " + type;
+  box.innerHTML = text;
+}
+
+function formatDate(dateString) {
+  var d = new Date(dateString);
+  if (isNaN(d.getTime())) return dateString;
+  var day = String(d.getDate()).padStart(2, "0");
+  var month = String(d.getMonth() + 1).padStart(2, "0");
+  var year = d.getFullYear();
+  var hours = String(d.getHours()).padStart(2, "0");
+  var minutes = String(d.getMinutes()).padStart(2, "0");
+  return day + "/" + month + "/" + year + " " + hours + ":" + minutes;
+}
+
+function checkPassword() {
+  var input = document.getElementById("password").value;
+
+  if (input === PASSWORD) {
+    document.getElementById("login").style.display = "none";
+    document.getElementById("admin").style.display = "block";
+    loadData();
+  } else {
+    document.getElementById("login-error").innerText = "Mot de passe incorrect ❌";
+  }
+}
+
+function loadData() {
+  var table = document.getElementById("data");
+  table.innerHTML = '<tr><td colspan="4">Chargement...</td></tr>';
+
+  fetch(SUPABASE_URL + "/rest/v1/contributions?select=*&order=created_at.desc", {
+    method: "GET",
+    headers: {
+      "apikey": SUPABASE_ANON_KEY,
+      "Authorization": "Bearer " + SUPABASE_ANON_KEY
+    }
+  })
+  .then(function(response) {
+    return response.json().then(function(data) {
+      return {
+        ok: response.ok,
+        data: data
+      };
+    });
+  })
+  .then(function(result) {
+    if (!result.ok) {
+      table.innerHTML = '<tr><td colspan="4">Erreur</td></tr>';
+      showStatus("Erreur chargement contributions : " + escapeHtml(JSON.stringify(result.data)), "error");
+      return;
     }
 
-    function getGiftImage(name) {
-      var lower = name.toLowerCase();
+    var contributions = result.data || [];
 
-      if (lower.indexOf("poussette") !== -1) {
-        return "https://images.pexels.com/photos/1257110/pexels-photo-1257110.jpeg?auto=compress&cs=tinysrgb&w=1200";
-      }
-
-      if (lower.indexOf("siège") !== -1 || lower.indexOf("siege") !== -1) {
-        return "https://images.pexels.com/photos/3933274/pexels-photo-3933274.jpeg?auto=compress&cs=tinysrgb&w=1200";
-      }
-
-      if (lower.indexOf("lit") !== -1) {
-        return "https://images.pexels.com/photos/3662667/pexels-photo-3662667.jpeg?auto=compress&cs=tinysrgb&w=1200";
-      }
-
-      return "https://images.pexels.com/photos/459957/pexels-photo-459957.jpeg?auto=compress&cs=tinysrgb&w=1200";
+    if (contributions.length === 0) {
+      table.innerHTML = '<tr><td colspan="4">Aucune participation enregistrée</td></tr>';
+      showStatus("Il n’y a pas encore de participations dans la table contributions.", "info");
+      return;
     }
 
-    function loadGifts() {
-      var container = document.getElementById("gifts");
-
-      fetch(SUPABASE_URL + "/rest/v1/gifts?select=*&order=id.asc", {
-        method: "GET",
-        headers: {
-          "apikey": SUPABASE_ANON_KEY,
-          "Authorization": "Bearer " + SUPABASE_ANON_KEY
-        }
-      })
-      .then(function(response) {
-        return response.json().then(function(data) {
-          return { ok: response.ok, data: data };
-        });
-      })
-      .then(function(result) {
-        if (!result.ok) {
-          container.innerHTML = '<div class="error">Erreur : ' + JSON.stringify(result.data) + '</div>';
-          return;
-        }
-
-        if (!result.data || result.data.length === 0) {
-          container.innerHTML = '<div class="error">Aucun article trouvé</div>';
-          return;
-        }
-
-        container.innerHTML = "";
-
-        for (var i = 0; i < result.data.length; i++) {
-          var gift = result.data[i];
-          var funded = Number(gift.funded_amount);
-          var target = Number(gift.target_amount);
-          var remaining = target - funded;
-          if (remaining < 0) remaining = 0;
-
-          var percent = 0;
-          if (target > 0) {
-            percent = (funded / target) * 100;
-            if (percent > 100) percent = 100;
-          }
-
-          var image = gift.image_url ? gift.image_url : getGiftImage(gift.name);
-
-          var card = document.createElement("div");
-          card.className = "card";
-
-          var buttonHtml = "";
-          if (funded >= target || gift.is_funded === true) {
-            buttonHtml = '<div class="done">✅ Financé</div>';
-          } else {
-            buttonHtml = '<a class="button" href="gift.html?id=' + gift.id + '">Participer à ce cadeau</a>';
-          }
-
-          card.innerHTML =
-            '<img class="card-image" src="' + image + '" alt="' + escapeHtml(gift.name) + '">' +
-            '<div class="card-content">' +
-              '<h3>' + escapeHtml(gift.name) + '</h3>' +
-              '<div class="meta">Prix total : <strong>' + target + ' €</strong></div>' +
-              '<div class="meta">Déjà collecté : <strong>' + funded + ' €</strong></div>' +
-              '<div class="meta">Reste à financer : <strong>' + remaining + ' €</strong></div>' +
-              '<div class="progress-wrap">' +
-                '<div class="progress-top">' +
-                  '<span>Progression</span>' +
-                  '<span>' + Math.round(percent) + '%</span>' +
-                '</div>' +
-                '<div class="progress"><div class="fill" style="width:' + percent + '%"></div></div>' +
-              '</div>' +
-              buttonHtml +
-            '</div>';
-
-          container.appendChild(card);
-        }
-      })
-      .catch(function(error) {
-        container.innerHTML = '<div class="error">Erreur réseau : ' + error + '</div>';
+    fetch(SUPABASE_URL + "/rest/v1/gifts?select=id,name", {
+      method: "GET",
+      headers: {
+        "apikey": SUPABASE_ANON_KEY,
+        "Authorization": "Bearer " + SUPABASE_ANON_KEY
+      }
+    })
+    .then(function(response) {
+      return response.json().then(function(data) {
+        return {
+          ok: response.ok,
+          data: data
+        };
       });
-    }
+    })
+    .then(function(giftsResult) {
+      if (!giftsResult.ok) {
+        table.innerHTML = '<tr><td colspan="4">Erreur</td></tr>';
+        showStatus("Erreur chargement cadeaux : " + escapeHtml(JSON.stringify(giftsResult.data)), "error");
+        return;
+      }
 
-    loadGifts();
-  </script>
+      var gifts = giftsResult.data || [];
+      var giftsMap = {};
+
+      for (var i = 0; i < gifts.length; i++) {
+        giftsMap[gifts[i].id] = gifts[i].name;
+      }
+
+      table.innerHTML = "";
+
+      for (var j = 0; j < contributions.length; j++) {
+        var row = contributions[j];
+        var tr = document.createElement("tr");
+
+        var giftName = giftsMap[row.gift_id] || "Cadeau inconnu";
+
+        tr.innerHTML =
+          "<td>" + escapeHtml(row.contributor_name) + "</td>" +
+          "<td>" + escapeHtml(giftName) + "</td>" +
+          "<td>" + escapeHtml(String(row.amount)) + " €</td>" +
+          "<td>" + escapeHtml(formatDate(row.created_at)) + "</td>";
+
+        table.appendChild(tr);
+      }
+
+      showStatus("Liste chargée avec succès.", "info");
+    });
+  })
+  .catch(function(error) {
+    table.innerHTML = '<tr><td colspan="4">Erreur réseau</td></tr>';
+    showStatus("Erreur réseau : " + escapeHtml(String(error)), "error");
+  });
+}
+</script>
+
 </body>
 </html>
