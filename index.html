@@ -4,6 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Falwlaw Baby Wishlist</title>
+
   <style>
     body {
       margin: 0;
@@ -14,137 +15,108 @@
 
     .hero {
       text-align: center;
-      padding: 70px 20px 40px;
+      padding: 60px 20px 30px;
+    }
+
+    .logo {
+      width: 180px;
+      margin-bottom: 20px;
     }
 
     .hero h1 {
       margin: 0;
-      font-size: 58px;
+      font-size: 50px;
       color: #cc87a4;
-      letter-spacing: 0.5px;
     }
 
     .hero p {
-      max-width: 800px;
+      max-width: 700px;
       margin: 20px auto 0;
-      font-size: 22px;
-      line-height: 1.7;
+      font-size: 20px;
       color: #7b6666;
-    }
-
-    .hero-heart {
-      font-size: 28px;
-      margin-top: 18px;
-      color: #d890ad;
-    }
-
-    .wishlist-section {
-      max-width: 1250px;
-      margin: 0 auto;
-      padding: 20px 20px 70px;
-    }
-
-    .section-title {
-      text-align: center;
-      font-size: 30px;
-      color: #b87090;
-      margin-bottom: 30px;
+      line-height: 1.6;
     }
 
     .grid {
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(310px, 1fr));
-      gap: 28px;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 25px;
+      padding: 30px 20px 60px;
+      max-width: 1200px;
+      margin: auto;
     }
 
     .card {
-      background: rgba(255,255,255,0.9);
-      border-radius: 24px;
+      background: white;
+      border-radius: 20px;
       overflow: hidden;
-      box-shadow: 0 10px 30px rgba(187, 145, 145, 0.15);
-      transition: transform 0.2s ease, box-shadow 0.2s ease;
-      border: 1px solid rgba(230, 200, 200, 0.5);
+      box-shadow: 0 10px 25px rgba(0,0,0,0.08);
     }
 
-    .card:hover {
-      transform: translateY(-4px);
-      box-shadow: 0 14px 36px rgba(187, 145, 145, 0.2);
-    }
-
-    .card-image {
+    .card img {
       width: 100%;
-      height: 240px;
+      height: 220px;
       object-fit: cover;
       display: block;
-      background: #f1ddd7;
     }
 
     .card-content {
-      padding: 24px;
+      padding: 20px;
     }
 
     .card h3 {
-      margin: 0 0 14px;
+      margin: 0 0 10px;
       color: #b96f90;
-      font-size: 27px;
+      font-size: 26px;
     }
 
     .meta {
-      margin: 9px 0;
-      font-size: 17px;
-      color: #655353;
-    }
-
-    .progress-wrap {
-      margin-top: 18px;
-      margin-bottom: 18px;
-    }
-
-    .progress-top {
-      display: flex;
-      justify-content: space-between;
-      font-size: 14px;
-      color: #8b7272;
-      margin-bottom: 8px;
+      margin: 6px 0;
+      font-size: 16px;
     }
 
     .progress {
-      height: 14px;
-      background: #ecd9d2;
-      border-radius: 999px;
+      height: 12px;
+      background: #eee;
+      border-radius: 10px;
       overflow: hidden;
+      margin: 12px 0 16px;
     }
 
     .fill {
-      height: 14px;
-      background: linear-gradient(to right, #efb3c7, #d98cab);
-      border-radius: 999px;
+      height: 12px;
+      background: #e49ab5;
     }
 
     .button {
       display: block;
       text-align: center;
-      text-decoration: none;
-      padding: 14px 18px;
-      border-radius: 14px;
-      background: linear-gradient(to right, #df96b3, #cf81a1);
+      padding: 12px;
+      border-radius: 12px;
+      background: #d98cab;
       color: white;
+      text-decoration: none;
+      margin-top: 10px;
       font-weight: bold;
-      font-size: 16px;
     }
 
     .button:hover {
       opacity: 0.95;
     }
 
+    .button-secondary {
+      background: #e8c4d1;
+      color: #6b4b4b;
+    }
+
     .done {
       text-align: center;
-      padding: 14px 18px;
-      border-radius: 14px;
-      background: #e8f5e8;
-      color: #397339;
+      padding: 12px;
+      background: #e8f6e8;
+      border-radius: 12px;
+      color: green;
       font-weight: bold;
-      font-size: 16px;
+      margin-top: 10px;
     }
 
     .error {
@@ -152,35 +124,25 @@
       color: #b00020;
       font-weight: bold;
       padding: 30px;
-    }
-
-    .footer {
-      text-align: center;
-      padding: 10px 20px 40px;
-      color: #9a8080;
-      font-size: 15px;
+      grid-column: 1 / -1;
     }
   </style>
 </head>
+
 <body>
 
-  <section class="hero">
-    <h1>Falwlaw Baby Wishlist</h1>
+  <div class="hero">
+    <img src="logo.png" class="logo" alt="Falwlaw Baby Logo">
+
+    <h1>Falwlaw Baby</h1>
+
     <p>
-      Bienvenue sur notre liste de naissance. Merci de faire partie de ce moment si précieux.
-      Vous pouvez participer librement au cadeau de votre choix avec le montant que vous souhaitez.
+      Bienvenue sur notre liste de naissance 🤍<br>
+      Merci de participer à ce moment magique avec nous.
     </p>
-    <div class="hero-heart">🤍</div>
-  </section>
-
-  <section class="wishlist-section">
-    <div class="section-title">Notre Wishlist</div>
-    <div id="gifts" class="grid">Chargement...</div>
-  </section>
-
-  <div class="footer">
-    Merci pour votre amour, votre présence et votre générosité.
   </div>
+
+  <div id="gifts" class="grid">Chargement...</div>
 
   <script>
     var SUPABASE_URL = "https://rcihspcsadskezucjpdp.supabase.co";
@@ -230,7 +192,7 @@
       })
       .then(function(result) {
         if (!result.ok) {
-          container.innerHTML = '<div class="error">Erreur : ' + JSON.stringify(result.data) + '</div>';
+          container.innerHTML = '<div class="error">Erreur : ' + escapeHtml(JSON.stringify(result.data)) + '</div>';
           return;
         }
 
@@ -243,8 +205,9 @@
 
         for (var i = 0; i < result.data.length; i++) {
           var gift = result.data[i];
-          var funded = Number(gift.funded_amount);
-          var target = Number(gift.target_amount);
+
+          var funded = Number(gift.funded_amount || 0);
+          var target = Number(gift.target_amount || 0);
           var remaining = target - funded;
           if (remaining < 0) remaining = 0;
 
@@ -256,54 +219,45 @@
 
           var image = gift.image_url ? gift.image_url : getGiftImage(gift.name);
 
+          var productButton = "";
+          if (gift.product_url) {
+            productButton = '<a class="button button-secondary" href="' + gift.product_url + '" target="_blank">Voir le produit</a>';
+          }
+
+          var actionButton = "";
+          if (funded >= target || gift.is_funded === true) {
+            actionButton = '<div class="done">✅ Financé</div>';
+          } else {
+            actionButton = '<a class="button" href="gift.html?id=' + gift.id + '">Participer</a>';
+          }
+
           var card = document.createElement("div");
           card.className = "card";
 
-          var productButton = "";
-
-if (gift.product_url) {
-  productButton = <a class="button" href="${gift.product_url}" target="_blank" style="background:#e0b6c7;">Voir le produit</a>;
-}
-
-var button = "";
-
-if (funded >= target) {
-  button = '<div class="done">✅ Financé</div>';
-} else {
-  button = <a class="button" href="gift.html?id=${gift.id}">Participer</a>;
-}
-          if (funded >= target || gift.is_funded === true) {
-            buttonHtml = '<div class="done">✅ Financé</div>';
-          } else {
-            buttonHtml = '<a class="button" href="gift.html?id=' + gift.id + '">Participer à ce cadeau</a>';
-          }
-
           card.innerHTML =
-            '<img class="card-image" src="' + image + '" alt="' + escapeHtml(gift.name) + '">' +
+            '<img src="' + image + '" alt="' + escapeHtml(gift.name) + '">' +
             '<div class="card-content">' +
               '<h3>' + escapeHtml(gift.name) + '</h3>' +
-              '<div class="meta">Prix total : <strong>' + target + ' €</strong></div>' +
-              '<div class="meta">Déjà collecté : <strong>' + funded + ' €</strong></div>' +
-              '<div class="meta">Reste à financer : <strong>' + remaining + ' €</strong></div>' +
-              '<div class="progress-wrap">' +
-                '<div class="progress-top">' +
-                  '<span>Progression</span>' +
-                  '<span>' + Math.round(percent) + '%</span>' +
-                '</div>' +
-                '<div class="progress"><div class="fill" style="width:' + percent + '%"></div></div>' +
+              '<div class="meta">Prix : ' + target + ' €</div>' +
+              '<div class="meta">Collecté : ' + funded + ' €</div>' +
+              '<div class="meta">Reste : ' + remaining + ' €</div>' +
+              '<div class="progress">' +
+                '<div class="fill" style="width:' + percent + '%"></div>' +
               '</div>' +
-              buttonHtml +
+              productButton +
+              actionButton +
             '</div>';
 
           container.appendChild(card);
         }
       })
       .catch(function(error) {
-        container.innerHTML = '<div class="error">Erreur réseau : ' + error + '</div>';
+        container.innerHTML = '<div class="error">Erreur réseau : ' + escapeHtml(String(error)) + '</div>';
       });
     }
 
     loadGifts();
   </script>
+
 </body>
 </html>
