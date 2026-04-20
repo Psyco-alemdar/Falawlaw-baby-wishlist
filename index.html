@@ -206,7 +206,7 @@
             if (percent > 100) percent = 100;
           }
 
-          var image = getGiftImage(gift.name);
+          var image = gift.image_url ? gift.image_url : getGiftImage(gift.name);
 
           var card = document.createElement("div");
           card.className = "card";
