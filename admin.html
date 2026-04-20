@@ -1,263 +1,168 @@
-<script>
-  var PASSWORD = "Sofie2026"; // change ce mot de passe
-
-  var entered = prompt("Mot de passe admin");
-
-  if (entered !== PASSWORD) {
-    document.body.innerHTML = "<h1 style='text-align:center;margin-top:50px;'>Accès refusé ❌</h1>";
-    throw new Error("Accès refusé");
-  }
-</script>
 <!DOCTYPE html>
 <html lang="fr">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Falwlaw Admin</title>
+
   <style>
     body {
       margin: 0;
       font-family: Arial, sans-serif;
       background: #f8efe8;
       color: #5c4b4b;
-      padding: 30px 20px;
     }
 
-    .container {
-      max-width: 1100px;
-      margin: 0 auto;
+    /* 🔐 LOGIN */
+    .login-container {
+      height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .login-box {
       background: #fffaf7;
-      border-radius: 24px;
-      box-shadow: 0 8px 24px rgba(0,0,0,0.08);
       padding: 30px;
+      border-radius: 20px;
+      box-shadow: 0 8px 24px rgba(0,0,0,0.08);
+      text-align: center;
+      width: 300px;
     }
 
-    h1 {
+    .login-box h2 {
       margin-top: 0;
       color: #c27d9a;
-      font-size: 38px;
-      text-align: center;
     }
 
-    p.subtitle {
-      text-align: center;
-      color: #7a6363;
-      margin-bottom: 30px;
-      font-size: 18px;
+    .login-box input {
+      width: 100%;
+      padding: 12px;
+      margin-top: 10px;
+      border-radius: 10px;
+      border: 1px solid #e3cfc5;
     }
 
-    .summary {
-      display: flex;
-      gap: 16px;
-      flex-wrap: wrap;
-      margin-bottom: 30px;
-    }
-
-    .summary-card {
-      flex: 1 1 220px;
-      background: #fdf2f6;
-      border-radius: 16px;
-      padding: 18px;
-      text-align: center;
-    }
-
-    .summary-card h3 {
-      margin: 0 0 10px 0;
-      color: #b66f8f;
-      font-size: 18px;
-    }
-
-    .summary-card p {
-      margin: 0;
-      font-size: 26px;
+    .login-box button {
+      margin-top: 15px;
+      width: 100%;
+      padding: 12px;
+      border: none;
+      border-radius: 10px;
+      background: #d98cab;
+      color: white;
       font-weight: bold;
-      color: #5c4b4b;
+      cursor: pointer;
     }
 
-    .table-wrapper {
-      overflow-x: auto;
+    .error {
+      color: red;
+      margin-top: 10px;
+    }
+
+    /* 📊 ADMIN */
+    .container {
+      max-width: 1100px;
+      margin: 30px auto;
+      background: #fffaf7;
+      border-radius: 24px;
+      padding: 30px;
+      display: none;
     }
 
     table {
       width: 100%;
       border-collapse: collapse;
-      background: white;
-      border-radius: 16px;
-      overflow: hidden;
+      margin-top: 20px;
     }
 
     th, td {
-      padding: 14px 12px;
-      text-align: left;
-      border-bottom: 1px solid #f0e1d9;
+      padding: 12px;
+      border-bottom: 1px solid #eee;
     }
 
     th {
       background: #f7d9e5;
-      color: #7a4f63;
-      font-size: 15px;
-    }
-
-    tr:hover td {
-      background: #fff5f8;
-    }
-
-    .loading, .error, .empty {
-      text-align: center;
-      padding: 24px;
-      font-size: 18px;
-    }
-
-    .error {
-      color: #b00020;
-    }
-
-    .back {
-      display: inline-block;
-      margin-top: 24px;
-      text-decoration: none;
-      color: #b66f8f;
-      font-weight: bold;
     }
   </style>
 </head>
+
 <body>
-  <div class="container">
-    <h1>Falwlaw Admin</h1>
-    <p class="subtitle">Suivi des participations à la wishlist</p>
 
-    <div class="summary">
-      <div class="summary-card">
-        <h3>Total participations</h3>
-        <p id="total-contributions">-</p>
-      </div>
-      <div class="summary-card">
-        <h3>Montant total</h3>
-        <p id="total-amount">-</p>
-      </div>
-      <div class="summary-card">
-        <h3>Nombre de participants</h3>
-        <p id="total-people">-</p>
-      </div>
-    </div>
-
-    <div class="table-wrapper">
-      <table>
-        <thead>
-          <tr>
-            <th>Nom</th>
-            <th>Cadeau</th>
-            <th>Montant</th>
-            <th>Date</th>
-          </tr>
-        </thead>
-        <tbody id="contributions-body">
-          <tr>
-            <td colspan="4" class="loading">Chargement...</td>
-          </tr>
-        </tbody>
-      </table>
-    </div>
-
-    <a class="back" href="index.html">← Retour à la wishlist</a>
+<!-- 🔐 LOGIN -->
+<div id="login" class="login-container">
+  <div class="login-box">
+    <h2>Accès Admin</h2>
+    <input type="password" id="password" placeholder="Mot de passe">
+    <button onclick="checkPassword()">Entrer</button>
+    <div id="login-error" class="error"></div>
   </div>
+</div>
 
-  <script>
-    var SUPABASE_URL = "https://rcihspcsadskezucjpdp.supabase.co";
-    var SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InJjaWhzcGNzYWRza2V6dWNqcGRwIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzY2MDUxMzUsImV4cCI6MjA5MjE4MTEzNX0.hVp-qvJWEpNwgwcHv5-jBeS52WC2tocJGavIxkLAY3A";
+<!-- 📊 ADMIN -->
+<div id="admin" class="container">
+  <h1>Falwlaw Admin</h1>
 
-    function escapeHtml(text) {
-      return String(text)
-        .replace(/&/g, "&amp;")
-        .replace(/</g, "&lt;")
-        .replace(/>/g, "&gt;")
-        .replace(/"/g, "&quot;")
-        .replace(/'/g, "&#039;");
+  <table>
+    <thead>
+      <tr>
+        <th>Nom</th>
+        <th>Cadeau</th>
+        <th>Montant</th>
+        <th>Date</th>
+      </tr>
+    </thead>
+    <tbody id="data"></tbody>
+  </table>
+</div>
+
+<script>
+var PASSWORD = "Sofie2026"; // 🔑 
+
+var SUPABASE_URL = "https://rcihspcsadskezucjpdp.supabase.co";
+var SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."; // garde ta clé complète
+
+function checkPassword() {
+  var input = document.getElementById("password").value;
+
+  if (input === PASSWORD) {
+    document.getElementById("login").style.display = "none";
+    document.getElementById("admin").style.display = "block";
+    loadData();
+  } else {
+    document.getElementById("login-error").innerText = "Mot de passe incorrect ❌";
+  }
+}
+
+function loadData() {
+  fetch(SUPABASE_URL + "/rest/v1/contributions?select=*,gifts(name)&order=created_at.desc", {
+    headers: {
+      "apikey": SUPABASE_ANON_KEY,
+      "Authorization": "Bearer " + SUPABASE_ANON_KEY
     }
+  })
+  .then(res => res.json())
+  .then(data => {
+    var table = document.getElementById("data");
+    table.innerHTML = "";
 
-    function formatDate(dateString) {
-      var d = new Date(dateString);
-      if (isNaN(d.getTime())) return dateString;
-      var day = String(d.getDate()).padStart(2, "0");
-      var month = String(d.getMonth() + 1).padStart(2, "0");
-      var year = d.getFullYear();
-      var hours = String(d.getHours()).padStart(2, "0");
-      var minutes = String(d.getMinutes()).padStart(2, "0");
-      return day + "/" + month + "/" + year + " " + hours + ":" + minutes;
-    }
+    data.forEach(row => {
+      var tr = document.createElement("tr");
 
-    function loadAdmin() {
-      var body = document.getElementById("contributions-body");
+      var date = new Date(row.created_at).toLocaleString();
 
-      fetch(SUPABASE_URL + "/rest/v1/contributions?select=*,gifts(name)&order=created_at.desc", {
-        method: "GET",
-        headers: {
-          "apikey": SUPABASE_ANON_KEY,
-          "Authorization": "Bearer " + SUPABASE_ANON_KEY
-        }
-      })
-      .then(function(response) {
-        return response.json().then(function(data) {
-          return {
-            ok: response.ok,
-            data: data
-          };
-        });
-      })
-      .then(function(result) {
-        if (!result.ok) {
-          body.innerHTML = '<tr><td colspan="4" class="error">Erreur : ' + escapeHtml(JSON.stringify(result.data)) + '</td></tr>';
-          return;
-        }
+      tr.innerHTML = `
+        <td>${row.contributor_name}</td>
+        <td>${row.gifts ? row.gifts.name : ""}</td>
+        <td>${row.amount} €</td>
+        <td>${date}</td>
+      `;
 
-        var rows = result.data || [];
+      table.appendChild(tr);
+    });
+  });
+}
+</script>
 
-        if (rows.length === 0) {
-          body.innerHTML = '<tr><td colspan="4" class="empty">Aucune participation pour le moment</td></tr>';
-          document.getElementById("total-contributions").innerHTML = "0";
-          document.getElementById("total-amount").innerHTML = "0 €";
-          document.getElementById("total-people").innerHTML = "0";
-          return;
-        }
-
-        var totalAmount = 0;
-        var uniquePeople = {};
-
-        body.innerHTML = "";
-
-        for (var i = 0; i < rows.length; i++) {
-          var row = rows[i];
-          var tr = document.createElement("tr");
-
-          totalAmount += Number(row.amount || 0);
-          uniquePeople[String(row.contributor_name).trim().toLowerCase()] = true;
-
-          var giftName = "";
-          if (row.gifts && row.gifts.name) {
-            giftName = row.gifts.name;
-          } else {
-            giftName = "Cadeau inconnu";
-          }
-
-          tr.innerHTML =
-            "<td>" + escapeHtml(row.contributor_name) + "</td>" +
-            "<td>" + escapeHtml(giftName) + "</td>" +
-            "<td>" + escapeHtml(String(row.amount)) + " €</td>" +
-            "<td>" + escapeHtml(formatDate(row.created_at)) + "</td>";
-
-          body.appendChild(tr);
-        }
-
-        document.getElementById("total-contributions").innerHTML = rows.length;
-        document.getElementById("total-amount").innerHTML = totalAmount + " €";
-        document.getElementById("total-people").innerHTML = Object.keys(uniquePeople).length;
-      })
-      .catch(function(error) {
-        body.innerHTML = '<tr><td colspan="4" class="error">Erreur réseau : ' + escapeHtml(String(error)) + '</td></tr>';
-      });
-    }
-
-    loadAdmin();
-  </script>
 </body>
 </html>
