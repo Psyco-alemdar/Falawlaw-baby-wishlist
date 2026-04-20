@@ -4,7 +4,6 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Falwlaw Baby Wishlist</title>
-
   <style>
     body {
       margin: 0;
@@ -15,189 +14,284 @@
 
     .hero {
       text-align: center;
-      padding: 60px 20px 30px;
-    }
-
-    .logo {
-      width: 180px;
-      margin-bottom: 20px;
+      padding: 70px 20px 40px;
     }
 
     .hero h1 {
       margin: 0;
-      font-size: 50px;
+      font-size: 58px;
       color: #cc87a4;
+      letter-spacing: 0.5px;
     }
 
     .hero p {
-      max-width: 700px;
+      max-width: 800px;
       margin: 20px auto 0;
-      font-size: 20px;
+      font-size: 22px;
+      line-height: 1.7;
       color: #7b6666;
-      line-height: 1.6;
+    }
+
+    .hero-heart {
+      font-size: 28px;
+      margin-top: 18px;
+      color: #d890ad;
+    }
+
+    .wishlist-section {
+      max-width: 1250px;
+      margin: 0 auto;
+      padding: 20px 20px 70px;
+    }
+
+    .section-title {
+      text-align: center;
+      font-size: 30px;
+      color: #b87090;
+      margin-bottom: 30px;
     }
 
     .grid {
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-      gap: 25px;
-      padding: 30px 20px 60px;
-      max-width: 1200px;
-      margin: auto;
+      grid-template-columns: repeat(auto-fit, minmax(310px, 1fr));
+      gap: 28px;
     }
 
     .card {
-      background: white;
-      border-radius: 20px;
+      background: rgba(255,255,255,0.9);
+      border-radius: 24px;
       overflow: hidden;
-      box-shadow: 0 10px 25px rgba(0,0,0,0.08);
+      box-shadow: 0 10px 30px rgba(187, 145, 145, 0.15);
+      transition: transform 0.2s ease, box-shadow 0.2s ease;
+      border: 1px solid rgba(230, 200, 200, 0.5);
     }
 
-    .card img {
+    .card:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 14px 36px rgba(187, 145, 145, 0.2);
+    }
+
+    .card-image {
       width: 100%;
-      height: 220px;
+      height: 240px;
       object-fit: cover;
+      display: block;
+      background: #f1ddd7;
     }
 
     .card-content {
-      padding: 20px;
+      padding: 24px;
     }
 
-    h3 {
-      margin: 0 0 10px;
+    .card h3 {
+      margin: 0 0 14px;
       color: #b96f90;
+      font-size: 27px;
     }
 
     .meta {
-      margin: 6px 0;
+      margin: 9px 0;
+      font-size: 17px;
+      color: #655353;
+    }
+
+    .progress-wrap {
+      margin-top: 18px;
+      margin-bottom: 18px;
+    }
+
+    .progress-top {
+      display: flex;
+      justify-content: space-between;
+      font-size: 14px;
+      color: #8b7272;
+      margin-bottom: 8px;
     }
 
     .progress {
-      height: 12px;
-      background: #eee;
-      border-radius: 10px;
+      height: 14px;
+      background: #ecd9d2;
+      border-radius: 999px;
       overflow: hidden;
-      margin: 12px 0;
     }
 
     .fill {
-      height: 12px;
-      background: #e49ab5;
+      height: 14px;
+      background: linear-gradient(to right, #efb3c7, #d98cab);
+      border-radius: 999px;
     }
 
     .button {
       display: block;
       text-align: center;
-      padding: 12px;
-      border-radius: 12px;
-      background: #d98cab;
-      color: white;
       text-decoration: none;
-      margin-top: 10px;
+      padding: 14px 18px;
+      border-radius: 14px;
+      background: linear-gradient(to right, #df96b3, #cf81a1);
+      color: white;
       font-weight: bold;
+      font-size: 16px;
+    }
+
+    .button:hover {
+      opacity: 0.95;
     }
 
     .done {
       text-align: center;
-      padding: 12px;
-      background: #e8f6e8;
-      border-radius: 12px;
-      color: green;
+      padding: 14px 18px;
+      border-radius: 14px;
+      background: #e8f5e8;
+      color: #397339;
       font-weight: bold;
+      font-size: 16px;
+    }
+
+    .error {
+      text-align: center;
+      color: #b00020;
+      font-weight: bold;
+      padding: 30px;
+    }
+
+    .footer {
+      text-align: center;
+      padding: 10px 20px 40px;
+      color: #9a8080;
+      font-size: 15px;
     }
   </style>
 </head>
-
 <body>
 
-<div class="hero">
+  <section class="hero">
+    <h1>Falwlaw Baby Wishlist</h1>
+    <p>
+      Bienvenue sur notre liste de naissance. Merci de faire partie de ce moment si précieux.
+      Vous pouvez participer librement au cadeau de votre choix avec le montant que vous souhaitez.
+    </p>
+    <div class="hero-heart">🤍</div>
+  </section>
 
-  <!-- LOGO -->
-  <img src="logo.png" class="logo">
+  <section class="wishlist-section">
+    <div class="section-title">Notre Wishlist</div>
+    <div id="gifts" class="grid">Chargement...</div>
+  </section>
 
-  <h1>Falwlaw Baby</h1>
+  <div class="footer">
+    Merci pour votre amour, votre présence et votre générosité.
+  </div>
 
-  <p>
-    Bienvenue sur notre liste de naissance 🤍<br>
-    Merci de participer à ce moment magique avec nous.
-  </p>
+  <script>
+    var SUPABASE_URL = "https://rcihspcsadskezucjpdp.supabase.co";
+    var SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InJjaWhzcGNzYWRza2V6dWNqcGRwIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzY2MDUxMzUsImV4cCI6MjA5MjE4MTEzNX0.hVp-qvJWEpNwgwcHv5-jBeS52WC2tocJGavIxkLAY3A";
 
-</div>
-
-<div id="gifts" class="grid">Chargement...</div>
-
-<script>
-var SUPABASE_URL = "https://rcihspcsadskezucjpdp.supabase.co";
-var SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InJjaWhzcGNzYWRza2V6dWNqcGRwIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzY2MDUxMzUsImV4cCI6MjA5MjE4MTEzNX0.hVp-qvJWEpNwgwcHv5-jBeS52WC2tocJGavIxkLAY3A"; 
-
-function getGiftImage(name) {
-  var lower = name.toLowerCase();
-
-  if (lower.includes("poussette")) return "https://images.pexels.com/photos/1257110/pexels-photo-1257110.jpeg";
-  if (lower.includes("siege") || lower.includes("siège")) return "https://images.pexels.com/photos/3933274/pexels-photo-3933274.jpeg";
-  if (lower.includes("lit")) return "https://images.pexels.com/photos/3662667/pexels-photo-3662667.jpeg";
-
-  return "https://images.pexels.com/photos/459957/pexels-photo-459957.jpeg";
-}
-
-function loadGifts() {
-  var container = document.getElementById("gifts");
-
-  fetch(SUPABASE_URL + "/rest/v1/gifts?select=*&order=id.asc", {
-    headers: {
-      "apikey": SUPABASE_ANON_KEY,
-      "Authorization": "Bearer " + SUPABASE_ANON_KEY
+    function escapeHtml(text) {
+      return String(text)
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;")
+        .replace(/'/g, "&#039;");
     }
-  })
-  .then(res => res.json())
-  .then(data => {
 
-    container.innerHTML = "";
+    function getGiftImage(name) {
+      var lower = name.toLowerCase();
 
-    data.forEach(gift => {
-
-      var funded = Number(gift.funded_amount);
-      var target = Number(gift.target_amount);
-      var remaining = target - funded;
-      var percent = (funded / target) * 100;
-
-      var image = gift.image_url ? gift.image_url : getGiftImage(gift.name);
-
-      var card = document.createElement("div");
-      card.className = "card";
-
-      var button = "";
-
-      if (funded >= target) {
-        button = '<div class="done">✅ Financé</div>';
-      } else {
-        button = <a class="button" href="gift.html?id=${gift.id}">Participer</a>;
+      if (lower.indexOf("poussette") !== -1) {
+        return "https://images.pexels.com/photos/1257110/pexels-photo-1257110.jpeg?auto=compress&cs=tinysrgb&w=1200";
       }
 
-      card.innerHTML = `
-        <img src="${image}">
-        <div class="card-content">
-          <h3>${gift.name}</h3>
-          <div class="meta">Prix : ${target} €</div>
-          <div class="meta">Collecté : ${funded} €</div>
-          <div class="meta">Reste : ${remaining} €</div>
+      if (lower.indexOf("siège") !== -1 || lower.indexOf("siege") !== -1) {
+        return "https://images.pexels.com/photos/3933274/pexels-photo-3933274.jpeg?auto=compress&cs=tinysrgb&w=1200";
+      }
 
-          <div class="progress">
-            <div class="fill" style="width:${percent}%"></div>
-          </div>
+      if (lower.indexOf("lit") !== -1) {
+        return "https://images.pexels.com/photos/3662667/pexels-photo-3662667.jpeg?auto=compress&cs=tinysrgb&w=1200";
+      }
 
-          ${button}
-        </div>
-      `;
+      return "https://images.pexels.com/photos/459957/pexels-photo-459957.jpeg?auto=compress&cs=tinysrgb&w=1200";
+    }
 
-      container.appendChild(card);
-    });
+    function loadGifts() {
+      var container = document.getElementById("gifts");
 
-  });
-}
+      fetch(SUPABASE_URL + "/rest/v1/gifts?select=*&order=id.asc", {
+        method: "GET",
+        headers: {
+          "apikey": SUPABASE_ANON_KEY,
+          "Authorization": "Bearer " + SUPABASE_ANON_KEY
+        }
+      })
+      .then(function(response) {
+        return response.json().then(function(data) {
+          return { ok: response.ok, data: data };
+        });
+      })
+      .then(function(result) {
+        if (!result.ok) {
+          container.innerHTML = '<div class="error">Erreur : ' + JSON.stringify(result.data) + '</div>';
+          return;
+        }
 
-loadGifts();
-</script>
+        if (!result.data || result.data.length === 0) {
+          container.innerHTML = '<div class="error">Aucun article trouvé</div>';
+          return;
+        }
 
+        container.innerHTML = "";
+
+        for (var i = 0; i < result.data.length; i++) {
+          var gift = result.data[i];
+          var funded = Number(gift.funded_amount);
+          var target = Number(gift.target_amount);
+          var remaining = target - funded;
+          if (remaining < 0) remaining = 0;
+
+          var percent = 0;
+          if (target > 0) {
+            percent = (funded / target) * 100;
+            if (percent > 100) percent = 100;
+          }
+
+          var image = gift.image_url ? gift.image_url : getGiftImage(gift.name);
+
+          var card = document.createElement("div");
+          card.className = "card";
+
+          var buttonHtml = "";
+          if (funded >= target || gift.is_funded === true) {
+            buttonHtml = '<div class="done">✅ Financé</div>';
+          } else {
+            buttonHtml = '<a class="button" href="gift.html?id=' + gift.id + '">Participer à ce cadeau</a>';
+          }
+
+          card.innerHTML =
+            '<img class="card-image" src="' + image + '" alt="' + escapeHtml(gift.name) + '">' +
+            '<div class="card-content">' +
+              '<h3>' + escapeHtml(gift.name) + '</h3>' +
+              '<div class="meta">Prix total : <strong>' + target + ' €</strong></div>' +
+              '<div class="meta">Déjà collecté : <strong>' + funded + ' €</strong></div>' +
+              '<div class="meta">Reste à financer : <strong>' + remaining + ' €</strong></div>' +
+              '<div class="progress-wrap">' +
+                '<div class="progress-top">' +
+                  '<span>Progression</span>' +
+                  '<span>' + Math.round(percent) + '%</span>' +
+                '</div>' +
+                '<div class="progress"><div class="fill" style="width:' + percent + '%"></div></div>' +
+              '</div>' +
+              buttonHtml +
+            '</div>';
+
+          container.appendChild(card);
+        }
+      })
+      .catch(function(error) {
+        container.innerHTML = '<div class="error">Erreur réseau : ' + error + '</div>';
+      });
+    }
+
+    loadGifts();
+  </script>
 </body>
 </html>
