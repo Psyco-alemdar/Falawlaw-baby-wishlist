@@ -1,3 +1,13 @@
+<script>
+  var PASSWORD = "Sofie2026"; // change ce mot de passe
+
+  var entered = prompt("Mot de passe admin");
+
+  if (entered !== PASSWORD) {
+    document.body.innerHTML = "<h1 style='text-align:center;margin-top:50px;'>Accès refusé ❌</h1>";
+    throw new Error("Accès refusé");
+  }
+</script>
 <!DOCTYPE html>
 <html lang="fr">
 <head>
