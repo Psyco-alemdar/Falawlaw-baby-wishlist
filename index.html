@@ -1,263 +1,219 @@
 <!DOCTYPE html>
 <html lang="fr">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Falwlaw Baby Wishlist</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Falwlaw Baby Wishlist</title>
 
-  <style>
-    body {
-      margin: 0;
-      font-family: Arial, sans-serif;
-      background: linear-gradient(to bottom, #fff7f8, #f7ede7);
-      color: #5f4b4b;
-    }
+<style>
+body {
+  margin: 0;
+  font-family: Arial, sans-serif;
+  background: linear-gradient(to bottom, #fff7f8, #f7ede7);
+  color: #5f4b4b;
+}
 
-    .hero {
-      text-align: center;
-      padding: 60px 20px 30px;
-    }
+.hero {
+  text-align: center;
+  padding: 60px 20px 30px;
+}
 
-    .logo {
-      width: 180px;
-      margin-bottom: 20px;
-    }
+.logo {
+  width: 180px;
+  margin-bottom: 20px;
+}
 
-    .hero h1 {
-      margin: 0;
-      font-size: 50px;
-      color: #cc87a4;
-    }
+.hero h1 {
+  margin: 0;
+  font-size: 50px;
+  color: #cc87a4;
+}
 
-    .hero p {
-      max-width: 700px;
-      margin: 20px auto 0;
-      font-size: 20px;
-      color: #7b6666;
-      line-height: 1.6;
-    }
+.hero p {
+  max-width: 700px;
+  margin: 20px auto 0;
+  font-size: 20px;
+  color: #7b6666;
+}
 
-    .grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-      gap: 25px;
-      padding: 30px 20px 60px;
-      max-width: 1200px;
-      margin: auto;
-    }
+.grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 25px;
+  padding: 30px 20px 60px;
+  max-width: 1200px;
+  margin: auto;
+}
 
-    .card {
-      background: white;
-      border-radius: 20px;
-      overflow: hidden;
-      box-shadow: 0 10px 25px rgba(0,0,0,0.08);
-    }
+.card {
+  background: white;
+  border-radius: 20px;
+  overflow: hidden;
+  box-shadow: 0 10px 25px rgba(0,0,0,0.08);
+}
 
-    .card img {
-      width: 100%;
-      height: 220px;
-      object-fit: cover;
-      display: block;
-    }
+.card img {
+  width: 100%;
+  height: 220px;
+  object-fit: cover;
+}
 
-    .card-content {
-      padding: 20px;
-    }
+.card-content {
+  padding: 20px;
+}
 
-    .card h3 {
-      margin: 0 0 10px;
-      color: #b96f90;
-      font-size: 26px;
-    }
+h3 {
+  margin: 0 0 10px;
+  color: #b96f90;
+}
 
-    .meta {
-      margin: 6px 0;
-      font-size: 16px;
-    }
+.meta {
+  margin: 6px 0;
+}
 
-    .progress {
-      height: 12px;
-      background: #eee;
-      border-radius: 10px;
-      overflow: hidden;
-      margin: 12px 0 16px;
-    }
+.progress {
+  height: 12px;
+  background: #eee;
+  border-radius: 10px;
+  overflow: hidden;
+  margin: 12px 0;
+}
 
-    .fill {
-      height: 12px;
-      background: #e49ab5;
-    }
+.fill {
+  height: 12px;
+  background: #e49ab5;
+}
 
-    .button {
-      display: block;
-      text-align: center;
-      padding: 12px;
-      border-radius: 12px;
-      background: #d98cab;
-      color: white;
-      text-decoration: none;
-      margin-top: 10px;
-      font-weight: bold;
-    }
+.button {
+  display: block;
+  text-align: center;
+  padding: 12px;
+  border-radius: 12px;
+  background: #d98cab;
+  color: white;
+  text-decoration: none;
+  margin-top: 10px;
+  font-weight: bold;
+}
 
-    .button:hover {
-      opacity: 0.95;
-    }
+.button-secondary {
+  background: #e8c4d1;
+  color: #6b4b4b;
+}
 
-    .button-secondary {
-      background: #e8c4d1;
-      color: #6b4b4b;
-    }
+.done {
+  text-align: center;
+  padding: 12px;
+  background: #e8f6e8;
+  border-radius: 12px;
+  color: green;
+  font-weight: bold;
+}
 
-    .done {
-      text-align: center;
-      padding: 12px;
-      background: #e8f6e8;
-      border-radius: 12px;
-      color: green;
-      font-weight: bold;
-      margin-top: 10px;
-    }
-
-    .error {
-      text-align: center;
-      color: #b00020;
-      font-weight: bold;
-      padding: 30px;
-      grid-column: 1 / -1;
-    }
-  </style>
+.error {
+  text-align: center;
+  color: red;
+  padding: 30px;
+}
+</style>
 </head>
 
 <body>
 
-  <div class="hero">
-    <img src="logo.png" class="logo" alt="Falwlaw Baby Logo">
+<div class="hero">
+  <img src="logo.png" class="logo">
+  <h1>Falwlaw Baby</h1>
+  <p>Bienvenue sur notre liste de naissance 🤍<br>Merci pour votre amour et votre soutien.</p>
+</div>
 
-    <h1>Falwlaw Baby</h1>
+<div id="gifts" class="grid">Chargement...</div>
 
-    <p>
-      Bienvenue sur notre liste de naissance 🤍<br>
-      Merci de participer à ce moment magique avec nous.
-    </p>
-  </div>
+<script>
+var SUPABASE_URL = "https://rcihspcsadskezucjpdp.supabase.co";
+var SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InJjaWhzcGNzYWRza2V6dWNqcGRwIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzY2MDUxMzUsImV4cCI6MjA5MjE4MTEzNX0.hVp-qvJWEpNwgwcHv5-jBeS52WC2tocJGavIxkLAY3A";
 
-  <div id="gifts" class="grid">Chargement...</div>
+function getGiftImage(name) {
+  var lower = name.toLowerCase();
 
-  <script>
-    var SUPABASE_URL = "https://rcihspcsadskezucjpdp.supabase.co";
-    var SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InJjaWhzcGNzYWRza2V6dWNqcGRwIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzY2MDUxMzUsImV4cCI6MjA5MjE4MTEzNX0.hVp-qvJWEpNwgwcHv5-jBeS52WC2tocJGavIxkLAY3A";
+  if (lower.includes("poussette")) return "https://images.pexels.com/photos/1257110/pexels-photo-1257110.jpeg";
+  if (lower.includes("siege") || lower.includes("siège")) return "https://images.pexels.com/photos/3933274/pexels-photo-3933274.jpeg";
+  if (lower.includes("lit")) return "https://images.pexels.com/photos/3662667/pexels-photo-3662667.jpeg";
 
-    function escapeHtml(text) {
-      return String(text)
-        .replace(/&/g, "&amp;")
-        .replace(/</g, "&lt;")
-        .replace(/>/g, "&gt;")
-        .replace(/"/g, "&quot;")
-        .replace(/'/g, "&#039;");
+  if (lower.includes("tire")) return "https://images.pexels.com/photos/3661470/pexels-photo-3661470.jpeg";
+  if (lower.includes("biberon")) return "https://images.pexels.com/photos/3933244/pexels-photo-3933244.jpeg";
+  if (lower.includes("babyphone")) return "https://images.pexels.com/photos/459957/pexels-photo-459957.jpeg";
+
+  return "https://images.pexels.com/photos/459957/pexels-photo-459957.jpeg";
+}
+
+function loadGifts() {
+  var container = document.getElementById("gifts");
+
+  fetch(SUPABASE_URL + "/rest/v1/gifts?select=*&order=id.asc", {
+    headers: {
+      "apikey": SUPABASE_ANON_KEY,
+      "Authorization": "Bearer " + SUPABASE_ANON_KEY
     }
+  })
+  .then(res => res.json())
+  .then(data => {
 
-    function getGiftImage(name) {
-      var lower = name.toLowerCase();
+    container.innerHTML = "";
 
-      if (lower.indexOf("poussette") !== -1) {
-        return "https://images.pexels.com/photos/1257110/pexels-photo-1257110.jpeg?auto=compress&cs=tinysrgb&w=1200";
+    data.forEach(gift => {
+
+      var funded = Number(gift.funded_amount || 0);
+      var target = Number(gift.target_amount || 0);
+      var remaining = target - funded;
+      if (remaining < 0) remaining = 0;
+
+      var percent = target > 0 ? (funded / target) * 100 : 0;
+
+      var image = gift.image_url ? gift.image_url : getGiftImage(gift.name);
+
+      var productButton = "";
+      if (gift.product_url) {
+        productButton = <a class="button button-secondary" href="${gift.product_url}" target="_blank">Voir le produit</a>;
       }
 
-      if (lower.indexOf("siège") !== -1 || lower.indexOf("siege") !== -1) {
-        return "https://images.pexels.com/photos/3933274/pexels-photo-3933274.jpeg?auto=compress&cs=tinysrgb&w=1200";
+      var actionButton = "";
+      if (funded >= target) {
+        actionButton = '<div class="done">✅ Financé</div>';
+      } else {
+        actionButton = <a class="button" href="gift.html?id=${gift.id}">Participer</a>;
       }
 
-      if (lower.indexOf("lit") !== -1) {
-        return "https://images.pexels.com/photos/3662667/pexels-photo-3662667.jpeg?auto=compress&cs=tinysrgb&w=1200";
-      }
+      var card = document.createElement("div");
+      card.className = "card";
 
-      return "https://images.pexels.com/photos/459957/pexels-photo-459957.jpeg?auto=compress&cs=tinysrgb&w=1200";
-    }
+      card.innerHTML = `
+        <img src="${image}">
+        <div class="card-content">
+          <h3>${gift.name}</h3>
+          <div class="meta">Prix : ${target} €</div>
+          <div class="meta">Collecté : ${funded} €</div>
+          <div class="meta">Reste : ${remaining} €</div>
 
-    function loadGifts() {
-      var container = document.getElementById("gifts");
+          <div class="progress">
+            <div class="fill" style="width:${percent}%"></div>
+          </div>
 
-      fetch(SUPABASE_URL + "/rest/v1/gifts?select=*&order=id.asc", {
-        method: "GET",
-        headers: {
-          "apikey": SUPABASE_ANON_KEY,
-          "Authorization": "Bearer " + SUPABASE_ANON_KEY
-        }
-      })
-      .then(function(response) {
-        return response.json().then(function(data) {
-          return { ok: response.ok, data: data };
-        });
-      })
-      .then(function(result) {
-        if (!result.ok) {
-          container.innerHTML = '<div class="error">Erreur : ' + escapeHtml(JSON.stringify(result.data)) + '</div>';
-          return;
-        }
+          ${productButton}
+          ${actionButton}
+        </div>
+      `;
 
-        if (!result.data || result.data.length === 0) {
-          container.innerHTML = '<div class="error">Aucun article trouvé</div>';
-          return;
-        }
+      container.appendChild(card);
+    });
 
-        container.innerHTML = "";
+  })
+  .catch(err => {
+    container.innerHTML = '<div class="error">Erreur chargement</div>';
+  });
+}
 
-        for (var i = 0; i < result.data.length; i++) {
-          var gift = result.data[i];
-
-          var funded = Number(gift.funded_amount || 0);
-          var target = Number(gift.target_amount || 0);
-          var remaining = target - funded;
-          if (remaining < 0) remaining = 0;
-
-          var percent = 0;
-          if (target > 0) {
-            percent = (funded / target) * 100;
-            if (percent > 100) percent = 100;
-          }
-
-          var image = gift.image_url ? gift.image_url : getGiftImage(gift.name);
-
-          var productButton = "";
-          if (gift.product_url) {
-            productButton = '<a class="button button-secondary" href="' + gift.product_url + '" target="_blank">Voir le produit</a>';
-          }
-
-          var actionButton = "";
-          if (funded >= target || gift.is_funded === true) {
-            actionButton = '<div class="done">✅ Financé</div>';
-          } else {
-            actionButton = '<a class="button" href="gift.html?id=' + gift.id + '">Participer</a>';
-          }
-
-          var card = document.createElement("div");
-          card.className = "card";
-
-          card.innerHTML =
-            '<img src="' + image + '" alt="' + escapeHtml(gift.name) + '">' +
-            '<div class="card-content">' +
-              '<h3>' + escapeHtml(gift.name) + '</h3>' +
-              '<div class="meta">Prix : ' + target + ' €</div>' +
-              '<div class="meta">Collecté : ' + funded + ' €</div>' +
-              '<div class="meta">Reste : ' + remaining + ' €</div>' +
-              '<div class="progress">' +
-                '<div class="fill" style="width:' + percent + '%"></div>' +
-              '</div>' +
-              productButton +
-              actionButton +
-            '</div>';
-
-          container.appendChild(card);
-        }
-      })
-      .catch(function(error) {
-        container.innerHTML = '<div class="error">Erreur réseau : ' + escapeHtml(String(error)) + '</div>';
-      });
-    }
-
-    loadGifts();
-  </script>
+loadGifts();
+</script>
 
 </body>
 </html>
