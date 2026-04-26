@@ -1,72 +1,94 @@
-const Stripe = require("stripe");
-
-const stripe = new Stripe(process.env.STRIPE_SECRET_KEY);
-
-export const config = {
-  api: {
-    bodyParser: false,
-  },
-};
-
-export default async function handler(req, res) {
-  const buf = await buffer(req);
-  const sig = req.headers["stripe-signature"];
-
-  let event;
-
+module.exports = async function handler(req, res) {
   try {
-    event = stripe.webhooks.constructEvent(
-      buf,
-      sig,
-      process.env.STRIPE_WEBHOOK_SECRET
-    );
-  } catch (err) {
-    console.error("❌ Signature error:", err.message);
-    return res.status(400).send(Webhook Error: ${err.message});
-  }
+    if (req.method !== "POST") {
+      return res.status(405).json({ error: "Method not allowed" });
+    }
 
-  try {
-    if (event.type === "checkout.session.completed") {
-      const session = event.data.object;
+    const event = req.body;
 
-      const amount = session.amount_total / 100;
-      const giftId = session.metadata.giftId;
-      const name = session.metadata.name;
-      const message = session.metadata.message;
+    if (event.type !== "checkout.session.completed") {
+      return res.status(200).json({ received: true });
+    }
 
-      await fetch("https://rcihspcsadskezucjpdp.supabase.co/rest/v1/contributions", {
-        method: "POST",
-        headers: {
-          "apikey": process.env.SUPABASE_ANON_KEY,
-          "Authorization": "Bearer " + process.env.SUPABASE_ANON_KEY,
-          "Content-Type": "application/json"
-        },
-        body: JSON.stringify([{
-          gift_id: giftId,
+    const session = event.data.object;
+
+    const amount = session.amount_total / 100;
+    const giftId = session.metadata.giftId;
+    const name = session.metadata.name || "Anonyme";
+    const message = session.metadata.message || "";
+
+    const SUPABASE_URL = "https://rcihspcsadskezucjpdp.supabase.co";
+    const SUPABASE_KEY = process.env.SUPABASE_ANON_KEY;
+
+    if (!SUPABASE_KEY) {
+      return res.status(500).json({ error: "SUPABASE_ANON_KEY missing" });
+    }
+
+    // 1. Enregistrer contribution
+    const insertResponse = await fetch(SUPABASE_URL + "/rest/v1/contributions", {
+      method: "POST",
+      headers: {
+        "apikey": SUPABASE_KEY,
+        "Authorization": "Bearer " + SUPABASE_KEY,
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify([
+        {
+          gift_id: Number(giftId),
           contributor_name: name,
           amount: amount,
           message: message
-        }])
-      });
+        }
+      ])
+    });
+
+    if (!insertResponse.ok) {
+      const text = await insertResponse.text();
+      return res.status(500).json({ error: "Insert contribution failed", details: text });
     }
 
-    return res.status(200).send("ok");
+    // 2. Lire cadeau actuel
+    const giftResponse = await fetch(SUPABASE_URL + "/rest/v1/gifts?id=eq." + giftId + "&select=*", {
+      method: "GET",
+      headers: {
+        "apikey": SUPABASE_KEY,
+        "Authorization": "Bearer " + SUPABASE_KEY
+      }
+    });
+
+    const gifts = await giftResponse.json();
+    const gift = gifts[0];
+
+    if (!gift) {
+      return res.status(500).json({ error: "Gift not found" });
+    }
+
+    const oldFunded = Number(gift.funded_amount || 0);
+    const target = Number(gift.target_amount || 0);
+    const newFunded = oldFunded + amount;
+
+    // 3. Mettre à jour cadeau
+    const updateResponse = await fetch(SUPABASE_URL + "/rest/v1/gifts?id=eq." + giftId, {
+      method: "PATCH",
+      headers: {
+        "apikey": SUPABASE_KEY,
+        "Authorization": "Bearer " + SUPABASE_KEY,
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({
+        funded_amount: newFunded,
+        is_funded: newFunded >= target
+      })
+    });
+
+    if (!updateResponse.ok) {
+      const text = await updateResponse.text();
+      return res.status(500).json({ error: "Update gift failed", details: text });
+    }
+
+    return res.status(200).json({ success: true });
 
   } catch (error) {
-    console.error("❌ Webhook crash:", error);
-    return res.status(500).send("Server error");
+    return res.status(500).json({ error: error.message });
   }
-}
-
-function buffer(readable) {
-  return new Promise((resolve, reject) => {
-    const chunks = [];
-    readable.on("data", (chunk) => {
-      chunks.push(chunk);
-    });
-    readable.on("end", () => {
-      resolve(Buffer.concat(chunks));
-    });
-    readable.on("error", reject);
-  });
-}
+};
