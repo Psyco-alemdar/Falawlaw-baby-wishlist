@@ -1,17 +1,23 @@
 const Stripe = require("stripe");
 
-const stripe = new Stripe(process.env.STRIPE_SECRET_KEY);
-
 module.exports = async function handler(req, res) {
-  if (req.method !== "POST") {
-    return res.status(405).json({ error: "Method not allowed" });
-  }
-
   try {
-    const { amount, giftName } = req.body;
+    if (req.method !== "POST") {
+      return res.status(405).json({ error: "Method not allowed" });
+    }
 
-    if (!amount || !giftName) {
-      return res.status(400).json({ error: "Amount or giftName missing" });
+    if (!process.env.STRIPE_SECRET_KEY) {
+      return res.status(500).json({ error: "STRIPE_SECRET_KEY is missing in Vercel" });
+    }
+
+    const stripe = new Stripe(process.env.STRIPE_SECRET_KEY);
+
+    const body = typeof req.body === "string" ? JSON.parse(req.body) : req.body;
+    const amount = Number(body.amount);
+    const giftName = body.giftName || "Falwlaw Baby Gift";
+
+    if (!amount || amount <= 0) {
+      return res.status(400).json({ error: "Invalid amount" });
     }
 
     const session = await stripe.checkout.sessions.create({
@@ -24,7 +30,7 @@ module.exports = async function handler(req, res) {
             product_data: {
               name: giftName
             },
-            unit_amount: Math.round(Number(amount) * 100)
+            unit_amount: Math.round(amount * 100)
           },
           quantity: 1
         }
