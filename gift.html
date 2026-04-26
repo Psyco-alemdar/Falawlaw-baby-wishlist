@@ -21,28 +21,31 @@ body {
 
 .card {
   background: white;
-  border-radius: 20px;
+  border-radius: 22px;
   overflow: hidden;
   box-shadow: 0 10px 25px rgba(0,0,0,0.08);
 }
 
 .image {
   width: 100%;
-  height: 300px;
+  height: 320px;
   object-fit: cover;
+  background: #f7ede7;
 }
 
 .content {
-  padding: 25px;
+  padding: 28px;
 }
 
 h1 {
-  margin: 0 0 15px;
+  margin: 0 0 18px;
   color: #c884a2;
+  font-size: 38px;
 }
 
 .stats {
-  margin: 10px 0;
+  margin: 8px 0;
+  font-size: 18px;
 }
 
 .progress {
@@ -50,42 +53,46 @@ h1 {
   background: #eee;
   border-radius: 10px;
   overflow: hidden;
-  margin: 15px 0;
+  margin: 18px 0;
 }
 
 .fill {
   height: 14px;
   background: #e49ab5;
+  width: 0%;
 }
 
 .form-box {
-  margin-top: 20px;
+  margin-top: 22px;
 }
 
 label {
   display: block;
-  margin-top: 12px;
+  margin-top: 14px;
   font-weight: bold;
 }
 
 input {
   width: 100%;
-  padding: 12px;
+  padding: 13px;
   border-radius: 10px;
   border: 1px solid #ddd;
-  margin-top: 5px;
+  margin-top: 6px;
+  box-sizing: border-box;
+  font-size: 16px;
 }
 
 button {
-  margin-top: 15px;
+  margin-top: 18px;
   width: 100%;
-  padding: 14px;
+  padding: 15px;
   border-radius: 12px;
   border: none;
   background: #d98cab;
   color: white;
   font-weight: bold;
   cursor: pointer;
+  font-size: 17px;
 }
 
 .message {
@@ -96,13 +103,23 @@ button {
 }
 
 .success {
+  display: block;
   background: #e8f6e8;
   color: green;
 }
 
 .error {
+  display: block;
   background: #fdeaea;
   color: red;
+}
+
+.back {
+  display: inline-block;
+  margin-top: 22px;
+  text-decoration: none;
+  color: #b96f90;
+  font-weight: bold;
 }
 </style>
 </head>
@@ -111,63 +128,66 @@ button {
 
 <div class="page">
   <div class="card">
-    <img id="gift-image" class="image">
+    <img id="gift-image" class="image" src="" alt="cadeau">
 
     <div class="content">
       <h1 id="gift-name">Chargement...</h1>
 
-      <div class="stats">Prix : <span id="gift-target"></span></div>
-      <div class="stats">Collecté : <span id="gift-funded"></span></div>
-      <div class="stats">Reste : <span id="gift-remaining"></span></div>
+      <div class="stats">Prix : <strong id="gift-target">-</strong></div>
+      <div class="stats">Collecté : <strong id="gift-funded">-</strong></div>
+      <div class="stats">Reste : <strong id="gift-remaining">-</strong></div>
 
       <div class="progress">
         <div id="gift-fill" class="fill"></div>
       </div>
 
       <div id="form-area" class="form-box">
-        <label>Votre prénom</label>
-        <input id="prenom" placeholder="Ex: Mounir">
+        <label>Votre nom</label>
+        <input id="prenom" placeholder="Votre nom">
 
         <label>Montant (€)</label>
         <input id="montant" type="number" placeholder="Exemple : 100">
 
-        <label>Message (optionnel)</label>
-        <input id="messageInput" placeholder="Ex: Félicitations ❤️">
+        <label>Message optionnel</label>
+        <input id="messageInput" placeholder="Ex : Félicitations ❤️">
 
         <button onclick="payer()">Payer maintenant</button>
       </div>
 
       <div id="message" class="message"></div>
+
+      <a class="back" href="index.html">← Retour à la wishlist</a>
     </div>
   </div>
 </div>
 
 <script>
 var SUPABASE_URL = "https://rcihspcsadskezucjpdp.supabase.co";
-var SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."; // laisse comme ça
+var SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InJjaWhzcGNzYWRza2V6dWNqcGRwIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzY2MDUxMzUsImV4cCI6MjA5MjE4MTEzNX0.hVp-qvJWEpNwgwcHv5-jBeS52WC2tocJGavIxkLAY3A";
 
 var currentGift = null;
 
 function showMessage(text, type) {
   var box = document.getElementById("message");
   box.className = "message " + type;
-  box.style.display = "block";
   box.innerHTML = text;
+  box.style.display = "block";
 }
 
 function getId() {
-  return new URLSearchParams(window.location.search).get("id");
+  var params = new URLSearchParams(window.location.search);
+  return params.get("id");
 }
 
 function getImage(name) {
-  var lower = name.toLowerCase();
+  var lower = String(name).toLowerCase();
 
-  if (lower.includes("poussette")) return "https://images.pexels.com/photos/1257110/pexels-photo-1257110.jpeg";
-  if (lower.includes("siege")) return "https://images.pexels.com/photos/3933274/pexels-photo-3933274.jpeg";
-  if (lower.includes("lit")) return "https://images.pexels.com/photos/3662667/pexels-photo-3662667.jpeg";
-  if (lower.includes("tire")) return "https://images.pexels.com/photos/3661470/pexels-photo-3661470.jpeg";
-  if (lower.includes("biberon")) return "https://images.pexels.com/photos/3933244/pexels-photo-3933244.jpeg";
-  if (lower.includes("babyphone")) return "https://images.pexels.com/photos/459957/pexels-photo-459957.jpeg";
+  if (lower.indexOf("poussette") !== -1) return "https://images.pexels.com/photos/1257110/pexels-photo-1257110.jpeg";
+  if (lower.indexOf("siege") !== -1 || lower.indexOf("siège") !== -1) return "https://images.pexels.com/photos/3933274/pexels-photo-3933274.jpeg";
+  if (lower.indexOf("lit") !== -1) return "https://images.pexels.com/photos/3662667/pexels-photo-3662667.jpeg";
+  if (lower.indexOf("tire") !== -1) return "https://images.pexels.com/photos/3661470/pexels-photo-3661470.jpeg";
+  if (lower.indexOf("biberon") !== -1) return "https://images.pexels.com/photos/3933244/pexels-photo-3933244.jpeg";
+  if (lower.indexOf("babyphone") !== -1) return "https://images.pexels.com/photos/459957/pexels-photo-459957.jpeg";
 
   return "https://images.pexels.com/photos/459957/pexels-photo-459957.jpeg";
 }
@@ -175,49 +195,90 @@ function getImage(name) {
 function loadGift() {
   var id = getId();
 
-  fetch(SUPABASE_URL + "/rest/v1/gifts?id=eq." + id + "&select=*",
-  {
+  if (!id) {
+    document.getElementById("gift-name").innerHTML = "Cadeau introuvable";
+    return;
+  }
+
+  fetch(SUPABASE_URL + "/rest/v1/gifts?id=eq." + id + "&select=*", {
+    method: "GET",
     headers: {
       "apikey": SUPABASE_ANON_KEY,
       "Authorization": "Bearer " + SUPABASE_ANON_KEY
     }
   })
-  .then(res => res.json())
-  .then(data => {
-    currentGift = data[0];
+  .then(function(response) {
+    return response.json().then(function(data) {
+      return { ok: response.ok, data: data };
+    });
+  })
+  .then(function(result) {
+    if (!result.ok) {
+      showMessage("Erreur chargement cadeau : " + JSON.stringify(result.data), "error");
+      return;
+    }
 
-    var funded = Number(currentGift.funded_amount);
-    var target = Number(currentGift.target_amount);
+    if (!result.data || result.data.length === 0) {
+      document.getElementById("gift-name").innerHTML = "Cadeau introuvable";
+      return;
+    }
+
+    currentGift = result.data[0];
+
+    var funded = Number(currentGift.funded_amount || 0);
+    var target = Number(currentGift.target_amount || 0);
     var remaining = target - funded;
     if (remaining < 0) remaining = 0;
 
-    var percent = (funded / target) * 100;
+    var percent = 0;
+    if (target > 0) {
+      percent = (funded / target) * 100;
+      if (percent > 100) percent = 100;
+    }
 
     document.getElementById("gift-name").innerHTML = currentGift.name;
     document.getElementById("gift-target").innerHTML = target + " €";
     document.getElementById("gift-funded").innerHTML = funded + " €";
     document.getElementById("gift-remaining").innerHTML = remaining + " €";
     document.getElementById("gift-fill").style.width = percent + "%";
-    document.getElementById("gift-image").src = currentGift.image_url || getImage(currentGift.name);
+    document.getElementById("gift-image").src = currentGift.image_url ? currentGift.image_url : getImage(currentGift.name);
 
-    if (funded >= target) {
+    if (funded >= target || currentGift.is_funded === true) {
       document.getElementById("form-area").innerHTML =
-        '<div class="success message" style="display:block;">✅ Ce cadeau est déjà financé</div>';
+        '<div class="message success" style="display:block;">✅ Ce cadeau est déjà financé</div>';
     }
+  })
+  .catch(function(error) {
+    showMessage("Erreur réseau : " + error, "error");
   });
 }
 
 function payer() {
-  var prenom = document.getElementById("prenom").value;
-  var montant = Number(document.getElementById("montant").value);
+  if (!currentGift) {
+    showMessage("Le cadeau n’est pas encore chargé.", "error");
+    return;
+  }
 
-  if (!prenom || !prenom.trim()) {
-    showMessage("Veuillez entrer votre prénom", "error");
+  var nom = document.getElementById("prenom").value;
+  var montant = Number(document.getElementById("montant").value);
+  var message = document.getElementById("messageInput").value;
+
+  if (!nom || !nom.trim()) {
+    showMessage("Veuillez entrer votre nom.", "error");
     return;
   }
 
   if (!montant || montant <= 0) {
-    showMessage("Montant invalide", "error");
+    showMessage("Veuillez entrer un montant valide.", "error");
+    return;
+  }
+
+  var funded = Number(currentGift.funded_amount || 0);
+  var target = Number(currentGift.target_amount || 0);
+  var remaining = target - funded;
+
+  if (montant > remaining) {
+    showMessage("Le montant dépasse le reste à financer.", "error");
     return;
   }
 
@@ -228,15 +289,24 @@ function payer() {
     },
     body: JSON.stringify({
       amount: montant,
-      giftName: currentGift.name
+      giftName: currentGift.name,
+      giftId: currentGift.id,
+      contributorName: nom.trim(),
+      message: message ? message.trim() : ""
     })
   })
-  .then(res => res.json())
-  .then(data => {
-    window.location.href = data.url;
+  .then(function(response) {
+    return response.json();
   })
-  .catch(err => {
-    showMessage("Erreur paiement", "error");
+  .then(function(data) {
+    if (data.url) {
+      window.location.href = data.url;
+    } else {
+      showMessage("Erreur Stripe : " + JSON.stringify(data), "error");
+    }
+  })
+  .catch(function(error) {
+    showMessage("Erreur paiement : " + error, "error");
   });
 }
 
