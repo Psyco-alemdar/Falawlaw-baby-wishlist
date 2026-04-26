@@ -1,421 +1,247 @@
 <!DOCTYPE html>
 <html lang="fr">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Détail du cadeau</title>
-  <style>
-    body {
-      margin: 0;
-      font-family: Arial, sans-serif;
-      background: linear-gradient(to bottom, #fff7f8, #f7ede7);
-      color: #5f4b4b;
-    }
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Détail du cadeau</title>
 
-    .page {
-      max-width: 980px;
-      margin: 40px auto;
-      padding: 0 20px 50px;
-    }
+<style>
+body {
+  margin: 0;
+  font-family: Arial, sans-serif;
+  background: linear-gradient(to bottom, #fff7f8, #f7ede7);
+  color: #5f4b4b;
+}
 
-    .card {
-      background: rgba(255,255,255,0.92);
-      border-radius: 28px;
-      overflow: hidden;
-      box-shadow: 0 10px 30px rgba(187, 145, 145, 0.15);
-      border: 1px solid rgba(230, 200, 200, 0.5);
-    }
+.page {
+  max-width: 900px;
+  margin: 40px auto;
+  padding: 20px;
+}
 
-    .image {
-      width: 100%;
-      height: 380px;
-      object-fit: cover;
-      display: block;
-      background: #f2dfd7;
-    }
+.card {
+  background: white;
+  border-radius: 20px;
+  overflow: hidden;
+  box-shadow: 0 10px 25px rgba(0,0,0,0.08);
+}
 
-    .content {
-      padding: 34px;
-    }
+.image {
+  width: 100%;
+  height: 300px;
+  object-fit: cover;
+}
 
-    h1 {
-      margin: 0 0 20px;
-      font-size: 46px;
-      color: #c884a2;
-    }
+.content {
+  padding: 25px;
+}
 
-    .desc {
-      font-size: 19px;
-      line-height: 1.7;
-      color: #786565;
-      margin-bottom: 26px;
-    }
+h1 {
+  margin: 0 0 15px;
+  color: #c884a2;
+}
 
-    .stats {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
-      gap: 16px;
-      margin-bottom: 26px;
-    }
+.stats {
+  margin: 10px 0;
+}
 
-    .stat-box {
-      background: #fff6f8;
-      border: 1px solid #f0d8df;
-      border-radius: 18px;
-      padding: 18px;
-    }
+.progress {
+  height: 14px;
+  background: #eee;
+  border-radius: 10px;
+  overflow: hidden;
+  margin: 15px 0;
+}
 
-    .stat-label {
-      font-size: 14px;
-      color: #907979;
-      margin-bottom: 8px;
-    }
+.fill {
+  height: 14px;
+  background: #e49ab5;
+}
 
-    .stat-value {
-      font-size: 26px;
-      font-weight: bold;
-      color: #b76f90;
-    }
+.form-box {
+  margin-top: 20px;
+}
 
-    .progress-wrap {
-      margin-bottom: 28px;
-    }
+label {
+  display: block;
+  margin-top: 12px;
+  font-weight: bold;
+}
 
-    .progress-top {
-      display: flex;
-      justify-content: space-between;
-      margin-bottom: 8px;
-      color: #866f6f;
-      font-size: 15px;
-    }
+input {
+  width: 100%;
+  padding: 12px;
+  border-radius: 10px;
+  border: 1px solid #ddd;
+  margin-top: 5px;
+}
 
-    .progress {
-      height: 16px;
-      background: #ecd9d2;
-      border-radius: 999px;
-      overflow: hidden;
-    }
+button {
+  margin-top: 15px;
+  width: 100%;
+  padding: 14px;
+  border-radius: 12px;
+  border: none;
+  background: #d98cab;
+  color: white;
+  font-weight: bold;
+  cursor: pointer;
+}
 
-    .fill {
-      height: 16px;
-      background: linear-gradient(to right, #efb3c7, #d98cab);
-      border-radius: 999px;
-    }
+.message {
+  margin-top: 15px;
+  padding: 12px;
+  border-radius: 10px;
+  display: none;
+}
 
-    .form-box {
-      background: #fff8fb;
-      border: 1px solid #f0d8df;
-      border-radius: 22px;
-      padding: 24px;
-    }
+.success {
+  background: #e8f6e8;
+  color: green;
+}
 
-    .form-title {
-      font-size: 24px;
-      color: #b97091;
-      margin-bottom: 18px;
-      font-weight: bold;
-    }
-
-    label {
-      display: block;
-      margin-top: 16px;
-      margin-bottom: 8px;
-      font-weight: bold;
-      color: #6e5a5a;
-    }
-
-    input {
-      width: 100%;
-      padding: 15px;
-      font-size: 16px;
-      border: 1px solid #e6cfd7;
-      border-radius: 14px;
-      box-sizing: border-box;
-      background: white;
-    }
-
-    button {
-      margin-top: 22px;
-      width: 100%;
-      padding: 16px;
-      font-size: 18px;
-      border: none;
-      border-radius: 16px;
-      background: linear-gradient(to right, #df96b3, #cf81a1);
-      color: white;
-      font-weight: bold;
-      cursor: pointer;
-    }
-
-    button:hover {
-      opacity: 0.96;
-    }
-
-    .message {
-      margin-top: 18px;
-      padding: 14px;
-      border-radius: 14px;
-      display: none;
-      font-size: 16px;
-    }
-
-    .message.success {
-      display: block;
-      background: #e8f6e8;
-      color: #2f6b2f;
-    }
-
-    .message.error {
-      display: block;
-      background: #fdeaea;
-      color: #b00020;
-    }
-
-    .back {
-      display: inline-block;
-      margin-top: 26px;
-      text-decoration: none;
-      color: #b66f8f;
-      font-weight: bold;
-      font-size: 16px;
-    }
-  </style>
+.error {
+  background: #fdeaea;
+  color: red;
+}
+</style>
 </head>
+
 <body>
 
-  <div class="page">
-    <div class="card">
-      <img id="gift-image" class="image" src="" alt="cadeau">
+<div class="page">
+  <div class="card">
+    <img id="gift-image" class="image">
 
-      <div class="content">
-        <h1 id="gift-name">Chargement...</h1>
+    <div class="content">
+      <h1 id="gift-name">Chargement...</h1>
 
-        <div class="desc">
-          Merci de votre participation. Vous pouvez soutenir ce cadeau avec le montant de votre choix.
-        </div>
+      <div class="stats">Prix : <span id="gift-target"></span></div>
+      <div class="stats">Collecté : <span id="gift-funded"></span></div>
+      <div class="stats">Reste : <span id="gift-remaining"></span></div>
 
-        <div class="stats">
-          <div class="stat-box">
-            <div class="stat-label">Prix total</div>
-            <div class="stat-value" id="gift-target">-</div>
-          </div>
-          <div class="stat-box">
-            <div class="stat-label">Déjà collecté</div>
-            <div class="stat-value" id="gift-funded">-</div>
-          </div>
-          <div class="stat-box">
-            <div class="stat-label">Reste à financer</div>
-            <div class="stat-value" id="gift-remaining">-</div>
-          </div>
-        </div>
-
-        <div class="progress-wrap">
-          <div class="progress-top">
-            <span>Progression</span>
-            <span id="gift-percent">0%</span>
-          </div>
-          <div class="progress">
-            <div id="gift-fill" class="fill" style="width:0%"></div>
-          </div>
-        </div>
-
-        <div id="form-area" class="form-box">
-          <div class="form-title">Participer à ce cadeau</div>
-
-          <label for="prenom">Votre prénom</label>
-          <input type="text" id="prenom" placeholder="Entrez votre prénom">
-
-          <label for="montant">Montant à offrir (€)</label>
-          <input type="number" id="montant" placeholder="Exemple : 50">
-
-          <button onclick="participer()">Valider ma participation</button>
-        </div>
-
-        <div id="message" class="message"></div>
-
-        <a class="back" href="index.html">← Retour à la wishlist</a>
+      <div class="progress">
+        <div id="gift-fill" class="fill"></div>
       </div>
+
+      <div id="form-area" class="form-box">
+        <label>Votre prénom</label>
+        <input id="prenom" placeholder="Ex: Mounir">
+
+        <label>Montant (€)</label>
+        <input id="montant" type="number" placeholder="Exemple : 100">
+
+        <label>Message (optionnel)</label>
+        <input id="messageInput" placeholder="Ex: Félicitations ❤️">
+
+        <button onclick="payer()">Payer maintenant</button>
+      </div>
+
+      <div id="message" class="message"></div>
     </div>
   </div>
+</div>
 
-  <script>
-    var SUPABASE_URL = "https://rcihspcsadskezucjpdp.supabase.co";
-    var SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InJjaWhzcGNzYWRza2V6dWNqcGRwIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzY2MDUxMzUsImV4cCI6MjA5MjE4MTEzNX0.hVp-qvJWEpNwgwcHv5-jBeS52WC2tocJGavIxkLAY3A";
+<script>
+var SUPABASE_URL = "https://rcihspcsadskezucjpdp.supabase.co";
+var SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."; // laisse comme ça
 
-    var currentGift = null;
+var currentGift = null;
 
-    function showMessage(text, type) {
-      var box = document.getElementById("message");
-      box.className = "message " + type;
-      box.innerHTML = text;
+function showMessage(text, type) {
+  var box = document.getElementById("message");
+  box.className = "message " + type;
+  box.style.display = "block";
+  box.innerHTML = text;
+}
+
+function getId() {
+  return new URLSearchParams(window.location.search).get("id");
+}
+
+function getImage(name) {
+  var lower = name.toLowerCase();
+
+  if (lower.includes("poussette")) return "https://images.pexels.com/photos/1257110/pexels-photo-1257110.jpeg";
+  if (lower.includes("siege")) return "https://images.pexels.com/photos/3933274/pexels-photo-3933274.jpeg";
+  if (lower.includes("lit")) return "https://images.pexels.com/photos/3662667/pexels-photo-3662667.jpeg";
+  if (lower.includes("tire")) return "https://images.pexels.com/photos/3661470/pexels-photo-3661470.jpeg";
+  if (lower.includes("biberon")) return "https://images.pexels.com/photos/3933244/pexels-photo-3933244.jpeg";
+  if (lower.includes("babyphone")) return "https://images.pexels.com/photos/459957/pexels-photo-459957.jpeg";
+
+  return "https://images.pexels.com/photos/459957/pexels-photo-459957.jpeg";
+}
+
+function loadGift() {
+  var id = getId();
+
+  fetch(SUPABASE_URL + "/rest/v1/gifts?id=eq." + id + "&select=*",
+  {
+    headers: {
+      "apikey": SUPABASE_ANON_KEY,
+      "Authorization": "Bearer " + SUPABASE_ANON_KEY
     }
+  })
+  .then(res => res.json())
+  .then(data => {
+    currentGift = data[0];
 
-    function getGiftImage(name) {
-      var lower = name.toLowerCase();
+    var funded = Number(currentGift.funded_amount);
+    var target = Number(currentGift.target_amount);
+    var remaining = target - funded;
+    if (remaining < 0) remaining = 0;
 
-      if (lower.indexOf("poussette") !== -1) {
-        return "https://images.pexels.com/photos/1257110/pexels-photo-1257110.jpeg?auto=compress&cs=tinysrgb&w=1200";
-      }
+    var percent = (funded / target) * 100;
 
-      if (lower.indexOf("siège") !== -1 || lower.indexOf("siege") !== -1) {
-        return "https://images.pexels.com/photos/3933274/pexels-photo-3933274.jpeg?auto=compress&cs=tinysrgb&w=1200";
-      }
+    document.getElementById("gift-name").innerHTML = currentGift.name;
+    document.getElementById("gift-target").innerHTML = target + " €";
+    document.getElementById("gift-funded").innerHTML = funded + " €";
+    document.getElementById("gift-remaining").innerHTML = remaining + " €";
+    document.getElementById("gift-fill").style.width = percent + "%";
+    document.getElementById("gift-image").src = currentGift.image_url || getImage(currentGift.name);
 
-      if (lower.indexOf("lit") !== -1) {
-        return "https://images.pexels.com/photos/3662667/pexels-photo-3662667.jpeg?auto=compress&cs=tinysrgb&w=1200";
-      }
-
-      return "https://images.pexels.com/photos/459957/pexels-photo-459957.jpeg?auto=compress&cs=tinysrgb&w=1200";
+    if (funded >= target) {
+      document.getElementById("form-area").innerHTML =
+        '<div class="success message" style="display:block;">✅ Ce cadeau est déjà financé</div>';
     }
+  });
+}
 
-    function getIdFromUrl() {
-      var params = new URLSearchParams(window.location.search);
-      return params.get("id");
-    }
+function payer() {
+  var prenom = document.getElementById("prenom").value;
+  var montant = Number(document.getElementById("montant").value);
 
-    function loadGift() {
-      var id = getIdFromUrl();
+  if (!prenom || !prenom.trim()) {
+    showMessage("Veuillez entrer votre prénom", "error");
+    return;
+  }
 
-      if (!id) {
-        document.getElementById("gift-name").innerHTML = "Cadeau introuvable";
-        return;
-      }
+  if (!montant || montant <= 0) {
+    showMessage("Montant invalide", "error");
+    return;
+  }
 
-      fetch(SUPABASE_URL + "/rest/v1/gifts?id=eq." + id + "&select=*", {
-        method: "GET",
-        headers: {
-          "apikey": SUPABASE_ANON_KEY,
-          "Authorization": "Bearer " + SUPABASE_ANON_KEY
-        }
-      })
-      .then(function(response) {
-        return response.json();
-      })
-      .then(function(data) {
-        if (!data || data.length === 0) {
-          document.getElementById("gift-name").innerHTML = "Cadeau introuvable";
-          return;
-        }
+  fetch("/api/create-checkout-session", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json"
+    },
+    body: JSON.stringify({
+      amount: montant,
+      giftName: currentGift.name
+    })
+  })
+  .then(res => res.json())
+  .then(data => {
+    window.location.href = data.url;
+  })
+  .catch(err => {
+    showMessage("Erreur paiement", "error");
+  });
+}
 
-        currentGift = data[0];
+loadGift();
+</script>
 
-        var funded = Number(currentGift.funded_amount);
-        var target = Number(currentGift.target_amount);
-        var remaining = target - funded;
-        if (remaining < 0) remaining = 0;
-
-        var percent = 0;
-        if (target > 0) {
-          percent = (funded / target) * 100;
-          if (percent > 100) percent = 100;
-        }
-
-        document.getElementById("gift-name").innerHTML = currentGift.name;
-        document.getElementById("gift-target").innerHTML = target + " €";
-        document.getElementById("gift-funded").innerHTML = funded + " €";
-        document.getElementById("gift-remaining").innerHTML = remaining + " €";
-        document.getElementById("gift-percent").innerHTML = Math.round(percent) + "%";
-        document.getElementById("gift-fill").style.width = percent + "%";
-        document.getElementById("gift-image").src = currentGift.image_url ? currentGift.image_url : getGiftImage(currentGift.name);
-
-        if (funded >= target || currentGift.is_funded === true) {
-          document.getElementById("form-area").innerHTML =
-            '<div class="message success" style="display:block;">✅ Ce cadeau est déjà financé.</div>';
-        }
-      });
-    }
-
-    function participer() {
-      if (!currentGift) return;
-
-      var prenom = document.getElementById("prenom").value;
-      var montant = Number(document.getElementById("montant").value);
-
-      if (!prenom || !prenom.trim()) {
-        showMessage("Veuillez entrer votre prénom.", "error");
-        return;
-      }
-
-      if (!montant || montant <= 0) {
-        showMessage("Veuillez entrer un montant valide.", "error");
-        return;
-      }
-
-      var funded = Number(currentGift.funded_amount);
-      var target = Number(currentGift.target_amount);
-      var remaining = target - funded;
-
-      if (montant > remaining) {
-        showMessage("Le montant dépasse le reste à financer.", "error");
-        return;
-      }
-
-      fetch(SUPABASE_URL + "/rest/v1/contributions", {
-        method: "POST",
-        headers: {
-          "apikey": SUPABASE_ANON_KEY,
-          "Authorization": "Bearer " + SUPABASE_ANON_KEY,
-          "Content-Type": "application/json",
-          "Prefer": "return=representation"
-        },
-        body: JSON.stringify([
-          {
-            gift_id: currentGift.id,
-            contributor_name: prenom.trim(),
-            amount: montant
-          }
-        ])
-      })
-      .then(function(response) {
-        return response.json().then(function(data) {
-          return { ok: response.ok, data: data };
-        });
-      })
-      .then(function(result) {
-        if (!result.ok) {
-          showMessage("Erreur contribution : " + JSON.stringify(result.data), "error");
-          return;
-        }
-
-        var newFunded = funded + montant;
-        var isFunded = newFunded >= target;
-
-        fetch(SUPABASE_URL + "/rest/v1/gifts?id=eq." + currentGift.id, {
-          method: "PATCH",
-          headers: {
-            "apikey": SUPABASE_ANON_KEY,
-            "Authorization": "Bearer " + SUPABASE_ANON_KEY,
-            "Content-Type": "application/json",
-            "Prefer": "return=representation"
-          },
-          body: JSON.stringify({
-            funded_amount: newFunded,
-            is_funded: isFunded
-          })
-        })
-        .then(function(response) {
-          return response.json().then(function(data) {
-            return { ok: response.ok, data: data };
-          });
-        })
-        .then(function(updateResult) {
-          if (!updateResult.ok) {
-            showMessage("Contribution enregistrée, mais cadeau non mis à jour.", "error");
-            return;
-          }
-
-          showMessage("Merci " + prenom + " 🤍 Votre participation a été enregistrée.", "success");
-          document.getElementById("prenom").value = "";
-          document.getElementById("montant").value = "";
-          loadGift();
-        });
-      })
-      .catch(function(error) {
-        showMessage("Erreur réseau : " + error, "error");
-      });
-    }
-
-    loadGift();
-  </script>
 </body>
 </html>
