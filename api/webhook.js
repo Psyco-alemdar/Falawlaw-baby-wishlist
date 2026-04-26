@@ -1,19 +1,32 @@
 const Stripe = require("stripe");
+
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY);
 
-module.exports = async function handler(req, res) {
+export const config = {
+  api: {
+    bodyParser: false,
+  },
+};
 
+export default async function handler(req, res) {
+  const buf = await buffer(req);
   const sig = req.headers["stripe-signature"];
 
+  let event;
+
   try {
-    const event = stripe.webhooks.constructEvent(
-      req.body,
+    event = stripe.webhooks.constructEvent(
+      buf,
       sig,
       process.env.STRIPE_WEBHOOK_SECRET
     );
+  } catch (err) {
+    console.error("❌ Signature error:", err.message);
+    return res.status(400).send(Webhook Error: ${err.message});
+  }
 
+  try {
     if (event.type === "checkout.session.completed") {
-
       const session = event.data.object;
 
       const amount = session.amount_total / 100;
@@ -35,12 +48,25 @@ module.exports = async function handler(req, res) {
           message: message
         }])
       });
-
     }
 
-    res.status(200).send("ok");
+    return res.status(200).send("ok");
 
-  } catch (err) {
-    res.status(400).send(Webhook Error: ${err.message});
+  } catch (error) {
+    console.error("❌ Webhook crash:", error);
+    return res.status(500).send("Server error");
   }
-};
+}
+
+function buffer(readable) {
+  return new Promise((resolve, reject) => {
+    const chunks = [];
+    readable.on("data", (chunk) => {
+      chunks.push(chunk);
+    });
+    readable.on("end", () => {
+      resolve(Buffer.concat(chunks));
+    });
+    readable.on("error", reject);
+  });
+}
