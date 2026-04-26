@@ -8,305 +8,176 @@
 <style>
 body {
   margin: 0;
-  font-family: Arial, sans-serif;
-  background: linear-gradient(to bottom, #fff7f8, #f7ede7);
-  color: #5f4b4b;
+  font-family: Arial;
+  background: linear-gradient(#fff7f8, #f7ede7);
 }
 
 .page {
-  max-width: 900px;
-  margin: 40px auto;
+  max-width: 800px;
+  margin: auto;
   padding: 20px;
 }
 
 .card {
   background: white;
-  border-radius: 22px;
+  border-radius: 20px;
   overflow: hidden;
   box-shadow: 0 10px 25px rgba(0,0,0,0.08);
 }
 
 .image {
   width: 100%;
-  height: 320px;
+  height: 300px;
   object-fit: cover;
-  background: #f7ede7;
 }
 
 .content {
-  padding: 28px;
-}
-
-h1 {
-  margin: 0 0 18px;
-  color: #c884a2;
-  font-size: 38px;
-}
-
-.stats {
-  margin: 8px 0;
-  font-size: 18px;
+  padding: 20px;
 }
 
 .progress {
-  height: 14px;
+  height: 12px;
   background: #eee;
   border-radius: 10px;
-  overflow: hidden;
-  margin: 18px 0;
+  margin: 10px 0;
 }
 
 .fill {
-  height: 14px;
+  height: 12px;
   background: #e49ab5;
-  width: 0%;
-}
-
-.form-box {
-  margin-top: 22px;
-}
-
-label {
-  display: block;
-  margin-top: 14px;
-  font-weight: bold;
 }
 
 input {
   width: 100%;
-  padding: 13px;
+  padding: 12px;
+  margin-top: 10px;
   border-radius: 10px;
   border: 1px solid #ddd;
-  margin-top: 6px;
-  box-sizing: border-box;
-  font-size: 16px;
 }
 
 button {
-  margin-top: 18px;
   width: 100%;
-  padding: 15px;
-  border-radius: 12px;
+  padding: 14px;
+  margin-top: 15px;
   border: none;
+  border-radius: 10px;
   background: #d98cab;
   color: white;
   font-weight: bold;
-  cursor: pointer;
-  font-size: 17px;
 }
 
 .message {
   margin-top: 15px;
-  padding: 12px;
+  padding: 10px;
   border-radius: 10px;
   display: none;
 }
 
-.success {
-  display: block;
-  background: #e8f6e8;
-  color: green;
-}
-
-.error {
-  display: block;
-  background: #fdeaea;
-  color: red;
-}
-
-.back {
-  display: inline-block;
-  margin-top: 22px;
-  text-decoration: none;
-  color: #b96f90;
-  font-weight: bold;
-}
+.error { background:#fdeaea; color:red; display:block;}
+.success { background:#e8f6e8; color:green; display:block;}
 </style>
 </head>
 
 <body>
 
 <div class="page">
-  <div class="card">
-    <img id="gift-image" class="image" src="" alt="cadeau">
+<div class="card">
 
-    <div class="content">
-      <h1 id="gift-name">Chargement...</h1>
+<img id="gift-image" class="image">
 
-      <div class="stats">Prix : <strong id="gift-target">-</strong></div>
-      <div class="stats">Collecté : <strong id="gift-funded">-</strong></div>
-      <div class="stats">Reste : <strong id="gift-remaining">-</strong></div>
+<div class="content">
 
-      <div class="progress">
-        <div id="gift-fill" class="fill"></div>
-      </div>
+<h2 id="gift-name">Chargement...</h2>
 
-      <div id="form-area" class="form-box">
-        <label>Votre nom</label>
-        <input id="prenom" placeholder="Votre nom">
+<p>Prix : <b id="gift-target"></b></p>
+<p>Collecté : <b id="gift-funded"></b></p>
+<p>Reste : <b id="gift-remaining"></b></p>
 
-        <label>Montant (€)</label>
-        <input id="montant" type="number" placeholder="Exemple : 100">
+<div class="progress">
+  <div id="fill" class="fill"></div>
+</div>
 
-        <label>Message optionnel</label>
-        <input id="messageInput" placeholder="Ex : Félicitations ❤️">
+<input id="name" placeholder="Votre nom">
+<input id="amount" type="number" placeholder="Exemple : 100">
+<input id="msg" placeholder="Message optionnel">
 
-        <button onclick="payer()">Payer maintenant</button>
-      </div>
+<button onclick="payer()">Payer maintenant</button>
 
-      <div id="message" class="message"></div>
+<div id="message" class="message"></div>
 
-      <a class="back" href="index.html">← Retour à la wishlist</a>
-    </div>
-  </div>
+</div>
+</div>
 </div>
 
 <script>
-var SUPABASE_URL = "https://rcihspcsadskezucjpdp.supabase.co";
-var SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InJjaWhzcGNzYWRza2V6dWNqcGRwIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzY2MDUxMzUsImV4cCI6MjA5MjE4MTEzNX0.hVp-qvJWEpNwgwcHv5-jBeS52WC2tocJGavIxkLAY3A";
+const SUPABASE_URL = "https://rcihspcsadskezucjpdp.supabase.co";
+const SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InJjaWhzcGNzYWRza2V6dWNqcGRwIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzY2MDUxMzUsImV4cCI6MjA5MjE4MTEzNX0.hVp-qvJWEpNwgwcHv5-jBeS52WC2tocJGavIxkLAY3A";
 
-var currentGift = null;
+let gift = null;
 
-function showMessage(text, type) {
-  var box = document.getElementById("message");
-  box.className = "message " + type;
-  box.innerHTML = text;
-  box.style.display = "block";
+function show(msg,type){
+  let box = document.getElementById("message");
+  box.className = "message "+type;
+  box.innerHTML = msg;
+  box.style.display="block";
 }
 
-function getId() {
-  var params = new URLSearchParams(window.location.search);
-  return params.get("id");
+function getId(){
+  return new URLSearchParams(window.location.search).get("id");
 }
 
-function getImage(name) {
-  var lower = String(name).toLowerCase();
+function loadGift(){
+  let id = getId();
 
-  if (lower.indexOf("poussette") !== -1) return "https://images.pexels.com/photos/1257110/pexels-photo-1257110.jpeg";
-  if (lower.indexOf("siege") !== -1 || lower.indexOf("siège") !== -1) return "https://images.pexels.com/photos/3933274/pexels-photo-3933274.jpeg";
-  if (lower.indexOf("lit") !== -1) return "https://images.pexels.com/photos/3662667/pexels-photo-3662667.jpeg";
-  if (lower.indexOf("tire") !== -1) return "https://images.pexels.com/photos/3661470/pexels-photo-3661470.jpeg";
-  if (lower.indexOf("biberon") !== -1) return "https://images.pexels.com/photos/3933244/pexels-photo-3933244.jpeg";
-  if (lower.indexOf("babyphone") !== -1) return "https://images.pexels.com/photos/459957/pexels-photo-459957.jpeg";
-
-  return "https://images.pexels.com/photos/459957/pexels-photo-459957.jpeg";
-}
-
-function loadGift() {
-  var id = getId();
-
-  if (!id) {
-    document.getElementById("gift-name").innerHTML = "Cadeau introuvable";
-    return;
-  }
-
-  fetch(SUPABASE_URL + "/rest/v1/gifts?id=eq." + id + "&select=*", {
-    method: "GET",
-    headers: {
-      "apikey": SUPABASE_ANON_KEY,
-      "Authorization": "Bearer " + SUPABASE_ANON_KEY
+  fetch(SUPABASE_URL+"/rest/v1/gifts?id=eq."+id,{
+    headers:{
+      apikey:SUPABASE_KEY,
+      Authorization:"Bearer "+SUPABASE_KEY
     }
   })
-  .then(function(response) {
-    return response.json().then(function(data) {
-      return { ok: response.ok, data: data };
-    });
-  })
-  .then(function(result) {
-    if (!result.ok) {
-      showMessage("Erreur chargement cadeau : " + JSON.stringify(result.data), "error");
-      return;
-    }
+  .then(r=>r.json())
+  .then(data=>{
+    gift=data[0];
 
-    if (!result.data || result.data.length === 0) {
-      document.getElementById("gift-name").innerHTML = "Cadeau introuvable";
-      return;
-    }
+    let funded=Number(gift.funded_amount||0);
+    let target=Number(gift.target_amount||0);
+    let rest=target-funded;
 
-    currentGift = result.data[0];
+    document.getElementById("gift-name").innerText=gift.name;
+    document.getElementById("gift-target").innerText=target+" €";
+    document.getElementById("gift-funded").innerText=funded+" €";
+    document.getElementById("gift-remaining").innerText=rest+" €";
 
-    var funded = Number(currentGift.funded_amount || 0);
-    var target = Number(currentGift.target_amount || 0);
-    var remaining = target - funded;
-    if (remaining < 0) remaining = 0;
+    document.getElementById("fill").style.width=(funded/target*100)+"%";
 
-    var percent = 0;
-    if (target > 0) {
-      percent = (funded / target) * 100;
-      if (percent > 100) percent = 100;
-    }
-
-    document.getElementById("gift-name").innerHTML = currentGift.name;
-    document.getElementById("gift-target").innerHTML = target + " €";
-    document.getElementById("gift-funded").innerHTML = funded + " €";
-    document.getElementById("gift-remaining").innerHTML = remaining + " €";
-    document.getElementById("gift-fill").style.width = percent + "%";
-    document.getElementById("gift-image").src = currentGift.image_url ? currentGift.image_url : getImage(currentGift.name);
-
-    if (funded >= target || currentGift.is_funded === true) {
-      document.getElementById("form-area").innerHTML =
-        '<div class="message success" style="display:block;">✅ Ce cadeau est déjà financé</div>';
-    }
-  })
-  .catch(function(error) {
-    showMessage("Erreur réseau : " + error, "error");
+    document.getElementById("gift-image").src = gift.image_url || "https://images.pexels.com/photos/459957/pexels-photo-459957.jpeg";
   });
 }
 
-function payer() {
-  if (!currentGift) {
-    showMessage("Le cadeau n’est pas encore chargé.", "error");
-    return;
-  }
+function payer(){
 
-  var nom = document.getElementById("prenom").value;
-  var montant = Number(document.getElementById("montant").value);
-  var message = document.getElementById("messageInput").value;
+  let name=document.getElementById("name").value;
+  let amount=Number(document.getElementById("amount").value);
 
-  if (!nom || !nom.trim()) {
-    showMessage("Veuillez entrer votre nom.", "error");
-    return;
-  }
+  if(!name) return show("Nom requis","error");
+  if(!amount) return show("Montant invalide","error");
 
-  if (!montant || montant <= 0) {
-    showMessage("Veuillez entrer un montant valide.", "error");
-    return;
-  }
-
-  var funded = Number(currentGift.funded_amount || 0);
-  var target = Number(currentGift.target_amount || 0);
-  var remaining = target - funded;
-
-  if (montant > remaining) {
-    showMessage("Le montant dépasse le reste à financer.", "error");
-    return;
-  }
-
-  fetch("/api/create-checkout-session", {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json"
-    },
-    body: JSON.stringify({
-      amount: montant,
-      giftName: currentGift.name,
-      giftId: currentGift.id,
-      contributorName: nom.trim(),
-      message: message ? message.trim() : ""
+  fetch("https://falawlaw-baby-wishlist.vercel.app/api/create-checkout-session",{
+    method:"POST",
+    headers:{"Content-Type":"application/json"},
+    body:JSON.stringify({
+      amount:amount,
+      giftName:gift.name
     })
   })
-  .then(function(response) {
-    return response.json();
-  })
-  .then(function(data) {
-    if (data.url) {
-      window.location.href = data.url;
-    } else {
-      showMessage("Erreur Stripe : " + JSON.stringify(data), "error");
+  .then(r=>r.text())
+  .then(t=>{
+    try{
+      let data=JSON.parse(t);
+      window.location.href=data.url;
+    }catch{
+      show("Erreur serveur : "+t,"error");
     }
-  })
-  .catch(function(error) {
-    showMessage("Erreur paiement : " + error, "error");
   });
 }
 
