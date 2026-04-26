@@ -21,23 +21,24 @@ module.exports = async function handler(req, res) {
     }
 
     const session = await stripe.checkout.sessions.create({
-      payment_method_types: ["card"],
-      mode: "payment",
-      line_items: [
-        {
-          price_data: {
-            currency: "eur",
-            product_data: {
-              name: giftName
-            },
-            unit_amount: Math.round(amount * 100)
-          },
-          quantity: 1
-        }
-      ],
-      success_url: "https://falawlaw-baby-wishlist.vercel.app/success.html",
-      cancel_url: "https://falawlaw-baby-wishlist.vercel.app/cancel.html"
-    });
+  payment_method_types: ["card"],
+  mode: "payment",
+  line_items: [{
+    price_data: {
+      currency: "eur",
+      product_data: { name: giftName },
+      unit_amount: Math.round(amount * 100)
+    },
+    quantity: 1
+  }],
+  metadata: {
+    giftId: giftId,
+    name: contributorName,
+    message: message
+  },
+  success_url: "https://falawlaw-baby-wishlist.vercel.app/success.html",
+  cancel_url: "https://falawlaw-baby-wishlist.vercel.app/cancel.html"
+});
 
     return res.status(200).json({ url: session.url });
   } catch (error) {
