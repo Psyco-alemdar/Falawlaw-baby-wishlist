@@ -8,105 +8,251 @@
 <style>
 body {
   margin: 0;
-  font-family: Arial;
-  background: linear-gradient(#fff7f8, #f7ede7);
+  font-family: Arial, sans-serif;
+  background: linear-gradient(180deg, #fff7f8, #f4e7df);
+  color: #5f4b4b;
 }
 
 .page {
-  max-width: 800px;
-  margin: auto;
+  max-width: 920px;
+  margin: 40px auto;
   padding: 20px;
 }
 
 .card {
-  background: white;
-  border-radius: 20px;
+  background: #fffdfb;
+  border-radius: 28px;
   overflow: hidden;
-  box-shadow: 0 10px 25px rgba(0,0,0,0.08);
+  box-shadow: 0 14px 35px rgba(180, 120, 140, 0.18);
 }
 
 .image {
   width: 100%;
-  height: 300px;
+  height: 360px;
   object-fit: cover;
+  background: #f7ede7;
+  display: block;
 }
 
 .content {
-  padding: 20px;
+  padding: 34px;
+}
+
+h1 {
+  margin: 0 0 24px;
+  font-size: 40px;
+  color: #b96f90;
+}
+
+.stats-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+  gap: 16px;
+  margin-bottom: 24px;
+}
+
+.stat {
+  background: #fff3f7;
+  border: 1px solid #f0d6df;
+  border-radius: 18px;
+  padding: 18px;
+}
+
+.stat-label {
+  font-size: 14px;
+  color: #8a7070;
+  margin-bottom: 8px;
+}
+
+.stat-value {
+  font-size: 24px;
+  font-weight: bold;
+  color: #b96f90;
+}
+
+.progress-area {
+  margin: 20px 0 30px;
+}
+
+.progress-top {
+  display: flex;
+  justify-content: space-between;
+  color: #7b6666;
+  font-size: 15px;
+  margin-bottom: 8px;
 }
 
 .progress {
-  height: 12px;
-  background: #eee;
-  border-radius: 10px;
-  margin: 10px 0;
+  height: 16px;
+  background: #ead8d0;
+  border-radius: 999px;
+  overflow: hidden;
 }
 
 .fill {
-  height: 12px;
-  background: #e49ab5;
+  height: 16px;
+  background: linear-gradient(90deg, #efb3c7, #d98cab);
+  border-radius: 999px;
+  width: 0%;
+}
+
+.form-box {
+  background: #fff8fb;
+  border: 1px solid #f0d6df;
+  border-radius: 22px;
+  padding: 24px;
+}
+
+.form-title {
+  font-size: 24px;
+  color: #b96f90;
+  margin-bottom: 18px;
+  font-weight: bold;
+}
+
+label {
+  display: block;
+  margin-top: 16px;
+  margin-bottom: 7px;
+  font-weight: bold;
+  color: #6c5656;
 }
 
 input {
   width: 100%;
-  padding: 12px;
-  margin-top: 10px;
-  border-radius: 10px;
-  border: 1px solid #ddd;
+  padding: 15px;
+  border-radius: 14px;
+  border: 1px solid #e2c9d2;
+  box-sizing: border-box;
+  font-size: 16px;
+  background: white;
+}
+
+input:focus {
+  outline: none;
+  border-color: #d98cab;
+  box-shadow: 0 0 0 3px rgba(217, 140, 171, 0.18);
 }
 
 button {
   width: 100%;
-  padding: 14px;
-  margin-top: 15px;
+  padding: 16px;
+  margin-top: 24px;
   border: none;
-  border-radius: 10px;
-  background: #d98cab;
+  border-radius: 16px;
+  background: linear-gradient(90deg, #df96b3, #cf81a1);
   color: white;
   font-weight: bold;
+  cursor: pointer;
+  font-size: 18px;
+}
+
+button:hover {
+  opacity: 0.95;
 }
 
 .message {
-  margin-top: 15px;
-  padding: 10px;
-  border-radius: 10px;
+  margin-top: 18px;
+  padding: 14px;
+  border-radius: 14px;
   display: none;
 }
 
-.error { background:#fdeaea; color:red; display:block;}
-.success { background:#e8f6e8; color:green; display:block;}
+.error {
+  background:#fdeaea;
+  color:#b00020;
+  display:block;
+}
+
+.success {
+  background:#e8f6e8;
+  color:#2f6b2f;
+  display:block;
+}
+
+.back {
+  display: inline-block;
+  margin-top: 24px;
+  text-decoration: none;
+  color: #b96f90;
+  font-weight: bold;
+}
+
+@media (max-width: 600px) {
+  .page {
+    margin: 10px auto;
+    padding: 12px;
+  }
+
+  .image {
+    height: 250px;
+  }
+
+  .content {
+    padding: 22px;
+  }
+
+  h1 {
+    font-size: 32px;
+  }
+}
 </style>
 </head>
 
 <body>
 
 <div class="page">
-<div class="card">
+  <div class="card">
+    <img id="gift-image" class="image" src="" alt="cadeau">
 
-<img id="gift-image" class="image">
+    <div class="content">
+      <h1 id="gift-name">Chargement...</h1>
 
-<div class="content">
+      <div class="stats-grid">
+        <div class="stat">
+          <div class="stat-label">Prix total</div>
+          <div class="stat-value" id="gift-target">-</div>
+        </div>
+        <div class="stat">
+          <div class="stat-label">Déjà collecté</div>
+          <div class="stat-value" id="gift-funded">-</div>
+        </div>
+        <div class="stat">
+          <div class="stat-label">Reste à financer</div>
+          <div class="stat-value" id="gift-remaining">-</div>
+        </div>
+      </div>
 
-<h2 id="gift-name">Chargement...</h2>
+      <div class="progress-area">
+        <div class="progress-top">
+          <span>Progression</span>
+          <span id="gift-percent">0%</span>
+        </div>
+        <div class="progress">
+          <div id="fill" class="fill"></div>
+        </div>
+      </div>
 
-<p>Prix : <b id="gift-target"></b></p>
-<p>Collecté : <b id="gift-funded"></b></p>
-<p>Reste : <b id="gift-remaining"></b></p>
+      <div id="form-area" class="form-box">
+        <div class="form-title">Participer à ce cadeau 🤍</div>
 
-<div class="progress">
-  <div id="fill" class="fill"></div>
-</div>
+        <label for="name">Votre nom</label>
+        <input id="name" placeholder="Votre nom">
 
-<input id="name" placeholder="Votre nom">
-<input id="amount" type="number" placeholder="Exemple : 100">
-<input id="msg" placeholder="Message optionnel">
+        <label for="amount">Montant (€)</label>
+        <input id="amount" type="number" placeholder="Exemple : 100">
 
-<button onclick="payer()">Payer maintenant</button>
+        <label for="msg">Message optionnel</label>
+        <input id="msg" placeholder="Ex : Félicitations ❤️">
 
-<div id="message" class="message"></div>
+        <button onclick="payer()">Payer maintenant</button>
+      </div>
 
-</div>
-</div>
+      <div id="message" class="message"></div>
+
+      <a class="back" href="index.html">← Retour à la wishlist</a>
+    </div>
+  </div>
 </div>
 
 <script>
@@ -142,40 +288,56 @@ function loadGift(){
     let funded=Number(gift.funded_amount||0);
     let target=Number(gift.target_amount||0);
     let rest=target-funded;
+    if(rest < 0) rest = 0;
+
+    let percent = target > 0 ? Math.min((funded/target)*100, 100) : 0;
 
     document.getElementById("gift-name").innerText=gift.name;
     document.getElementById("gift-target").innerText=target+" €";
     document.getElementById("gift-funded").innerText=funded+" €";
     document.getElementById("gift-remaining").innerText=rest+" €";
+    document.getElementById("gift-percent").innerText=Math.round(percent)+"%";
+    document.getElementById("fill").style.width=percent+"%";
 
-    document.getElementById("fill").style.width=(funded/target*100)+"%";
+    document.getElementById("gift-image").src =
+      gift.image_url || "https://images.pexels.com/photos/459957/pexels-photo-459957.jpeg";
 
-    document.getElementById("gift-image").src = gift.image_url || "https://images.pexels.com/photos/459957/pexels-photo-459957.jpeg";
+    if (funded >= target || gift.is_funded === true) {
+      document.getElementById("form-area").innerHTML =
+        '<div class="success" style="padding:14px;border-radius:14px;">✅ Ce cadeau est déjà financé</div>';
+    }
   });
 }
 
 function payer(){
-
   let name=document.getElementById("name").value;
   let amount=Number(document.getElementById("amount").value);
+  let msg=document.getElementById("msg").value;
 
-  if(!name) return show("Nom requis","error");
-  if(!amount) return show("Montant invalide","error");
+  if(!name || !name.trim()) return show("Veuillez entrer votre nom.","error");
+  if(!amount || amount <= 0) return show("Veuillez entrer un montant valide.","error");
 
   fetch("https://falawlaw-baby-wishlist.vercel.app/api/create-checkout-session",{
     method:"POST",
     headers:{"Content-Type":"application/json"},
     body:JSON.stringify({
       amount:amount,
-      giftName:gift.name
+      giftName:gift.name,
+      giftId:gift.id,
+      contributorName:name.trim(),
+      message:msg ? msg.trim() : ""
     })
   })
   .then(r=>r.text())
   .then(t=>{
     try{
       let data=JSON.parse(t);
-      window.location.href=data.url;
-    }catch{
+      if(data.url){
+        window.location.href=data.url;
+      } else {
+        show("Erreur Stripe : "+JSON.stringify(data),"error");
+      }
+    }catch(e){
       show("Erreur serveur : "+t,"error");
     }
   });
