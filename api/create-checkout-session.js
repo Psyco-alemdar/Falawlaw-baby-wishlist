@@ -1,15 +1,19 @@
-import Stripe from "stripe";
+const Stripe = require("stripe");
 
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY);
 
-export default async function handler(req, res) {
+module.exports = async function handler(req, res) {
   if (req.method !== "POST") {
-    return res.status(405).end();
+    return res.status(405).json({ error: "Method not allowed" });
   }
 
-  const { amount, giftName } = req.body;
-
   try {
+    const { amount, giftName } = req.body;
+
+    if (!amount || !giftName) {
+      return res.status(400).json({ error: "Amount or giftName missing" });
+    }
+
     const session = await stripe.checkout.sessions.create({
       payment_method_types: ["card"],
       mode: "payment",
@@ -18,19 +22,19 @@ export default async function handler(req, res) {
           price_data: {
             currency: "eur",
             product_data: {
-              name: giftName,
+              name: giftName
             },
-            unit_amount: amount * 100,
+            unit_amount: Math.round(Number(amount) * 100)
           },
-          quantity: 1,
-        },
+          quantity: 1
+        }
       ],
-      success_url: "https://falwlaw-baby-wishlist.vercel.app/success.html",
-      cancel_url: "https://falwlaw-baby-wishlist.vercel.app/cancel.html",
+      success_url: "https://falawlaw-baby-wishlist.vercel.app/success.html",
+      cancel_url: "https://falawlaw-baby-wishlist.vercel.app/cancel.html"
     });
 
-    res.status(200).json({ url: session.url });
+    return res.status(200).json({ url: session.url });
   } catch (error) {
-    res.status(500).json({ error: error.message });
+    return res.status(500).json({ error: error.message });
   }
-}
+};
