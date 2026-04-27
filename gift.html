@@ -310,24 +310,55 @@ function loadGift(){
 }
 
 function payer(){
-  let name=document.getElementById("name").value;
-  let amount=Number(document.getElementById("amount").value);
-  let msg=document.getElementById("msg").value;
+  let name = document.getElementById("name").value;
+  let amount = Number(document.getElementById("amount").value);
+  let msg = document.getElementById("msg").value;
 
   if(!name || !name.trim()) return show("Veuillez entrer votre nom.","error");
-  if(!amount || amount <= 0) return show("Veuillez entrer un montant valide.","error");
+  if(!amount || amount < 100) return show("Le montant minimum est 100 €.","error");
 
-  fetch("https://falawlaw-baby-wishlist.vercel.app/api/create-checkout-session",{
-    method:"POST",
-    headers:{"Content-Type":"application/json"},
-    body:JSON.stringify({
-      amount:amount,
-      giftName:gift.name,
-      giftId:gift.id,
-      contributorName:name.trim(),
-      message:msg ? msg.trim() : ""
-    })
+  let id = getId();
+  let reference = "FALWLAW-" + id + "-" + Date.now();
+
+  fetch(SUPABASE_URL + "/rest/v1/contributions", {
+    method: "POST",
+    headers: {
+      "apikey": SUPABASE_KEY,
+      "Authorization": "Bearer " + SUPABASE_KEY,
+      "Content-Type": "application/json"
+    },
+    body: JSON.stringify([{
+      gift_id: Number(id),
+      contributor_name: name.trim(),
+      amount: amount,
+      message: msg ? msg.trim() : "",
+      status: "pending",
+      payment_method: "bank_transfer",
+      payment_reference: reference
+    }])
   })
+  .then(function(response){
+    if(!response.ok){
+      return response.text().then(function(text){
+        throw new Error(text);
+      });
+    }
+
+    show(
+      "Merci 🤍<br><br>" +
+      "Votre participation a été enregistrée en attente.<br><br>" +
+      "<strong>Montant :</strong> " + amount + " €<br>" +
+      "<strong>IBAN :</strong> LT07 3250 0771 5674 6415<br>" +
+      "<strong>Référence obligatoire :</strong><br>" +
+      "<span style='font-size:18px;color:#b96f90;font-weight:bold;'>" + reference + "</span><br><br>" +
+      "Merci d’indiquer cette référence dans le virement. Votre contribution sera confirmée après réception.",
+      "success"
+    );
+  })
+  .catch(function(error){
+    show("Erreur : " + error.message, "error");
+  });
+}
   .then(r=>r.text())
   .then(t=>{
     try{
