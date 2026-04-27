@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Détail du cadeau</title>
+<title>Falwlaw Baby Sophia</title>
 
 <style>
 body {
@@ -41,6 +41,13 @@ h1 {
   margin: 0 0 24px;
   font-size: 40px;
   color: #b96f90;
+}
+
+.subtitle {
+  font-size: 18px;
+  line-height: 1.6;
+  color: #7b6666;
+  margin-bottom: 24px;
 }
 
 .stats-grid {
@@ -93,8 +100,14 @@ h1 {
 .form-title {
   font-size: 24px;
   color: #b96f90;
-  margin-bottom: 18px;
+  margin-bottom: 10px;
   font-weight: bold;
+}
+
+.form-subtitle {
+  color: #7b6666;
+  line-height: 1.6;
+  margin-bottom: 18px;
 }
 
 label {
@@ -192,6 +205,10 @@ button {
     <div class="content">
       <h1 id="gift-name">Chargement...</h1>
 
+      <div class="subtitle">
+        Un petit geste pour accompagner l’arrivée de Sophia 🤍
+      </div>
+
       <div class="stats-grid">
         <div class="stat">
           <div class="stat-label">Prix total</div>
@@ -212,13 +229,17 @@ button {
       </div>
 
       <div id="form-area" class="form-box">
-        <div class="form-title">Participer par virement bancaire 🤍</div>
+        <div class="form-title">Un petit cadeau pour Sophia 🤍</div>
+        <div class="form-subtitle">
+          Merci de participer à ce cadeau avec le montant que vous souhaitez.
+          Votre attention nous touche beaucoup.
+        </div>
 
         <label for="name">Votre nom</label>
         <input id="name" placeholder="Votre nom">
 
         <label for="amount">Montant (€)</label>
-        <input id="amount" type="number" placeholder="Exemple : 50">
+        <input id="amount" type="number" placeholder="Exemple : 100">
 
         <label for="msg">Message optionnel</label>
         <input id="msg" placeholder="Ex : Félicitations ❤️">
@@ -241,7 +262,6 @@ const IBAN = "LT07 3250 0771 5674 6415";
 const RECEIVER = "Mounir Akkari";
 
 let gift = null;
-let lastReference = "";
 
 function show(msg, type){
   let box = document.getElementById("message");
@@ -289,7 +309,7 @@ function loadGift(){
 
     if (funded >= target || gift.is_funded === true) {
       document.getElementById("form-area").innerHTML =
-        '<div class="success" style="padding:14px;border-radius:14px;">✅ Ce cadeau est déjà financé</div>';
+        '<div class="success" style="padding:14px;border-radius:14px;">✅ Ce cadeau est déjà financé pour Sophia. Merci du fond du cœur 🤍</div>';
     }
   });
 }
@@ -303,8 +323,7 @@ function payer(){
   if(!amount || amount <= 0) return show("Veuillez entrer un montant valide.","error");
 
   let id = getId();
-  let reference = "FALWLAW-" + id + "-" + Date.now();
-  lastReference = reference;
+  let reference = "SOPHIA-" + id + "-" + Date.now();
 
   fetch(SUPABASE_URL + "/rest/v1/contributions", {
     method: "POST",
@@ -346,13 +365,15 @@ function payer(){
     let qrUrl = "https://api.qrserver.com/v1/create-qr-code/?size=220x220&data=" + encodeURIComponent(qrText);
 
     show(
-      "Merci 🤍<br><br>" +
-      "Votre participation a été enregistrée en attente.<br><br>" +
+      "Merci du fond du cœur 🤍<br><br>" +
+      "Votre attention pour Sophia nous touche énormément.<br>" +
+      "Votre participation a bien été enregistrée en attente de réception du virement.<br><br>" +
 
       "<div class='payment-box'>" +
         "<strong>Montant :</strong> " + amount + " €<br>" +
         "<strong>Bénéficiaire :</strong> " + RECEIVER + "<br>" +
-        "<strong>IBAN :</strong><br>" +
+
+        "<br><strong>IBAN :</strong><br>" +
         "<span style='font-size:18px;color:#b96f90;font-weight:bold;'>" + IBAN + "</span>" +
         "<button class='copy-btn' onclick=\"copyText('" + IBAN + "')\">Copier IBAN</button>" +
 
@@ -364,7 +385,8 @@ function payer(){
         "<small>Vous pouvez scanner ce QR code avec votre application bancaire si elle le permet.</small>" +
       "</div><br>" +
 
-      "Votre contribution sera confirmée après réception du virement.",
+      "Merci d’indiquer cette référence dans le virement.<br>" +
+      "Dès réception, votre participation sera confirmée et ajoutée à la wishlist de Sophia.",
       "success"
     );
 
