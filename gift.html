@@ -137,9 +137,7 @@ function loadGift(){
       "Authorization":"Bearer "+SUPABASE_KEY
     }
   })
-  .then(function(r){
-    return r.json();
-  })
+  .then(function(r){ return r.json(); })
   .then(function(data){
     if(!data || data.length === 0){
       document.getElementById("gift-name").innerText = "Cadeau introuvable";
