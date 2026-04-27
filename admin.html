@@ -1,167 +1,175 @@
 <!DOCTYPE html>
 <html lang="fr">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Falwlaw Admin</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Admin - Falwlaw Baby</title>
 
-  <style>
-    body {
-      margin: 0;
-      font-family: Arial, sans-serif;
-      background: #f8efe8;
-      color: #5c4b4b;
-    }
+<style>
+body {
+  margin: 0;
+  font-family: Arial, sans-serif;
+  background: linear-gradient(180deg, #fff7f8, #f4e7df);
+  color: #5f4b4b;
+}
 
-    .login-container {
-      height: 100vh;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-    }
+.login, .admin {
+  max-width: 1100px;
+  margin: 40px auto;
+  padding: 20px;
+}
 
-    .login-box {
-      background: #fffaf7;
-      padding: 30px;
-      border-radius: 20px;
-      box-shadow: 0 8px 24px rgba(0,0,0,0.08);
-      text-align: center;
-      width: 320px;
-    }
+.box {
+  background: #fffdfb;
+  border-radius: 24px;
+  padding: 28px;
+  box-shadow: 0 14px 35px rgba(180, 120, 140, 0.18);
+}
 
-    .login-box h2 {
-      margin-top: 0;
-      color: #c27d9a;
-    }
+h1 {
+  color: #b96f90;
+}
 
-    .login-box input {
-      width: 100%;
-      padding: 12px;
-      margin-top: 10px;
-      border-radius: 10px;
-      border: 1px solid #e3cfc5;
-      box-sizing: border-box;
-    }
+input {
+  width: 100%;
+  padding: 14px;
+  border-radius: 12px;
+  border: 1px solid #e2c9d2;
+  margin-top: 10px;
+  box-sizing: border-box;
+}
 
-    .login-box button {
-      margin-top: 15px;
-      width: 100%;
-      padding: 12px;
-      border: none;
-      border-radius: 10px;
-      background: #d98cab;
-      color: white;
-      font-weight: bold;
-      cursor: pointer;
-    }
+button {
+  padding: 10px 14px;
+  border: none;
+  border-radius: 12px;
+  background: #d98cab;
+  color: white;
+  font-weight: bold;
+  cursor: pointer;
+}
 
-    .error {
-      color: #b00020;
-      margin-top: 10px;
-      font-size: 14px;
-    }
+.admin {
+  display: none;
+}
 
-    .container {
-      max-width: 1100px;
-      margin: 30px auto;
-      background: #fffaf7;
-      border-radius: 24px;
-      padding: 30px;
-      display: none;
-      box-shadow: 0 8px 24px rgba(0,0,0,0.08);
-    }
+table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 20px;
+  background: white;
+  border-radius: 16px;
+  overflow: hidden;
+}
 
-    h1 {
-      margin-top: 0;
-      color: #c27d9a;
-      font-size: 38px;
-    }
+th, td {
+  padding: 12px;
+  border-bottom: 1px solid #f0d6df;
+  text-align: left;
+  vertical-align: top;
+}
 
-    .info {
-      margin-bottom: 18px;
-      color: #7a6363;
-    }
+th {
+  background: #f7d9e5;
+  color: #7a4f63;
+}
 
-    .message {
-      margin: 15px 0 20px;
-      padding: 12px;
-      border-radius: 10px;
-      display: none;
-    }
+.status-pending {
+  color: #b97800;
+  font-weight: bold;
+}
 
-    .message.error {
-      display: block;
-      background: #fdeaea;
-      color: #b00020;
-    }
+.status-confirmed {
+  color: green;
+  font-weight: bold;
+}
 
-    .message.info {
-      display: block;
-      background: #fdf2f6;
-      color: #7a4f63;
-    }
+.message {
+  margin-top: 15px;
+  padding: 12px;
+  border-radius: 12px;
+  display: none;
+}
 
-    table {
-      width: 100%;
-      border-collapse: collapse;
-      margin-top: 20px;
-      background: white;
-      border-radius: 16px;
-      overflow: hidden;
-    }
+.success {
+  display: block;
+  background: #e8f6e8;
+  color: green;
+}
 
-    th, td {
-      padding: 12px;
-      border-bottom: 1px solid #eee;
-      text-align: left;
-    }
-
-    th {
-      background: #f7d9e5;
-      color: #7a4f63;
-    }
-  </style>
+.error {
+  display: block;
+  background: #fdeaea;
+  color: #b00020;
+}
+</style>
 </head>
 
 <body>
 
-<div id="login" class="login-container">
-  <div class="login-box">
-    <h2>Accès Admin</h2>
-    <input type="password" id="password" placeholder="Mot de passe">
+<div id="login" class="login">
+  <div class="box">
+    <h1>Accès Admin</h1>
+    <input type="password" id="password" placeholder="Mot de passe admin">
+    <br><br>
     <button onclick="checkPassword()">Entrer</button>
-    <div id="login-error" class="error"></div>
+    <div id="login-message" class="message"></div>
   </div>
 </div>
 
-<div id="admin" class="container">
-  <h1>Falwlaw Admin</h1>
-  <div class="info">Suivi des participations enregistrées</div>
-  <div id="status" class="message"></div>
+<div id="admin" class="admin">
+  <div class="box">
+    <h1>Falwlaw Admin</h1>
+    <p>Suivi des participations par virement bancaire</p>
 
-  <table>
-    <thead>
-      <tr>
-        <th>Nom</th>
-        <th>Cadeau</th>
-        <th>Montant</th>
-        <th>Date</th>
-      </tr>
-    </thead>
-    <tbody id="data">
-      <tr><td colspan="4">Chargement...</td></tr>
-    </tbody>
-  </table>
+    <div id="admin-message" class="message"></div>
+
+    <table>
+      <thead>
+        <tr>
+          <th>Nom</th>
+          <th>Cadeau</th>
+          <th>Montant</th>
+          <th>Message</th>
+          <th>Référence</th>
+          <th>Statut</th>
+          <th>Action</th>
+        </tr>
+      </thead>
+      <tbody id="rows">
+        <tr><td colspan="7">Chargement...</td></tr>
+      </tbody>
+    </table>
+  </div>
 </div>
 
 <script>
-var PASSWORD = "Sofie2026";
+const ADMIN_PASSWORD = "falwlaw2026";
 
-var SUPABASE_URL = "https://rcihspcsadskezucjpdp.supabase.co";
-var SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InJjaWhzcGNzYWRza2V6dWNqcGRwIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzY2MDUxMzUsImV4cCI6MjA5MjE4MTEzNX0.hVp-qvJWEpNwgwcHv5-jBeS52WC2tocJGavIxkLAY3A";
+const SUPABASE_URL = "https://rcihspcsadskezucjpdp.supabase.co";
+const SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InJjaWhzcGNzYWRza2V6dWNqcGRwIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzY2MDUxMzUsImV4cCI6MjA5MjE4MTEzNX0.hVp-qvJWEpNwgwcHv5-jBeS52WC2tocJGavIxkLAY3A";
+
+function showMessage(id, text, type) {
+  const box = document.getElementById(id);
+  box.className = "message " + type;
+  box.innerHTML = text;
+}
+
+function checkPassword() {
+  const pass = document.getElementById("password").value;
+
+  if (pass !== ADMIN_PASSWORD) {
+    showMessage("login-message", "Mot de passe incorrect.", "error");
+    return;
+  }
+
+  document.getElementById("login").style.display = "none";
+  document.getElementById("admin").style.display = "block";
+  loadAdmin();
+}
 
 function escapeHtml(text) {
-  return String(text)
+  return String(text || "")
     .replace(/&/g, "&amp;")
     .replace(/</g, "&lt;")
     .replace(/>/g, "&gt;")
@@ -169,122 +177,154 @@ function escapeHtml(text) {
     .replace(/'/g, "&#039;");
 }
 
-function showStatus(text, type) {
-  var box = document.getElementById("status");
-  box.className = "message " + type;
-  box.innerHTML = text;
-}
+async function loadAdmin() {
+  const tbody = document.getElementById("rows");
+  tbody.innerHTML = '<tr><td colspan="7">Chargement...</td></tr>';
 
-function formatDate(dateString) {
-  var d = new Date(dateString);
-  if (isNaN(d.getTime())) return dateString;
-  var day = String(d.getDate()).padStart(2, "0");
-  var month = String(d.getMonth() + 1).padStart(2, "0");
-  var year = d.getFullYear();
-  var hours = String(d.getHours()).padStart(2, "0");
-  var minutes = String(d.getMinutes()).padStart(2, "0");
-  return day + "/" + month + "/" + year + " " + hours + ":" + minutes;
-}
+  try {
+    const contribRes = await fetch(
+      SUPABASE_URL + "/rest/v1/contributions?select=*&order=created_at.desc",
+      {
+        headers: {
+          "apikey": SUPABASE_KEY,
+          "Authorization": "Bearer " + SUPABASE_KEY
+        }
+      }
+    );
 
-function checkPassword() {
-  var input = document.getElementById("password").value;
+    const contributions = await contribRes.json();
 
-  if (input === PASSWORD) {
-    document.getElementById("login").style.display = "none";
-    document.getElementById("admin").style.display = "block";
-    loadData();
-  } else {
-    document.getElementById("login-error").innerText = "Mot de passe incorrect ❌";
+    const giftsRes = await fetch(
+      SUPABASE_URL + "/rest/v1/gifts?select=id,name",
+      {
+        headers: {
+          "apikey": SUPABASE_KEY,
+          "Authorization": "Bearer " + SUPABASE_KEY
+        }
+      }
+    );
+
+    const gifts = await giftsRes.json();
+    const giftsMap = {};
+
+    gifts.forEach(gift => {
+      giftsMap[gift.id] = gift.name;
+    });
+
+    if (!contributions || contributions.length === 0) {
+      tbody.innerHTML = '<tr><td colspan="7">Aucune participation.</td></tr>';
+      return;
+    }
+
+    tbody.innerHTML = "";
+
+    contributions.forEach(c => {
+      const giftName = giftsMap[c.gift_id] || "Cadeau inconnu";
+      const status = c.status || "confirmed";
+
+      const tr = document.createElement("tr");
+
+      const action =
+        status === "pending"
+          ? <button onclick="confirmContribution(${c.id}, ${c.gift_id}, ${c.amount})">✅ Confirmer reçu</button>
+          : "—";
+
+      tr.innerHTML = `
+        <td>${escapeHtml(c.contributor_name)}</td>
+        <td>${escapeHtml(giftName)}</td>
+        <td>${escapeHtml(c.amount)} €</td>
+        <td>${escapeHtml(c.message || "")}</td>
+        <td>${escapeHtml(c.payment_reference || "")}</td>
+        <td class="${status === "pending" ? "status-pending" : "status-confirmed"}">
+          ${status === "pending" ? "En attente" : "Confirmé"}
+        </td>
+        <td>${action}</td>
+      `;
+
+      tbody.appendChild(tr);
+    });
+
+  } catch (error) {
+    tbody.innerHTML = '<tr><td colspan="7">Erreur de chargement.</td></tr>';
+    showMessage("admin-message", "Erreur : " + error.message, "error");
   }
 }
 
-function loadData() {
-  var table = document.getElementById("data");
-  table.innerHTML = '<tr><td colspan="4">Chargement...</td></tr>';
+async function confirmContribution(contributionId, giftId, amount) {
+  if (!confirm("Confirmer que ce virement a bien été reçu ?")) {
+    return;
+  }
 
-  fetch(SUPABASE_URL + "/rest/v1/contributions?select=*&order=created_at.desc", {
-    method: "GET",
-    headers: {
-      "apikey": SUPABASE_ANON_KEY,
-      "Authorization": "Bearer " + SUPABASE_ANON_KEY
-    }
-  })
-  .then(function(response) {
-    return response.json().then(function(data) {
-      return {
-        ok: response.ok,
-        data: data
-      };
-    });
-  })
-  .then(function(result) {
-    if (!result.ok) {
-      table.innerHTML = '<tr><td colspan="4">Erreur</td></tr>';
-      showStatus("Erreur chargement contributions : " + escapeHtml(JSON.stringify(result.data)), "error");
-      return;
-    }
+  try {
+    // 1. Passer la contribution en confirmed
+    const confirmRes = await fetch(
+      SUPABASE_URL + "/rest/v1/contributions?id=eq." + contributionId,
+      {
+        method: "PATCH",
+        headers: {
+          "apikey": SUPABASE_KEY,
+          "Authorization": "Bearer " + SUPABASE_KEY,
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+          status: "confirmed"
+        })
+      }
+    );
 
-    var contributions = result.data || [];
-
-    if (contributions.length === 0) {
-      table.innerHTML = '<tr><td colspan="4">Aucune participation enregistrée</td></tr>';
-      showStatus("Il n’y a pas encore de participations dans la table contributions.", "info");
-      return;
+    if (!confirmRes.ok) {
+      throw new Error("Impossible de confirmer la contribution.");
     }
 
-    fetch(SUPABASE_URL + "/rest/v1/gifts?select=id,name", {
-      method: "GET",
-      headers: {
-        "apikey": SUPABASE_ANON_KEY,
-        "Authorization": "Bearer " + SUPABASE_ANON_KEY
+    // 2. Lire le cadeau
+    const giftRes = await fetch(
+      SUPABASE_URL + "/rest/v1/gifts?id=eq." + giftId + "&select=*",
+      {
+        headers: {
+          "apikey": SUPABASE_KEY,
+          "Authorization": "Bearer " + SUPABASE_KEY
+        }
       }
-    })
-    .then(function(response) {
-      return response.json().then(function(data) {
-        return {
-          ok: response.ok,
-          data: data
-        };
-      });
-    })
-    .then(function(giftsResult) {
-      if (!giftsResult.ok) {
-        table.innerHTML = '<tr><td colspan="4">Erreur</td></tr>';
-        showStatus("Erreur chargement cadeaux : " + escapeHtml(JSON.stringify(giftsResult.data)), "error");
-        return;
+    );
+
+    const gifts = await giftRes.json();
+    const gift = gifts[0];
+
+    if (!gift) {
+      throw new Error("Cadeau introuvable.");
+    }
+
+    const oldAmount = Number(gift.funded_amount || 0);
+    const target = Number(gift.target_amount || 0);
+    const newAmount = oldAmount + Number(amount);
+
+    // 3. Mettre à jour le montant du cadeau
+    const updateGiftRes = await fetch(
+      SUPABASE_URL + "/rest/v1/gifts?id=eq." + giftId,
+      {
+        method: "PATCH",
+        headers: {
+          "apikey": SUPABASE_KEY,
+          "Authorization": "Bearer " + SUPABASE_KEY,
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+          funded_amount: newAmount,
+          is_funded: newAmount >= target
+        })
       }
+    );
 
-      var gifts = giftsResult.data || [];
-      var giftsMap = {};
+    if (!updateGiftRes.ok) {
+      throw new Error("Impossible de mettre à jour le cadeau.");
+    }
 
-      for (var i = 0; i < gifts.length; i++) {
-        giftsMap[gifts[i].id] = gifts[i].name;
-      }
+    showMessage("admin-message", "Contribution confirmée avec succès ✅", "success");
+    loadAdmin();
 
-      table.innerHTML = "";
-
-      for (var j = 0; j < contributions.length; j++) {
-        var row = contributions[j];
-        var tr = document.createElement("tr");
-
-        var giftName = giftsMap[row.gift_id] || "Cadeau inconnu";
-
-        tr.innerHTML =
-          "<td>" + escapeHtml(row.contributor_name) + "</td>" +
-          "<td>" + escapeHtml(giftName) + "</td>" +
-          "<td>" + escapeHtml(String(row.amount)) + " €</td>" +
-          "<td>" + escapeHtml(formatDate(row.created_at)) + "</td>";
-
-        table.appendChild(tr);
-      }
-
-      showStatus("Liste chargée avec succès.", "info");
-    });
-  })
-  .catch(function(error) {
-    table.innerHTML = '<tr><td colspan="4">Erreur réseau</td></tr>';
-    showStatus("Erreur réseau : " + escapeHtml(String(error)), "error");
-  });
+  } catch (error) {
+    showMessage("admin-message", "Erreur : " + error.message, "error");
+  }
 }
 </script>
 
