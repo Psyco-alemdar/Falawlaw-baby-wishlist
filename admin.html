@@ -23,7 +23,7 @@ body {
   background: #fffdfb;
   border-radius: 24px;
   padding: 28px;
-  box-shadow: 0 14px 35px rgba(180, 120, 140, 0.18);
+  box-shadow: 0 14px 35px rgba(180,120,140,0.18);
 }
 
 h1 {
@@ -71,7 +71,6 @@ th, td {
 
 th {
   background: #f7d9e5;
-  color: #7a4f63;
 }
 
 .status-pending {
@@ -112,7 +111,7 @@ th {
     <h1>Accès Admin</h1>
     <input type="password" id="password" placeholder="Mot de passe admin">
     <br><br>
-    <button onclick="checkPassword()">Entrer</button>
+    <button type="button" onclick="checkPassword()">Entrer</button>
     <div id="login-message" class="message"></div>
   </div>
 </div>
@@ -144,19 +143,19 @@ th {
 </div>
 
 <script>
-const ADMIN_PASSWORD = "falwlaw2026";
+var ADMIN_PASSWORD = "falwlaw2026";
 
-const SUPABASE_URL = "https://rcihspcsadskezucjpdp.supabase.co";
-const SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InJjaWhzcGNzYWRza2V6dWNqcGRwIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzY2MDUxMzUsImV4cCI6MjA5MjE4MTEzNX0.hVp-qvJWEpNwgwcHv5-jBeS52WC2tocJGavIxkLAY3A";
+var SUPABASE_URL = "https://rcihspcsadskezucjpdp.supabase.co";
+var SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InJjaWhzcGNzYWRza2V6dWNqcGRwIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzY2MDUxMzUsImV4cCI6MjA5MjE4MTEzNX0.hVp-qvJWEpNwgwcHv5-jBeS52WC2tocJGavIxkLAY3A";
 
 function showMessage(id, text, type) {
-  const box = document.getElementById(id);
+  var box = document.getElementById(id);
   box.className = "message " + type;
   box.innerHTML = text;
 }
 
 function checkPassword() {
-  const pass = document.getElementById("password").value;
+  var pass = document.getElementById("password").value;
 
   if (pass !== ADMIN_PASSWORD) {
     showMessage("login-message", "Mot de passe incorrect.", "error");
@@ -177,154 +176,137 @@ function escapeHtml(text) {
     .replace(/'/g, "&#039;");
 }
 
-async function loadAdmin() {
-  const tbody = document.getElementById("rows");
+function loadAdmin() {
+  var tbody = document.getElementById("rows");
   tbody.innerHTML = '<tr><td colspan="7">Chargement...</td></tr>';
 
-  try {
-    const contribRes = await fetch(
-      SUPABASE_URL + "/rest/v1/contributions?select=*&order=created_at.desc",
-      {
-        headers: {
-          "apikey": SUPABASE_KEY,
-          "Authorization": "Bearer " + SUPABASE_KEY
-        }
-      }
-    );
-
-    const contributions = await contribRes.json();
-
-    const giftsRes = await fetch(
-      SUPABASE_URL + "/rest/v1/gifts?select=id,name",
-      {
-        headers: {
-          "apikey": SUPABASE_KEY,
-          "Authorization": "Bearer " + SUPABASE_KEY
-        }
-      }
-    );
-
-    const gifts = await giftsRes.json();
-    const giftsMap = {};
-
-    gifts.forEach(gift => {
-      giftsMap[gift.id] = gift.name;
-    });
-
-    if (!contributions || contributions.length === 0) {
-      tbody.innerHTML = '<tr><td colspan="7">Aucune participation.</td></tr>';
-      return;
+  fetch(SUPABASE_URL + "/rest/v1/contributions?select=*&order=created_at.desc", {
+    headers: {
+      "apikey": SUPABASE_KEY,
+      "Authorization": "Bearer " + SUPABASE_KEY
     }
+  })
+  .then(function(res) {
+    return res.json();
+  })
+  .then(function(contributions) {
+    return fetch(SUPABASE_URL + "/rest/v1/gifts?select=id,name", {
+      headers: {
+        "apikey": SUPABASE_KEY,
+        "Authorization": "Bearer " + SUPABASE_KEY
+      }
+    })
+    .then(function(res) {
+      return res.json();
+    })
+    .then(function(gifts) {
+      var giftsMap = {};
 
-    tbody.innerHTML = "";
+      for (var i = 0; i < gifts.length; i++) {
+        giftsMap[gifts[i].id] = gifts[i].name;
+      }
 
-    contributions.forEach(c => {
-      const giftName = giftsMap[c.gift_id] || "Cadeau inconnu";
-      const status = c.status || "confirmed";
+      if (!contributions || contributions.length === 0) {
+        tbody.innerHTML = '<tr><td colspan="7">Aucune participation.</td></tr>';
+        return;
+      }
 
-      const tr = document.createElement("tr");
+      tbody.innerHTML = "";
 
-      const action =
-        status === "pending"
-          ? <button onclick="confirmContribution(${c.id}, ${c.gift_id}, ${c.amount})">✅ Confirmer reçu</button>
-          : "—";
+      for (var j = 0; j < contributions.length; j++) {
+        var c = contributions[j];
+        var giftName = giftsMap[c.gift_id] || "Cadeau inconnu";
+        var status = c.status || "confirmed";
 
-      tr.innerHTML = `
-        <td>${escapeHtml(c.contributor_name)}</td>
-        <td>${escapeHtml(giftName)}</td>
-        <td>${escapeHtml(c.amount)} €</td>
-        <td>${escapeHtml(c.message || "")}</td>
-        <td>${escapeHtml(c.payment_reference || "")}</td>
-        <td class="${status === "pending" ? "status-pending" : "status-confirmed"}">
-          ${status === "pending" ? "En attente" : "Confirmé"}
-        </td>
-        <td>${action}</td>
-      `;
+        var action = "—";
 
-      tbody.appendChild(tr);
+        if (status === "pending") {
+          action = '<button type="button" onclick="confirmContribution(' + c.id + ',' + c.gift_id + ',' + c.amount + ')">✅ Confirmer reçu</button>';
+        }
+
+        var tr = document.createElement("tr");
+
+        tr.innerHTML =
+          "<td>" + escapeHtml(c.contributor_name) + "</td>" +
+          "<td>" + escapeHtml(giftName) + "</td>" +
+          "<td>" + escapeHtml(c.amount) + " €</td>" +
+          "<td>" + escapeHtml(c.message || "") + "</td>" +
+          "<td>" + escapeHtml(c.payment_reference || "") + "</td>" +
+          '<td class="' + (status === "pending" ? "status-pending" : "status-confirmed") + '">' +
+            (status === "pending" ? "En attente" : "Confirmé") +
+          "</td>" +
+          "<td>" + action + "</td>";
+
+        tbody.appendChild(tr);
+      }
     });
-
-  } catch (error) {
+  })
+  .catch(function(error) {
     tbody.innerHTML = '<tr><td colspan="7">Erreur de chargement.</td></tr>';
     showMessage("admin-message", "Erreur : " + error.message, "error");
-  }
+  });
 }
 
-async function confirmContribution(contributionId, giftId, amount) {
+function confirmContribution(contributionId, giftId, amount) {
   if (!confirm("Confirmer que ce virement a bien été reçu ?")) {
     return;
   }
 
-  try {
-    // 1. Passer la contribution en confirmed
-    const confirmRes = await fetch(
-      SUPABASE_URL + "/rest/v1/contributions?id=eq." + contributionId,
-      {
-        method: "PATCH",
-        headers: {
-          "apikey": SUPABASE_KEY,
-          "Authorization": "Bearer " + SUPABASE_KEY,
-          "Content-Type": "application/json"
-        },
-        body: JSON.stringify({
-          status: "confirmed"
-        })
+  fetch(SUPABASE_URL + "/rest/v1/contributions?id=eq." + contributionId, {
+    method: "PATCH",
+    headers: {
+      "apikey": SUPABASE_KEY,
+      "Authorization": "Bearer " + SUPABASE_KEY,
+      "Content-Type": "application/json"
+    },
+    body: JSON.stringify({
+      status: "confirmed"
+    })
+  })
+  .then(function(res) {
+    if (!res.ok) throw new Error("Impossible de confirmer la contribution.");
+
+    return fetch(SUPABASE_URL + "/rest/v1/gifts?id=eq." + giftId + "&select=*", {
+      headers: {
+        "apikey": SUPABASE_KEY,
+        "Authorization": "Bearer " + SUPABASE_KEY
       }
-    );
+    });
+  })
+  .then(function(res) {
+    return res.json();
+  })
+  .then(function(gifts) {
+    var gift = gifts[0];
 
-    if (!confirmRes.ok) {
-      throw new Error("Impossible de confirmer la contribution.");
-    }
+    if (!gift) throw new Error("Cadeau introuvable.");
 
-    // 2. Lire le cadeau
-    const giftRes = await fetch(
-      SUPABASE_URL + "/rest/v1/gifts?id=eq." + giftId + "&select=*",
-      {
-        headers: {
-          "apikey": SUPABASE_KEY,
-          "Authorization": "Bearer " + SUPABASE_KEY
-        }
-      }
-    );
+    var oldAmount = Number(gift.funded_amount || 0);
+    var target = Number(gift.target_amount || 0);
+    var newAmount = oldAmount + Number(amount);
 
-    const gifts = await giftRes.json();
-    const gift = gifts[0];
-
-    if (!gift) {
-      throw new Error("Cadeau introuvable.");
-    }
-
-    const oldAmount = Number(gift.funded_amount || 0);
-    const target = Number(gift.target_amount || 0);
-    const newAmount = oldAmount + Number(amount);
-
-    // 3. Mettre à jour le montant du cadeau
-    const updateGiftRes = await fetch(
-      SUPABASE_URL + "/rest/v1/gifts?id=eq." + giftId,
-      {
-        method: "PATCH",
-        headers: {
-          "apikey": SUPABASE_KEY,
-          "Authorization": "Bearer " + SUPABASE_KEY,
-          "Content-Type": "application/json"
-        },
-        body: JSON.stringify({
-          funded_amount: newAmount,
-          is_funded: newAmount >= target
-        })
-      }
-    );
-
-    if (!updateGiftRes.ok) {
-      throw new Error("Impossible de mettre à jour le cadeau.");
-    }
+    return fetch(SUPABASE_URL + "/rest/v1/gifts?id=eq." + giftId, {
+      method: "PATCH",
+      headers: {
+        "apikey": SUPABASE_KEY,
+        "Authorization": "Bearer " + SUPABASE_KEY,
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({
+        funded_amount: newAmount,
+        is_funded: newAmount >= target
+      })
+    });
+  })
+  .then(function(res) {
+    if (!res.ok) throw new Error("Impossible de mettre à jour le cadeau.");
 
     showMessage("admin-message", "Contribution confirmée avec succès ✅", "success");
     loadAdmin();
-
-  } catch (error) {
+  })
+  .catch(function(error) {
     showMessage("admin-message", "Erreur : " + error.message, "error");
-  }
+  });
 }
 </script>
 
