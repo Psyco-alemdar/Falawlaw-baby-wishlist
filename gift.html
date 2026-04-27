@@ -147,15 +147,12 @@ button {
   font-size: 18px;
 }
 
-button:hover {
-  opacity: 0.95;
-}
-
 .message {
   margin-top: 18px;
-  padding: 14px;
+  padding: 16px;
   border-radius: 14px;
   display: none;
+  line-height: 1.6;
 }
 
 .error {
@@ -234,7 +231,7 @@ button:hover {
       </div>
 
       <div id="form-area" class="form-box">
-        <div class="form-title">Participer à ce cadeau 🤍</div>
+        <div class="form-title">Participer par virement bancaire 🤍</div>
 
         <label for="name">Votre nom</label>
         <input id="name" placeholder="Votre nom">
@@ -245,7 +242,7 @@ button:hover {
         <label for="msg">Message optionnel</label>
         <input id="msg" placeholder="Ex : Félicitations ❤️">
 
-        <button onclick="payer()">Payer maintenant</button>
+        <button onclick="payer()">Participer par virement</button>
       </div>
 
       <div id="message" class="message"></div>
@@ -354,23 +351,13 @@ function payer(){
       "Merci d’indiquer cette référence dans le virement. Votre contribution sera confirmée après réception.",
       "success"
     );
+
+    document.getElementById("name").value = "";
+    document.getElementById("amount").value = "";
+    document.getElementById("msg").value = "";
   })
   .catch(function(error){
     show("Erreur : " + error.message, "error");
-  });
-}
-  .then(r=>r.text())
-  .then(t=>{
-    try{
-      let data=JSON.parse(t);
-      if(data.url){
-        window.location.href=data.url;
-      } else {
-        show("Erreur Stripe : "+JSON.stringify(data),"error");
-      }
-    }catch(e){
-      show("Erreur serveur : "+t,"error");
-    }
   });
 }
 
