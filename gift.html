@@ -31,7 +31,6 @@ body {
   height: 360px;
   object-fit: cover;
   background: #f7ede7;
-  display: block;
 }
 
 .content {
@@ -70,18 +69,6 @@ h1 {
   color: #b96f90;
 }
 
-.progress-area {
-  margin: 20px 0 30px;
-}
-
-.progress-top {
-  display: flex;
-  justify-content: space-between;
-  color: #7b6666;
-  font-size: 15px;
-  margin-bottom: 8px;
-}
-
 .progress {
   height: 16px;
   background: #ead8d0;
@@ -92,11 +79,11 @@ h1 {
 .fill {
   height: 16px;
   background: linear-gradient(90deg, #efb3c7, #d98cab);
-  border-radius: 999px;
   width: 0%;
 }
 
 .form-box {
+  margin-top: 28px;
   background: #fff8fb;
   border: 1px solid #f0d6df;
   border-radius: 22px;
@@ -115,7 +102,6 @@ label {
   margin-top: 16px;
   margin-bottom: 7px;
   font-weight: bold;
-  color: #6c5656;
 }
 
 input {
@@ -125,13 +111,6 @@ input {
   border: 1px solid #e2c9d2;
   box-sizing: border-box;
   font-size: 16px;
-  background: white;
-}
-
-input:focus {
-  outline: none;
-  border-color: #d98cab;
-  box-shadow: 0 0 0 3px rgba(217, 140, 171, 0.18);
 }
 
 button {
@@ -147,12 +126,24 @@ button {
   font-size: 18px;
 }
 
+.copy-btn {
+  margin-top: 10px;
+  background: #e8c4d1;
+  color: #6b4b4b;
+}
+
 .message {
   margin-top: 18px;
-  padding: 16px;
-  border-radius: 14px;
+  padding: 18px;
+  border-radius: 16px;
   display: none;
   line-height: 1.6;
+}
+
+.success {
+  background:#e8f6e8;
+  color:#2f6b2f;
+  display:block;
 }
 
 .error {
@@ -161,10 +152,19 @@ button {
   display:block;
 }
 
-.success {
-  background:#e8f6e8;
-  color:#2f6b2f;
-  display:block;
+.payment-box {
+  margin-top: 20px;
+  background: #fff;
+  border: 1px solid #f0d6df;
+  border-radius: 20px;
+  padding: 20px;
+}
+
+.qr {
+  display: block;
+  width: 220px;
+  height: 220px;
+  margin: 20px auto 10px;
 }
 
 .back {
@@ -176,22 +176,9 @@ button {
 }
 
 @media (max-width: 600px) {
-  .page {
-    margin: 10px auto;
-    padding: 12px;
-  }
-
-  .image {
-    height: 250px;
-  }
-
-  .content {
-    padding: 22px;
-  }
-
-  h1 {
-    font-size: 32px;
-  }
+  .image { height: 250px; }
+  .content { padding: 22px; }
+  h1 { font-size: 32px; }
 }
 </style>
 </head>
@@ -220,14 +207,8 @@ button {
         </div>
       </div>
 
-      <div class="progress-area">
-        <div class="progress-top">
-          <span>Progression</span>
-          <span id="gift-percent">0%</span>
-        </div>
-        <div class="progress">
-          <div id="fill" class="fill"></div>
-        </div>
+      <div class="progress">
+        <div id="fill" class="fill"></div>
       </div>
 
       <div id="form-area" class="form-box">
@@ -237,12 +218,12 @@ button {
         <input id="name" placeholder="Votre nom">
 
         <label for="amount">Montant (€)</label>
-        <input id="amount" type="number" placeholder="Exemple : 100">
+        <input id="amount" type="number" placeholder="Exemple : 50">
 
         <label for="msg">Message optionnel</label>
         <input id="msg" placeholder="Ex : Félicitations ❤️">
 
-        <button onclick="payer()">Participer par virement</button>
+        <button onclick="payer()">Générer les informations de virement</button>
       </div>
 
       <div id="message" class="message"></div>
@@ -256,46 +237,53 @@ button {
 const SUPABASE_URL = "https://rcihspcsadskezucjpdp.supabase.co";
 const SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InJjaWhzcGNzYWRza2V6dWNqcGRwIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzY2MDUxMzUsImV4cCI6MjA5MjE4MTEzNX0.hVp-qvJWEpNwgwcHv5-jBeS52WC2tocJGavIxkLAY3A";
 
-let gift = null;
+const IBAN = "LT07 3250 0771 5674 6415";
+const RECEIVER = "Mounir Akkari";
 
-function show(msg,type){
+let gift = null;
+let lastReference = "";
+
+function show(msg, type){
   let box = document.getElementById("message");
-  box.className = "message "+type;
+  box.className = "message " + type;
   box.innerHTML = msg;
-  box.style.display="block";
+  box.style.display = "block";
 }
 
 function getId(){
   return new URLSearchParams(window.location.search).get("id");
 }
 
+function copyText(text){
+  navigator.clipboard.writeText(text);
+  alert("Copié ✅");
+}
+
 function loadGift(){
   let id = getId();
 
-  fetch(SUPABASE_URL+"/rest/v1/gifts?id=eq."+id,{
+  fetch(SUPABASE_URL + "/rest/v1/gifts?id=eq." + id, {
     headers:{
-      apikey:SUPABASE_KEY,
-      Authorization:"Bearer "+SUPABASE_KEY
+      apikey: SUPABASE_KEY,
+      Authorization: "Bearer " + SUPABASE_KEY
     }
   })
-  .then(r=>r.json())
-  .then(data=>{
-    gift=data[0];
+  .then(r => r.json())
+  .then(data => {
+    gift = data[0];
 
-    let funded=Number(gift.funded_amount||0);
-    let target=Number(gift.target_amount||0);
-    let rest=target-funded;
+    let funded = Number(gift.funded_amount || 0);
+    let target = Number(gift.target_amount || 0);
+    let rest = target - funded;
     if(rest < 0) rest = 0;
 
-    let percent = target > 0 ? Math.min((funded/target)*100, 100) : 0;
+    let percent = target > 0 ? Math.min((funded / target) * 100, 100) : 0;
 
-    document.getElementById("gift-name").innerText=gift.name;
-    document.getElementById("gift-target").innerText=target+" €";
-    document.getElementById("gift-funded").innerText=funded+" €";
-    document.getElementById("gift-remaining").innerText=rest+" €";
-    document.getElementById("gift-percent").innerText=Math.round(percent)+"%";
-    document.getElementById("fill").style.width=percent+"%";
-
+    document.getElementById("gift-name").innerText = gift.name;
+    document.getElementById("gift-target").innerText = target + " €";
+    document.getElementById("gift-funded").innerText = funded + " €";
+    document.getElementById("gift-remaining").innerText = rest + " €";
+    document.getElementById("fill").style.width = percent + "%";
     document.getElementById("gift-image").src =
       gift.image_url || "https://images.pexels.com/photos/459957/pexels-photo-459957.jpeg";
 
@@ -312,10 +300,11 @@ function payer(){
   let msg = document.getElementById("msg").value;
 
   if(!name || !name.trim()) return show("Veuillez entrer votre nom.","error");
-  if(!amount || amount < 100) return show("Le montant minimum est 100 €.","error");
+  if(!amount || amount <= 0) return show("Veuillez entrer un montant valide.","error");
 
   let id = getId();
   let reference = "FALWLAW-" + id + "-" + Date.now();
+  lastReference = reference;
 
   fetch(SUPABASE_URL + "/rest/v1/contributions", {
     method: "POST",
@@ -341,14 +330,41 @@ function payer(){
       });
     }
 
+    let qrText =
+      "BCD\n" +
+      "002\n" +
+      "1\n" +
+      "SCT\n" +
+      "\n" +
+      RECEIVER + "\n" +
+      IBAN.replaceAll(" ", "") + "\n" +
+      "EUR" + amount.toFixed(2) + "\n" +
+      "\n" +
+      "\n" +
+      reference;
+
+    let qrUrl = "https://api.qrserver.com/v1/create-qr-code/?size=220x220&data=" + encodeURIComponent(qrText);
+
     show(
       "Merci 🤍<br><br>" +
       "Votre participation a été enregistrée en attente.<br><br>" +
-      "<strong>Montant :</strong> " + amount + " €<br>" +
-      "<strong>IBAN :</strong> LT07 3250 0771 5674 6415<br>" +
-      "<strong>Référence obligatoire :</strong><br>" +
-      "<span style='font-size:18px;color:#b96f90;font-weight:bold;'>" + reference + "</span><br><br>" +
-      "Merci d’indiquer cette référence dans le virement. Votre contribution sera confirmée après réception.",
+
+      "<div class='payment-box'>" +
+        "<strong>Montant :</strong> " + amount + " €<br>" +
+        "<strong>Bénéficiaire :</strong> " + RECEIVER + "<br>" +
+        "<strong>IBAN :</strong><br>" +
+        "<span style='font-size:18px;color:#b96f90;font-weight:bold;'>" + IBAN + "</span>" +
+        "<button class='copy-btn' onclick=\"copyText('" + IBAN + "')\">Copier IBAN</button>" +
+
+        "<br><br><strong>Référence obligatoire :</strong><br>" +
+        "<span style='font-size:18px;color:#b96f90;font-weight:bold;'>" + reference + "</span>" +
+        "<button class='copy-btn' onclick=\"copyText('" + reference + "')\">Copier référence</button>" +
+
+        "<img class='qr' src='" + qrUrl + "' alt='QR Code paiement'>" +
+        "<small>Vous pouvez scanner ce QR code avec votre application bancaire si elle le permet.</small>" +
+      "</div><br>" +
+
+      "Votre contribution sera confirmée après réception du virement.",
       "success"
     );
 
