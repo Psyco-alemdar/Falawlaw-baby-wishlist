@@ -18,11 +18,6 @@ body {
   padding: 60px 20px 30px;
 }
 
-.logo {
-  width: 180px;
-  margin-bottom: 20px;
-}
-
 .hero h1 {
   margin: 0;
   font-size: 50px;
@@ -35,31 +30,6 @@ body {
   font-size: 20px;
   color: #7b6666;
   line-height: 1.7;
-}
-
-.share-buttons {
-  margin-top: 28px;
-  display: flex;
-  justify-content: center;
-  gap: 12px;
-  flex-wrap: wrap;
-}
-
-.share-btn {
-  padding: 12px 18px;
-  border-radius: 14px;
-  border: none;
-  background: #d98cab;
-  color: white;
-  font-weight: bold;
-  text-decoration: none;
-  cursor: pointer;
-  font-size: 15px;
-}
-
-.share-btn.secondary {
-  background: #e8c4d1;
-  color: #6b4b4b;
 }
 
 .grid {
@@ -82,7 +52,6 @@ body {
   width: 100%;
   height: 220px;
   object-fit: cover;
-  display: block;
 }
 
 .card-content {
@@ -125,11 +94,6 @@ body {
   font-weight: bold;
 }
 
-.button-secondary {
-  background: #e8c4d1;
-  color: #6b4b4b;
-}
-
 .done {
   text-align: center;
   padding: 12px;
@@ -153,161 +117,94 @@ body {
 <body>
 
 <div class="hero">
-  <img src="logo.png" class="logo" alt="Falwlaw Baby Sophia Logo">
 
-  <h1>Falwlaw Baby Sophia</h1>
+  <h1>Falwlaw Baby Sophia 🤍</h1>
 
   <p>
-    Bienvenue sur la liste de naissance de Sophia 🤍<br>
+    Bienvenue sur la liste de naissance de Sophia 🤍<br><br>
     Votre présence, votre affection et votre attention comptent énormément pour nous.
-    À travers cette wishlist, vous pouvez participer au cadeau de votre choix et accompagner Sophia dans ses premiers moments de vie.
-    Chaque contribution, grande ou petite, restera pour nous un souvenir précieux.
+    À travers cette wishlist, vous pouvez participer au cadeau de votre choix et accompagner Sophia dans ses premiers instants de vie.<br><br>
+    Chaque geste, chaque mot, chaque attention restera pour nous un souvenir précieux,
+    chargé d’émotion et de gratitude.
   </p>
 
-  <div class="share-buttons">
-    <a id="whatsapp-share" class="share-btn" href="#" target="_blank">Partager sur WhatsApp</a>
-    <button class="share-btn secondary" onclick="copyWishlistLink()">Copier le lien</button>
-  </div>
 </div>
 
 <div id="gifts" class="grid">Chargement...</div>
 
 <script>
 var SUPABASE_URL = "https://rcihspcsadskezucjpdp.supabase.co";
+
 var SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InJjaWhzcGNzYWRza2V6dWNqcGRwIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzY2MDUxMzUsImV4cCI6MjA5MjE4MTEzNX0.hVp-qvJWEpNwgwcHv5-jBeS52WC2tocJGavIxkLAY3A";
 
 function escapeHtml(text) {
   return String(text)
-    .replace(/&/g, "&amp;")
-    .replace(/</g, "&lt;")
-    .replace(/>/g, "&gt;")
-    .replace(/"/g, "&quot;")
-    .replace(/'/g, "&#039;");
-}
-
-function copyWishlistLink() {
-  navigator.clipboard.writeText(window.location.href);
-  alert("Lien copié ✅");
-}
-
-function setupShareButtons() {
-  var text = "Bienvenue sur la liste de naissance de Sophia 🤍 " + window.location.href;
-  document.getElementById("whatsapp-share").href =
-    "https://wa.me/?text=" + encodeURIComponent(text);
-}
-
-function getGiftImage(name) {
-  var lower = name.toLowerCase();
-
-  if (lower.indexOf("poussette") !== -1) {
-    return "https://images.pexels.com/photos/1257110/pexels-photo-1257110.jpeg?auto=compress&cs=tinysrgb&w=1200";
-  }
-
-  if (lower.indexOf("siège") !== -1 || lower.indexOf("siege") !== -1) {
-    return "https://images.pexels.com/photos/3933274/pexels-photo-3933274.jpeg?auto=compress&cs=tinysrgb&w=1200";
-  }
-
-  if (lower.indexOf("lit") !== -1) {
-    return "https://images.pexels.com/photos/3662667/pexels-photo-3662667.jpeg?auto=compress&cs=tinysrgb&w=1200";
-  }
-
-  if (lower.indexOf("tire") !== -1) {
-    return "https://images.pexels.com/photos/3661470/pexels-photo-3661470.jpeg";
-  }
-
-  if (lower.indexOf("biberon") !== -1) {
-    return "https://images.pexels.com/photos/3933244/pexels-photo-3933244.jpeg";
-  }
-
-  if (lower.indexOf("babyphone") !== -1) {
-    return "https://images.pexels.com/photos/459957/pexels-photo-459957.jpeg";
-  }
-
-  return "https://images.pexels.com/photos/459957/pexels-photo-459957.jpeg?auto=compress&cs=tinysrgb&w=1200";
+    .replace(/&/g, "&")
+    .replace(/</g, "<")
+    .replace(/>/g, ">");
 }
 
 function loadGifts() {
   var container = document.getElementById("gifts");
 
   fetch(SUPABASE_URL + "/rest/v1/gifts?select=*&order=id.asc", {
-    method: "GET",
     headers: {
       "apikey": SUPABASE_ANON_KEY,
       "Authorization": "Bearer " + SUPABASE_ANON_KEY
     }
   })
-  .then(function(response) {
-    return response.json().then(function(data) {
-      return { ok: response.ok, data: data };
-    });
+  .then(function(res) {
+    return res.json();
   })
-  .then(function(result) {
-    if (!result.ok) {
-      container.innerHTML = '<div class="error">Erreur : ' + escapeHtml(JSON.stringify(result.data)) + '</div>';
-      return;
-    }
+  .then(function(data) {
 
-    if (!result.data || result.data.length === 0) {
-      container.innerHTML = '<div class="error">Aucun article trouvé</div>';
+    if (!data || data.length === 0) {
+      container.innerHTML = '<div class="error">Aucun cadeau trouvé</div>';
       return;
     }
 
     container.innerHTML = "";
 
-    for (var i = 0; i < result.data.length; i++) {
-      var gift = result.data[i];
+    data.forEach(function(gift) {
 
       var funded = Number(gift.funded_amount || 0);
       var target = Number(gift.target_amount || 0);
       var remaining = target - funded;
       if (remaining < 0) remaining = 0;
 
-      var percent = 0;
-      if (target > 0) {
-        percent = (funded / target) * 100;
-        if (percent > 100) percent = 100;
-      }
+      var percent = target > 0 ? Math.min((funded / target) * 100, 100) : 0;
 
-      var image = gift.image_url ? gift.image_url : getGiftImage(gift.name);
+      var action = "";
 
-      var productButton = "";
-      if (gift.product_url) {
-        productButton = '<a class="button button-secondary" href="' + gift.product_url + '" target="_blank">Voir le produit</a>';
-      }
-
-      var actionButton = "";
       if (funded >= target || gift.is_funded === true) {
-        actionButton = '<div class="done">✅ Financé</div>';
+        action = '<div class="done">✅ Financé</div>';
       } else {
-        actionButton = '<a class="button" href="gift.html?id=' + gift.id + '">Participer pour Sophia</a>';
+        action = '<a class="button" href="gift.html?id=' + gift.id + '">Participer pour Sophia</a>';
       }
 
       var card = document.createElement("div");
       card.className = "card";
 
       card.innerHTML =
-        '<img src="' + image + '" alt="' + escapeHtml(gift.name) + '">' +
+        '<img src="' + (gift.image_url || "https://images.pexels.com/photos/459957/pexels-photo-459957.jpeg") + '">' +
         '<div class="card-content">' +
           '<h3>' + escapeHtml(gift.name) + '</h3>' +
           '<div class="meta">Prix : ' + target + ' €</div>' +
           '<div class="meta">Collecté : ' + funded + ' €</div>' +
           '<div class="meta">Reste : ' + remaining + ' €</div>' +
-          '<div class="progress">' +
-            '<div class="fill" style="width:' + percent + '%"></div>' +
-          '</div>' +
-          productButton +
-          actionButton +
+          '<div class="progress"><div class="fill" style="width:' + percent + '%"></div></div>' +
+          action +
         '</div>';
 
       container.appendChild(card);
-    }
+    });
+
   })
   .catch(function(error) {
-    container.innerHTML = '<div class="error">Erreur réseau : ' + escapeHtml(String(error)) + '</div>';
+    container.innerHTML = '<div class="error">Erreur : ' + escapeHtml(error) + '</div>';
   });
 }
 
-setupShareButtons();
 loadGifts();
 </script>
 
