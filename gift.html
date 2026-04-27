@@ -4,230 +4,50 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Falwlaw Baby Sophia</title>
-
-<style>
-body{margin:0;font-family:Arial,sans-serif;background:linear-gradient(180deg,#fff7f8,#f4e7df);color:#5f4b4b}
-.page{max-width:920px;margin:40px auto;padding:20px}
-.card{background:#fffdfb;border-radius:28px;overflow:hidden;box-shadow:0 14px 35px rgba(180,120,140,.18)}
-.image{width:100%;height:360px;object-fit:cover;background:#f7ede7}
-.content{padding:34px}
-h1{margin:0 0 14px;font-size:40px;color:#b96f90}
-.subtitle{font-size:18px;line-height:1.7;color:#7b6666;margin-bottom:24px}
-.stats-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:16px;margin-bottom:24px}
-.stat{background:#fff3f7;border:1px solid #f0d6df;border-radius:18px;padding:18px}
-.stat-label{font-size:14px;color:#8a7070;margin-bottom:8px}
-.stat-value{font-size:24px;font-weight:bold;color:#b96f90}
-.progress{height:16px;background:#ead8d0;border-radius:999px;overflow:hidden}
-.fill{height:16px;background:linear-gradient(90deg,#efb3c7,#d98cab);width:0%}
-.form-box{margin-top:28px;background:#fff8fb;border:1px solid #f0d6df;border-radius:22px;padding:24px}
-.form-title{font-size:24px;color:#b96f90;margin-bottom:10px;font-weight:bold}
-.form-subtitle{color:#7b6666;line-height:1.6;margin-bottom:18px}
-label{display:block;margin-top:16px;margin-bottom:7px;font-weight:bold}
-input{width:100%;padding:15px;border-radius:14px;border:1px solid #e2c9d2;box-sizing:border-box;font-size:16px}
-button,.btn{width:100%;padding:15px;margin-top:12px;border:none;border-radius:16px;background:linear-gradient(90deg,#df96b3,#cf81a1);color:white;font-weight:bold;cursor:pointer;font-size:16px;text-align:center;text-decoration:none;display:block;box-sizing:border-box}
-.copy-btn{background:#e8c4d1;color:#6b4b4b}
-.message{margin-top:18px;padding:18px;border-radius:16px;display:none;line-height:1.6}
-.success{background:#e8f6e8;color:#2f6b2f;display:block}
-.error{background:#fdeaea;color:#b00020;display:block}
-.payment-box{margin-top:20px;background:#fff;border:1px solid #f0d6df;border-radius:20px;padding:20px}
-.qr{display:block;width:220px;height:220px;margin:20px auto 10px}
-.back{display:inline-block;margin-top:24px;text-decoration:none;color:#b96f90;font-weight:bold}
-@media(max-width:600px){.image{height:250px}.content{padding:22px}h1{font-size:32px}.page{padding:12px;margin:10px auto}}
-</style>
 </head>
 
 <body>
-<div class="page">
-  <div class="card">
-    <img id="gift-image" class="image" src="" alt="cadeau">
-    <div class="content">
-      <h1 id="gift-name">Chargement...</h1>
-      <div class="subtitle">
-        Avec amour pour Sophia 🤍<br>
-        Merci d’accompagner son arrivée avec une attention qui restera pour nous un souvenir précieux.
-      </div>
-
-      <div class="stats-grid">
-        <div class="stat"><div class="stat-label">Prix total</div><div class="stat-value" id="gift-target">-</div></div>
-        <div class="stat"><div class="stat-label">Déjà collecté</div><div class="stat-value" id="gift-funded">-</div></div>
-        <div class="stat"><div class="stat-label">Reste à financer</div><div class="stat-value" id="gift-remaining">-</div></div>
-      </div>
-
-      <div class="progress"><div id="fill" class="fill"></div></div>
-
-      <div id="form-area" class="form-box">
-        <div class="form-title">Avec amour pour Sophia 🤍</div>
-        <div class="form-subtitle">
-          Vous pouvez participer à ce cadeau avec le montant que vous souhaitez.
-          Après validation, vous recevrez les informations de virement avec une référence unique.
-        </div>
-
-        <label for="name">Votre nom</label>
-        <input id="name" placeholder="Votre nom">
-
-        <label for="amount">Montant (€)</label>
-        <input id="amount" type="number" placeholder="Exemple : 100">
-
-        <label for="msg">Message optionnel</label>
-        <input id="msg" placeholder="Ex : Bienvenue Sophia ❤️">
-
-        <button onclick="payer()">Générer les informations de virement</button>
-      </div>
-
-      <div id="message" class="message"></div>
-      <a class="back" href="index.html">← Retour à la wishlist de Sophia</a>
-    </div>
-  </div>
-</div>
 
 <script>
 const SUPABASE_URL = "https://rcihspcsadskezucjpdp.supabase.co";
-const SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InJjaWhzcGNzYWRza2V6dWNqcGRwIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzY2MDUxMzUsImV4cCI6MjA5MjE4MTEzNX0.hVp-qvJWEpNwgwcHv5-jBeS52WC2tocJGavIxkLAY3A";
-
-const IBAN = "LT07 3250 0771 5674 6415";
-const RECEIVER = "Mounir Akkari";
-
-let gift = null;
-
-function show(msg,type){
-  let box=document.getElementById("message");
-  box.className="message "+type;
-  box.innerHTML=msg;
-  box.style.display="block";
-}
+const SUPABASE_KEY = "TON_ANON_KEY";
 
 function getId(){
   return new URLSearchParams(window.location.search).get("id");
 }
 
-function copyText(text){
-  navigator.clipboard.writeText(text);
-  alert("Copié ✅");
-}
-
-function shareWhatsApp(text){
-  window.open("https://wa.me/?text=" + encodeURIComponent(text), "_blank");
-}
-
-function loadGift(){
-  let id=getId();
-
-  fetch(SUPABASE_URL+"/rest/v1/gifts?id=eq."+id,{
-    headers:{apikey:SUPABASE_KEY,Authorization:"Bearer "+SUPABASE_KEY}
-  })
-  .then(r=>r.json())
-  .then(data=>{
-    gift=data[0];
-
-    let funded=Number(gift.funded_amount||0);
-    let target=Number(gift.target_amount||0);
-    let rest=target-funded;
-    if(rest<0) rest=0;
-
-    let percent=target>0 ? Math.min((funded/target)*100,100) : 0;
-
-    document.getElementById("gift-name").innerText=gift.name;
-    document.getElementById("gift-target").innerText=target+" €";
-    document.getElementById("gift-funded").innerText=funded+" €";
-    document.getElementById("gift-remaining").innerText=rest+" €";
-    document.getElementById("fill").style.width=percent+"%";
-    document.getElementById("gift-image").src=gift.image_url || "https://images.pexels.com/photos/459957/pexels-photo-459957.jpeg";
-
-    if(funded>=target || gift.is_funded===true){
-      document.getElementById("form-area").innerHTML='<div class="success" style="padding:14px;border-radius:14px;">✅ Ce cadeau est déjà financé pour Sophia. Merci du fond du cœur 🤍</div>';
-    }
-  });
-}
-
 function payer(){
-  let name=document.getElementById("name").value;
-  let amount=Number(document.getElementById("amount").value);
-  let msg=document.getElementById("msg").value;
+  let name = document.getElementById("name").value;
+  let amount = Number(document.getElementById("amount").value);
+  let msg = document.getElementById("msg").value;
+  let id = getId();
 
-  if(!name || !name.trim()) return show("Veuillez entrer votre nom.","error");
-  if(!amount || amount<=0) return show("Veuillez entrer un montant valide.","error");
+  let reference = "SOPHIA-" + id + "-" + Date.now();
 
-  let id=getId();
-  let reference="SOPHIA-"+id+"-"+Date.now();
-
-  fetch(SUPABASE_URL+"/rest/v1/contributions",{
-    method:"POST",
-    headers:{
-      "apikey":SUPABASE_KEY,
-      "Authorization":"Bearer "+SUPABASE_KEY,
-      "Content-Type":"application/json"
+  fetch(SUPABASE_URL + "/rest/v1/contributions", {
+    method: "POST",
+    headers: {
+      "apikey": SUPABASE_KEY,
+      "Authorization": "Bearer " + SUPABASE_KEY,
+      "Content-Type": "application/json"
     },
-    body:JSON.stringify([{
-      gift_id:Number(id),
-      contributor_name:name.trim(),
-      amount:amount,
-      message:msg ? msg.trim() : "",
-      status:"pending",
-      payment_method:"bank_transfer",
-      payment_reference:reference
+    body: JSON.stringify([{
+      gift_id: Number(id),
+      contributor_name: name,
+      amount: amount,
+      message: msg,
+      status: "pending",
+      payment_reference: reference
     }])
   })
-  .then(function(response){
-    if(!response.ok){
-      return response.text().then(function(text){throw new Error(text);});
-    }
-
-    let allInfos =
-      "Falwlaw Baby Sophia\n" +
-      "Cadeau: " + gift.name + "\n" +
-      "Montant: " + amount + " €\n" +
-      "Bénéficiaire: " + RECEIVER + "\n" +
-      "IBAN: " + IBAN + "\n" +
-      "Référence obligatoire: " + reference;
-
-    let qrText =
-      "BCD\n002\n1\nSCT\n\n" +
-      RECEIVER + "\n" +
-      IBAN.replaceAll(" ","") + "\n" +
-      "EUR" + amount.toFixed(2) + "\n\n\n" +
-      reference;
-
-    let qrUrl="https://api.qrserver.com/v1/create-qr-code/?size=220x220&data="+encodeURIComponent(qrText);
-
-    show(
-      "Merci du fond du cœur 🤍<br><br>" +
-      "Votre attention pour Sophia nous touche énormément.<br>" +
-      "Votre participation est enregistrée en attente de réception du virement.<br><br>" +
-
-      "<div class='payment-box'>" +
-        "<strong>Montant :</strong> "+amount+" €<br>" +
-        "<strong>Bénéficiaire :</strong> "+RECEIVER+"<br><br>" +
-
-        "<strong>IBAN :</strong><br>" +
-        "<span style='font-size:18px;color:#b96f90;font-weight:bold;'>"+IBAN+"</span>" +
-        "<button class='copy-btn' onclick=\"copyText('"+IBAN+"')\">Copier IBAN</button>" +
-
-        "<br><br><strong>Référence obligatoire :</strong><br>" +
-        "<span style='font-size:18px;color:#b96f90;font-weight:bold;'>"+reference+"</span>" +
-        "<button class='copy-btn' onclick=\"copyText('"+reference+"')\">Copier référence</button>" +
-
-        "<button class='copy-btn' onclick=\"copyText("+allInfos.replace(/`/g,"'")+")\">Copier toutes les informations</button>" +
-        "<button class='copy-btn' onclick=\"shareWhatsApp("+allInfos.replace(/`/g,"'")+")\">Partager sur WhatsApp</button>" +
-
-        "<img class='qr' src='"+qrUrl+"' alt='QR Code paiement'>" +
-        "<small>Le QR code est pratique depuis un autre appareil. Sur téléphone, utilisez plutôt les boutons copier ou WhatsApp.</small>" +
-      "</div><br>" +
-
-      "Merci d’indiquer la référence dans le virement.<br>" +
-      "Dès réception, votre participation sera confirmée et ajoutée à la wishlist de Sophia.",
-      "success"
-    );
-
-    document.getElementById("name").value="";
-    document.getElementById("amount").value="";
-    document.getElementById("msg").value="";
-  })
-  .catch(function(error){
-    show("Erreur : "+error.message,"error");
+  .then(function(){
+    window.location.href =
+      "payment.html?name=" + encodeURIComponent(name) +
+      "&amount=" + amount +
+      "&ref=" + reference +
+      "&gift=Cadeau";
   });
 }
-
-loadGift();
 </script>
 
 </body>
