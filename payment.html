@@ -9,75 +9,146 @@
 body {
   margin: 0;
   font-family: Arial, sans-serif;
-  background: linear-gradient(180deg,#fff7f8,#f4e7df);
+  background: linear-gradient(180deg, #f7fcf9, #eef7f1);
   text-align: center;
-  color: #5f4b4b;
+  color: #3d5c4a;
 }
 
 .container {
-  max-width: 600px;
+  max-width: 620px;
   margin: 40px auto;
   padding: 20px;
 }
 
 .card {
   background: white;
-  border-radius: 24px;
-  padding: 30px;
-  box-shadow: 0 15px 40px rgba(180,120,140,0.2);
+  border-radius: 26px;
+  padding: 32px;
+  box-shadow: 0 12px 30px rgba(100, 160, 120, 0.12);
+  border: 1px solid #e2efe7;
+  animation: fadeIn 0.8s ease-out;
 }
 
-h1 {
-  color: #b96f90;
-}
-
-.subtitle {
-  margin-bottom: 20px;
-  color: #7b6666;
-  line-height: 1.6;
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(18px); }
+  to { opacity: 1; transform: translateY(0); }
 }
 
 .heart {
-  font-size: 40px;
-  animation: pulse 1.2s infinite;
+  font-size: 42px;
+  margin-bottom: 10px;
+  animation: heartbeat 1.8s infinite;
 }
 
-@keyframes pulse {
+@keyframes heartbeat {
   0% { transform: scale(1); }
-  50% { transform: scale(1.2); }
+  20% { transform: scale(1.1); }
+  40% { transform: scale(1); }
+  60% { transform: scale(1.1); }
   100% { transform: scale(1); }
 }
 
+h1 {
+  color: #4f8f6a;
+  margin-bottom: 10px;
+}
+
+.subtitle {
+  color: #6f8f7c;
+  line-height: 1.6;
+  font-size: 16px;
+  margin-bottom: 24px;
+}
+
+.info-box {
+  background: #f5fbf7;
+  border: 1px solid #dbeee2;
+  border-radius: 18px;
+  padding: 18px;
+  margin-top: 18px;
+}
+
 .info {
-  margin: 12px 0;
-  font-size: 18px;
+  margin: 10px 0;
+  font-size: 17px;
 }
 
 .bold {
   font-weight: bold;
-  color: #b96f90;
+  color: #4f8f6a;
 }
 
 button {
   width: 100%;
-  padding: 14px;
+  padding: 13px;
   margin-top: 10px;
   border: none;
   border-radius: 14px;
-  background: #d98cab;
+  background: #6fbf93;
   color: white;
   font-weight: bold;
   cursor: pointer;
+  font-size: 15px;
 }
 
 .secondary {
-  background: #e8c4d1;
-  color: #6b4b4b;
+  background: #e6f4ec;
+  color: #3d5c4a;
+}
+
+.qr-section {
+  margin-top: 24px;
+  background: #f8fdf9;
+  border: 1px dashed #cfe8d8;
+  border-radius: 20px;
+  padding: 20px;
+}
+
+.qr-title {
+  font-weight: bold;
+  color: #4f8f6a;
+  font-size: 17px;
+  margin-bottom: 6px;
+}
+
+.qr-note {
+  color: #6f8f7c;
+  font-size: 14px;
+  line-height: 1.5;
+  margin-bottom: 12px;
 }
 
 .qr {
   width: 200px;
+  height: 200px;
+  margin-top: 8px;
+}
+
+.small {
+  font-size: 13px;
+  color: #7f9b89;
+  margin-top: 12px;
+}
+
+.back {
+  display: inline-block;
   margin-top: 20px;
+  text-decoration: none;
+  color: #4f8f6a;
+  font-weight: bold;
+}
+
+.confetti {
+  position: fixed;
+  top: -10px;
+  font-size: 20px;
+  animation: fall 3s linear forwards;
+  pointer-events: none;
+  z-index: 999;
+}
+
+@keyframes fall {
+  to { transform: translateY(110vh) rotate(360deg); opacity: 0; }
 }
 </style>
 </head>
@@ -87,33 +158,54 @@ button {
 <div class="container">
   <div class="card">
 
-    <div class="heart">❤️</div>
+    <div class="heart">💚</div>
 
     <h1 id="title">Merci 🤍</h1>
 
     <p class="subtitle" id="subtitle"></p>
 
-    <div class="info">
-      Montant : <span id="amount" class="bold"></span>
+    <div class="info-box">
+      <div class="info">
+        Montant : <span id="amount" class="bold"></span>
+      </div>
+
+      <div class="info">
+        Bénéficiaire : <span id="receiver" class="bold"></span>
+      </div>
+
+      <div class="info">
+        IBAN : <span id="iban" class="bold"></span>
+      </div>
+
+      <button onclick="copyText(IBAN)">Copier IBAN</button>
+
+      <div class="info">
+        Référence obligatoire : <span id="ref" class="bold"></span>
+      </div>
+
+      <button onclick="copyText(ref)">Copier référence</button>
+
+      <button class="secondary" onclick="copyAll()">Copier toutes les informations</button>
+
+      <button class="secondary" onclick="share()">Partager sur WhatsApp</button>
     </div>
 
-    <div class="info">
-      IBAN : <span id="iban" class="bold"></span>
+    <div class="qr-section">
+      <div class="qr-title">QR code pour virement bancaire</div>
+
+      <div class="qr-note">
+        Ce QR code permet de remplir automatiquement les informations de paiement
+        dans certaines applications bancaires compatibles.
+      </div>
+
+      <img id="qr" class="qr" alt="QR code pour virement bancaire">
+
+      <div class="small">
+        Sur téléphone, vous pouvez aussi copier l’IBAN et la référence ci-dessus.
+      </div>
     </div>
 
-    <button onclick="copyText(IBAN)">Copier IBAN</button>
-
-    <div class="info">
-      Référence : <span id="ref" class="bold"></span>
-    </div>
-
-    <button onclick="copyText(ref)">Copier référence</button>
-
-    <button class="secondary" onclick="copyAll()">Copier toutes les informations</button>
-
-    <button class="secondary" onclick="share()">Partager sur WhatsApp</button>
-
-    <img id="qr" class="qr">
+    <a class="back" href="index.html">← Retour à la liste de Sophia</a>
 
   </div>
 </div>
@@ -122,36 +214,35 @@ button {
 const IBAN = "LT07 3250 0771 5674 6415";
 const RECEIVER = "Mounir Akkari";
 
-// récupérer données URL
 const params = new URLSearchParams(window.location.search);
 
-const name = params.get("name") || "🤍";
+const rawName = params.get("name") || "";
+const name = rawName.trim();
+const nameFormatted = name ? name.charAt(0).toUpperCase() + name.slice(1) : "";
 const amount = params.get("amount") || "0";
 const ref = params.get("ref") || "";
 const gift = params.get("gift") || "";
 
-// personnalisation
 document.getElementById("title").innerHTML =
-  "Merci " + name + " 🤍";
+  nameFormatted ? "Merci " + nameFormatted + " 🤍" : "Merci 🤍";
 
 document.getElementById("subtitle").innerHTML =
-  "Votre attention pour Sophia nous touche énormément.<br>" +
-  "Merci d’accompagner ses premiers moments avec autant de douceur.";
+  "Votre participation pour Sophia est bien enregistrée.<br>" +
+  "Merci pour votre générosité et votre attention 🤍";
 
 document.getElementById("amount").innerText = amount + " €";
+document.getElementById("receiver").innerText = RECEIVER;
 document.getElementById("iban").innerText = IBAN;
 document.getElementById("ref").innerText = ref;
 
-// copier simple
 function copyText(text){
   navigator.clipboard.writeText(text);
   alert("Copié ✅");
 }
 
-// copier complet
 function copyAll(){
   let txt =
-    "Falwlaw Baby Sophia 🤍\n" +
+    "Falwlaw Baby Sophia\n" +
     "Cadeau: " + gift + "\n" +
     "Montant: " + amount + " €\n" +
     "Bénéficiaire: " + RECEIVER + "\n" +
@@ -159,21 +250,21 @@ function copyAll(){
     "Référence: " + ref;
 
   navigator.clipboard.writeText(txt);
-  alert("Toutes les infos copiées ✅");
+  alert("Informations copiées ✅");
 }
 
-// partager WhatsApp
 function share(){
   let txt =
     "Participation pour Sophia 🤍\n" +
+    "Cadeau: " + gift + "\n" +
     "Montant: " + amount + " €\n" +
+    "Bénéficiaire: " + RECEIVER + "\n" +
     "IBAN: " + IBAN + "\n" +
     "Référence: " + ref;
 
   window.open("https://wa.me/?text=" + encodeURIComponent(txt));
 }
 
-// QR Code SEPA
 let qrData =
   "BCD\n002\n1\nSCT\n\n" +
   RECEIVER + "\n" +
@@ -183,6 +274,24 @@ let qrData =
 
 document.getElementById("qr").src =
   "https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=" + encodeURIComponent(qrData);
+
+function launchConfetti(){
+  var symbols = ["🤍", "💚", "🌿", "✨"];
+  for (var i = 0; i < 24; i++) {
+    var confetti = document.createElement("div");
+    confetti.className = "confetti";
+    confetti.innerHTML = symbols[Math.floor(Math.random() * symbols.length)];
+    confetti.style.left = Math.random() * 100 + "vw";
+    confetti.style.animationDelay = Math.random() * 0.8 + "s";
+    document.body.appendChild(confetti);
+
+    setTimeout(function(el){
+      el.remove();
+    }, 4000, confetti);
+  }
+}
+
+launchConfetti();
 </script>
 
 </body>
