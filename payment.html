@@ -8,7 +8,7 @@
 <style>
 body {
   margin: 0;
-  font-family: Arial;
+  font-family: Arial, sans-serif;
   background: linear-gradient(180deg, #f7fcf9, #eef7f1);
   text-align: center;
   color: #3d5c4a;
@@ -25,97 +25,129 @@ body {
   border-radius: 26px;
   padding: 32px;
   box-shadow: 0 12px 30px rgba(100, 160, 120, 0.12);
-  animation: fadeIn 0.8s ease;
+  border: 1px solid #e2efe7;
+  animation: fadeIn 0.8s ease-out;
 }
 
 @keyframes fadeIn {
-  from {opacity:0; transform:translateY(20px);}
-  to {opacity:1; transform:translateY(0);}
+  from { opacity: 0; transform: translateY(18px); }
+  to { opacity: 1; transform: translateY(0); }
 }
 
-/* ❤️ cœur /
+/* 💚 cœur qui bat /
 .heart {
-  font-size: 40px;
-  animation: beat 1.8s infinite;
-}
-@keyframes beat {
-  0%{transform:scale(1);}
-  25%{transform:scale(1.1);}
-  50%{transform:scale(1);}
-  75%{transform:scale(1.1);}
-  100%{transform:scale(1);}
+  font-size: 42px;
+  margin-bottom: 10px;
+  animation: heartbeat 1.8s infinite;
 }
 
-h1 { color:#4f8f6a; }
+@keyframes heartbeat {
+  0% { transform: scale(1); }
+  20% { transform: scale(1.1); }
+  40% { transform: scale(1); }
+  60% { transform: scale(1.1); }
+  100% { transform: scale(1); }
+}
+
+h1 {
+  color: #4f8f6a;
+  margin-bottom: 10px;
+}
 
 .subtitle {
-  color:#6f8f7c;
-  margin-bottom:20px;
+  color: #6f8f7c;
+  line-height: 1.6;
+  font-size: 16px;
+  margin-bottom: 24px;
 }
 
-/ ⚡ Revolut /
-.revolut {
-  background:#111;
-  color:white;
-  padding:15px;
-  border-radius:14px;
-  margin-top:15px;
-  cursor:pointer;
+/ 🔥 bouton Revolut /
+.revolut-btn {
+  background: #111;
+  color: white;
+  padding: 16px;
+  border-radius: 16px;
+  font-weight: bold;
+  margin-top: 10px;
+  cursor: pointer;
 }
 
-/ 💳 info /
+/ 💳 section info /
 .info-box {
-  background:#f5fbf7;
-  border-radius:18px;
-  padding:18px;
-  margin-top:20px;
+  background: #f5fbf7;
+  border: 1px solid #dbeee2;
+  border-radius: 18px;
+  padding: 18px;
+  margin-top: 22px;
 }
 
-.info { margin:10px 0; }
+.info {
+  margin: 10px 0;
+  font-size: 17px;
+}
 
-.bold { font-weight:bold; color:#4f8f6a; }
+.bold {
+  font-weight: bold;
+  color: #4f8f6a;
+}
 
 button {
-  width:100%;
-  padding:12px;
-  margin-top:10px;
-  border:none;
-  border-radius:12px;
-  background:#6fbf93;
-  color:white;
-  cursor:pointer;
+  width: 100%;
+  padding: 13px;
+  margin-top: 10px;
+  border: none;
+  border-radius: 14px;
+  background: #6fbf93;
+  color: white;
+  font-weight: bold;
+  cursor: pointer;
 }
 
 .secondary {
-  background:#e6f4ec;
-  color:#3d5c4a;
+  background: #e6f4ec;
+  color: #3d5c4a;
 }
 
 / QR /
 .qr-section {
-  margin-top:20px;
+  margin-top: 24px;
+  background: #f8fdf9;
+  border: 1px dashed #cfe8d8;
+  border-radius: 20px;
+  padding: 20px;
 }
 
 .qr {
-  width:200px;
+  width: 200px;
+  margin-top: 10px;
+}
+
+.small {
+  font-size: 13px;
+  color: #7f9b89;
+}
+
+.back {
+  display: inline-block;
+  margin-top: 20px;
+  text-decoration: none;
+  color: #4f8f6a;
+  font-weight: bold;
 }
 
 / 🎉 confetti /
 .confetti {
-  position:fixed;
-  top:-10px;
-  font-size:20px;
-  animation:fall 3s linear forwards;
-}
-@keyframes fall {
-  to {transform:translateY(110vh) rotate(360deg); opacity:0;}
+  position: fixed;
+  top: -10px;
+  font-size: 20px;
+  animation: fall 3s linear forwards;
 }
 
-.back {
-  display:block;
-  margin-top:20px;
-  color:#4f8f6a;
-  text-decoration:none;
+@keyframes fall {
+  to {
+    transform: translateY(110vh) rotate(360deg);
+    opacity: 0;
+  }
 }
 </style>
 </head>
@@ -123,106 +155,101 @@ button {
 <body>
 
 <div class="container">
-<div class="card">
+  <div class="card">
 
-<div class="heart">💚</div>
+    <div class="heart">💚</div>
 
-<h1 id="title">Merci 🤍</h1>
+    <h1 id="title">Merci 🤍</h1>
 
-<p class="subtitle">
-Votre participation pour Sophia est enregistrée.<br>
-Finalisez votre paiement ci-dessous.
-</p>
+    <p class="subtitle">
+      Votre participation pour Sophia est bien enregistrée.<br>
+      Vous pouvez maintenant finaliser le paiement.
+    </p>
 
-<!-- ⚡ Revolut -->
-<div class="revolut" onclick="payerRevolut()">
-⚡ Payer avec Revolut
-</div>
+    <!-- 🔥 REVOLUT -->
+    <div class="revolut-btn" onclick="payerRevolut()">
+      ⚡ Payer instantanément avec Revolut
+    </div>
 
-<!-- 💳 IBAN -->
-<div class="info-box">
-<div class="info">Montant : <span id="amount" class="bold"></span></div>
-<div class="info">IBAN : <span id="iban" class="bold"></span></div>
-<div class="info">Référence : <span id="ref" class="bold"></span></div>
+    <div class="small">
+      Paiement rapide et sans frais via Revolut
+    </div>
 
-<button onclick="copyText(IBAN)">Copier IBAN</button>
-<button onclick="copyText(ref)">Copier référence</button>
-</div>
+    <!-- 💳 IBAN -->
+    <div class="info-box">
+      <div class="info">Montant : <span id="amount" class="bold"></span></div>
+      <div class="info">IBAN : <span id="iban" class="bold"></span></div>
+      <div class="info">Référence : <span id="ref" class="bold"></span></div>
 
-<!-- QR -->
-<div class="qr-section">
-<p><b>QR code virement bancaire</b></p>
-<img id="qr" class="qr">
-</div>
+      <button onclick="copyText(IBAN)">Copier IBAN</button>
+      <button onclick="copyText(ref)">Copier référence</button>
+    </div>
 
-<!-- ✅ paiement effectué -->
-<button class="secondary" onclick="paymentDone()">
-✅ J’ai effectué le paiement
-</button>
+    <!-- QR -->
+    <div class="qr-section">
+      <div class="bold">QR code pour virement bancaire</div>
+      <img id="qr" class="qr">
+    </div>
 
-<a class="back" href="index.html">← Retour</a>
+    <a class="back" href="index.html">← Retour</a>
 
-</div>
+  </div>
 </div>
 
 <script>
 const IBAN = "LT07 3250 0771 5674 6415";
-const REVOLUT = "https://revolut.me/mounirfvr8";
+const REVOLUT_LINK = "https://revolut.me/mounirfvr8";
 
 const params = new URLSearchParams(window.location.search);
 
-const name = params.get("name") || "";
+const rawName = params.get("name") || "";
+const name = rawName.trim();
+const nameFormatted = name ? name.charAt(0).toUpperCase() + name.slice(1) : "";
 const amount = params.get("amount") || "0";
 const ref = params.get("ref") || "";
 
-const nameFormatted = name ? name.charAt(0).toUpperCase()+name.slice(1) : "";
-
 document.getElementById("title").innerHTML =
-nameFormatted ? "Merci " + nameFormatted + " 🤍" : "Merci 🤍";
+  nameFormatted ? "Merci " + nameFormatted + " 🤍" : "Merci 🤍";
 
 document.getElementById("amount").innerText = amount + " €";
 document.getElementById("iban").innerText = IBAN;
 document.getElementById("ref").innerText = ref;
 
-/ Revolut /
+/ 🔥 bouton Revolut /
 function payerRevolut(){
-alert("Ajoute cette référence dans Revolut : " + ref);
-window.open(REVOLUT,"_blank");
+  alert("Dans Revolut, mets la référence : " + ref);
+  window.open(REVOLUT_LINK, "_blank");
 }
 
 / copier /
 function copyText(text){
-navigator.clipboard.writeText(text);
-alert("Copié ✅");
+  navigator.clipboard.writeText(text);
+  alert("Copié ✅");
 }
 
-/ QR /
+/ QR bancaire /
 let qrData =
-"BCD\n002\n1\nSCT\n\nMounir Akkari\n" +
-IBAN.replaceAll(" ","") + "\n" +
-"EUR"+parseFloat(amount).toFixed(2)+"\n\n\n"+ref;
+  "BCD\n002\n1\nSCT\n\nMounir Akkari\n" +
+  IBAN.replaceAll(" ","") + "\n" +
+  "EUR" + parseFloat(amount).toFixed(2) + "\n\n\n" +
+  ref;
 
 document.getElementById("qr").src =
-"https://api.qrserver.com/v1/create-qr-code/?size=200x200&data="+encodeURIComponent(qrData);
+  "https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=" + encodeURIComponent(qrData);
 
-/ bouton paiement effectué /
-function paymentDone(){
-alert("Merci 🤍 Nous vérifierons votre paiement bientôt.");
+/ 🎉 confetti */
+function launchConfetti(){
+  let symbols=["🤍","💚","✨"];
+  for(let i=0;i<20;i++){
+    let c=document.createElement("div");
+    c.className="confetti";
+    c.innerHTML=symbols[Math.floor(Math.random()*symbols.length)];
+    c.style.left=Math.random()*100+"vw";
+    document.body.appendChild(c);
+    setTimeout(()=>c.remove(),3000);
+  }
 }
-
-/ confetti */
-function confetti(){
-let symbols=["💚","🤍","✨"];
-for(let i=0;i<20;i++){
-let c=document.createElement("div");
-c.className="confetti";
-c.innerHTML=symbols[Math.floor(Math.random()*3)];
-c.style.left=Math.random()*100+"vw";
-document.body.appendChild(c);
-setTimeout(()=>c.remove(),3000);
-}
-}
-confetti();
+launchConfetti();
 </script>
 
 </body>
