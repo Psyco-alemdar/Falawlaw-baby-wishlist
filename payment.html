@@ -34,7 +34,6 @@ body {
   to { opacity: 1; transform: translateY(0); }
 }
 
-/* 💚 cœur qui bat /
 .heart {
   font-size: 42px;
   margin-bottom: 10px;
@@ -61,24 +60,32 @@ h1 {
   margin-bottom: 24px;
 }
 
-/ 🔥 bouton Revolut /
-.revolut-btn {
-  background: #111;
-  color: white;
-  padding: 16px;
-  border-radius: 16px;
-  font-weight: bold;
-  margin-top: 10px;
-  cursor: pointer;
+.revolut-box {
+  background: #f7f7f7;
+  border: 1px solid #e5e5e5;
+  border-radius: 18px;
+  padding: 18px;
+  margin-bottom: 20px;
 }
 
-/ 💳 section info /
+.revolut-btn {
+  width: 100%;
+  padding: 15px;
+  border: none;
+  border-radius: 16px;
+  background: #111;
+  color: white;
+  font-weight: bold;
+  cursor: pointer;
+  font-size: 16px;
+}
+
 .info-box {
   background: #f5fbf7;
   border: 1px solid #dbeee2;
   border-radius: 18px;
   padding: 18px;
-  margin-top: 22px;
+  margin-top: 18px;
 }
 
 .info {
@@ -101,6 +108,7 @@ button {
   color: white;
   font-weight: bold;
   cursor: pointer;
+  font-size: 15px;
 }
 
 .secondary {
@@ -108,7 +116,6 @@ button {
   color: #3d5c4a;
 }
 
-/ QR /
 .qr-section {
   margin-top: 24px;
   background: #f8fdf9;
@@ -117,14 +124,30 @@ button {
   padding: 20px;
 }
 
+.qr-title {
+  font-weight: bold;
+  color: #4f8f6a;
+  font-size: 17px;
+  margin-bottom: 6px;
+}
+
+.qr-note {
+  color: #6f8f7c;
+  font-size: 14px;
+  line-height: 1.5;
+  margin-bottom: 12px;
+}
+
 .qr {
   width: 200px;
-  margin-top: 10px;
+  height: 200px;
+  margin-top: 8px;
 }
 
 .small {
   font-size: 13px;
   color: #7f9b89;
+  margin-top: 12px;
 }
 
 .back {
@@ -135,19 +158,17 @@ button {
   font-weight: bold;
 }
 
-/ 🎉 confetti /
 .confetti {
   position: fixed;
   top: -10px;
   font-size: 20px;
   animation: fall 3s linear forwards;
+  pointer-events: none;
+  z-index: 999;
 }
 
 @keyframes fall {
-  to {
-    transform: translateY(110vh) rotate(360deg);
-    opacity: 0;
-  }
+  to { transform: translateY(110vh) rotate(360deg); opacity: 0; }
 }
 </style>
 </head>
@@ -161,43 +182,66 @@ button {
 
     <h1 id="title">Merci 🤍</h1>
 
-    <p class="subtitle">
-      Votre participation pour Sophia est bien enregistrée.<br>
-      Vous pouvez maintenant finaliser le paiement.
-    </p>
+    <p class="subtitle" id="subtitle"></p>
 
-    <!-- 🔥 REVOLUT -->
-    <div class="revolut-btn" onclick="payerRevolut()">
-      ⚡ Payer instantanément avec Revolut
+    <div class="revolut-box">
+      <button class="revolut-btn" onclick="payerRevolut()">⚡ Payer instantanément avec Revolut</button>
+      <div class="small">
+        Dans Revolut, merci d’indiquer la référence affichée ci-dessous.
+      </div>
     </div>
 
-    <div class="small">
-      Paiement rapide et sans frais via Revolut
-    </div>
-
-    <!-- 💳 IBAN -->
     <div class="info-box">
-      <div class="info">Montant : <span id="amount" class="bold"></span></div>
-      <div class="info">IBAN : <span id="iban" class="bold"></span></div>
-      <div class="info">Référence : <span id="ref" class="bold"></span></div>
+      <div class="info">
+        Montant : <span id="amount" class="bold"></span>
+      </div>
+
+      <div class="info">
+        Bénéficiaire : <span id="receiver" class="bold"></span>
+      </div>
+
+      <div class="info">
+        IBAN : <span id="iban" class="bold"></span>
+      </div>
 
       <button onclick="copyText(IBAN)">Copier IBAN</button>
+
+      <div class="info">
+        Référence obligatoire : <span id="ref" class="bold"></span>
+      </div>
+
       <button onclick="copyText(ref)">Copier référence</button>
+
+      <button class="secondary" onclick="copyAll()">Copier toutes les informations</button>
+
+      <button class="secondary" onclick="share()">Partager sur WhatsApp</button>
+
+      <button class="secondary" onclick="paymentDone()">✅ J’ai effectué le paiement</button>
     </div>
 
-    <!-- QR -->
     <div class="qr-section">
-      <div class="bold">QR code pour virement bancaire</div>
-      <img id="qr" class="qr">
+      <div class="qr-title">QR code pour virement bancaire</div>
+
+      <div class="qr-note">
+        Ce QR code permet de remplir automatiquement les informations de paiement
+        dans certaines applications bancaires compatibles.
+      </div>
+
+      <img id="qr" class="qr" alt="QR code pour virement bancaire">
+
+      <div class="small">
+        Sur téléphone, vous pouvez aussi copier l’IBAN et la référence ci-dessus.
+      </div>
     </div>
 
-    <a class="back" href="index.html">← Retour</a>
+    <a class="back" href="index.html">← Retour à la liste de Sophia</a>
 
   </div>
 </div>
 
 <script>
 const IBAN = "LT07 3250 0771 5674 6415";
+const RECEIVER = "Mounir Akkari";
 const REVOLUT_LINK = "https://revolut.me/mounirfvr8";
 
 const params = new URLSearchParams(window.location.search);
@@ -207,29 +251,62 @@ const name = rawName.trim();
 const nameFormatted = name ? name.charAt(0).toUpperCase() + name.slice(1) : "";
 const amount = params.get("amount") || "0";
 const ref = params.get("ref") || "";
+const gift = params.get("gift") || "";
 
 document.getElementById("title").innerHTML =
   nameFormatted ? "Merci " + nameFormatted + " 🤍" : "Merci 🤍";
 
+document.getElementById("subtitle").innerHTML =
+  "Votre participation pour Sophia est bien enregistrée.<br>" +
+  "Merci pour votre générosité et votre attention 🤍";
+
 document.getElementById("amount").innerText = amount + " €";
+document.getElementById("receiver").innerText = RECEIVER;
 document.getElementById("iban").innerText = IBAN;
 document.getElementById("ref").innerText = ref;
 
-/ 🔥 bouton Revolut /
 function payerRevolut(){
-  alert("Dans Revolut, mets la référence : " + ref);
+  alert("Merci d’indiquer cette référence dans Revolut : " + ref);
   window.open(REVOLUT_LINK, "_blank");
 }
 
-/ copier /
 function copyText(text){
   navigator.clipboard.writeText(text);
   alert("Copié ✅");
 }
 
-/ QR bancaire /
+function copyAll(){
+  let txt =
+    "Falwlaw Baby Sophia\n" +
+    "Cadeau: " + gift + "\n" +
+    "Montant: " + amount + " €\n" +
+    "Bénéficiaire: " + RECEIVER + "\n" +
+    "IBAN: " + IBAN + "\n" +
+    "Référence: " + ref;
+
+  navigator.clipboard.writeText(txt);
+  alert("Informations copiées ✅");
+}
+
+function share(){
+  let txt =
+    "Participation pour Sophia 🤍\n" +
+    "Cadeau: " + gift + "\n" +
+    "Montant: " + amount + " €\n" +
+    "Bénéficiaire: " + RECEIVER + "\n" +
+    "IBAN: " + IBAN + "\n" +
+    "Référence: " + ref;
+
+  window.open("https://wa.me/?text=" + encodeURIComponent(txt));
+}
+
+function paymentDone(){
+  alert("Merci 🤍 Nous vérifierons votre paiement après réception.");
+}
+
 let qrData =
-  "BCD\n002\n1\nSCT\n\nMounir Akkari\n" +
+  "BCD\n002\n1\nSCT\n\n" +
+  RECEIVER + "\n" +
   IBAN.replaceAll(" ","") + "\n" +
   "EUR" + parseFloat(amount).toFixed(2) + "\n\n\n" +
   ref;
@@ -237,18 +314,22 @@ let qrData =
 document.getElementById("qr").src =
   "https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=" + encodeURIComponent(qrData);
 
-/ 🎉 confetti */
 function launchConfetti(){
-  let symbols=["🤍","💚","✨"];
-  for(let i=0;i<20;i++){
-    let c=document.createElement("div");
-    c.className="confetti";
-    c.innerHTML=symbols[Math.floor(Math.random()*symbols.length)];
-    c.style.left=Math.random()*100+"vw";
-    document.body.appendChild(c);
-    setTimeout(()=>c.remove(),3000);
+  var symbols = ["🤍", "💚", "🌿", "✨"];
+  for (var i = 0; i < 24; i++) {
+    var confetti = document.createElement("div");
+    confetti.className = "confetti";
+    confetti.innerHTML = symbols[Math.floor(Math.random() * symbols.length)];
+    confetti.style.left = Math.random() * 100 + "vw";
+    confetti.style.animationDelay = Math.random() * 0.8 + "s";
+    document.body.appendChild(confetti);
+
+    setTimeout(function(el){
+      el.remove();
+    }, 4000, confetti);
   }
 }
+
 launchConfetti();
 </script>
 
